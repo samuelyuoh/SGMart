@@ -5,6 +5,11 @@ const User = require('../models/User');
 const bcrypt = require('bcryptjs');
 const passport = require('passport');
 
+
+router.get('/', (req, res) => {
+    res.render('user/register');
+});
+
 router.get('/login', (req, res) => {
     res.render('user/login');
 });
@@ -12,7 +17,7 @@ router.get('/login', (req, res) => {
 router.post('/login', (req, res, next) => {
     passport.authenticate('local', {
         // Success redirect URL
-        successRedirect: '/video/listVideos',
+        successRedirect: '/user',
         // Failure redirect URL
         failureRedirect: '/user/login',
         /*Setting the failureFlash option to true instructs Passport to flash an error
