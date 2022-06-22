@@ -5,33 +5,22 @@ const User = require('../models/User');
 const bcrypt = require('bcryptjs');
 const passport = require('passport');
 
-
 router.get('/', (req, res) => {
-    res.render('user/register');
+    res.render('user/login');
 });
 
 router.get('/login', (req, res) => {
     res.render('user/login');
 });
 
-router.post('/login', (req, res, next) => {
-    passport.authenticate('local', {
-        // Success redirect URL
-        successRedirect: '/user',
-        // Failure redirect URL
-        failureRedirect: '/user/login',
-        /*Setting the failureFlash option to true instructs Passport to flash an error
-        message using the message given by the strategy's verify callback. When a failure
-        occur passport passes the message object as error. */
-        failureFlash: true
-    }) (req, res, next);
+router.get('/register', (req, res) => {
+    res.render('user/register');
 });
-
 
 router.post('/register', async function (req, res) {
     let { name, email, password, password2 } = req.body;
-    let isValid = true;
 
+    let isValid = true;
     if (password.length < 6) {
         flashMessage(res, 'error', 'Password must be at least 6 characters');
         isValid = false;
@@ -48,7 +37,6 @@ router.post('/register', async function (req, res) {
     }
 
     try {
-        
         // If all is well, checks if user is already registered
         let user = await User.findOne({ where: { email: email } });
         if (user) {
@@ -59,7 +47,7 @@ router.post('/register', async function (req, res) {
             });
         }
         else {
-            // Create new user record
+            // Create new user record 
             var salt = bcrypt.genSaltSync(10);
             var hash = bcrypt.hashSync(password, salt);
             // Use hashed password
@@ -73,15 +61,22 @@ router.post('/register', async function (req, res) {
     }
 });
 
-router.get('/register', (req, res) => {
-    res.render('user/register');
+router.post('/login', (req, res, next) => {
+    passport.authenticate('local', {
+        // Success redirect URL
+        successRedirect: '/',
+        // Failure redirect URL 
+        failureRedirect: '/user/login',
+        /* Setting the failureFlash option to true instructs Passport to flash 
+        an error message using the message given by the strategy's verify callback.
+        When a failure occur passport passes the message object as error */
+        failureFlash: true
+    })(req, res, next);
 });
 
 router.get('/logout', (req, res) => {
     req.logout();
     res.redirect('/');
 });
+
 module.exports = router;
-
-
-
