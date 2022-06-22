@@ -84,11 +84,11 @@ router.get('/profile/:id', ensureAuthenticated, (req, res) => {
                 res.redirect('/user/login');
                 return;
             }
-            // if (req.user.id != req.params.id) {
-            //     flashMessage(res, 'error', 'Unauthorised access');
-            //     res.redirect('/');
-            //     return;
-            // }
+            if (req.user.id != req.params.id) {
+                flashMessage(res, 'error', 'Unauthorised access');
+                res.redirect('/');
+                return;
+            }
             res.render('user/profile', { user });
             
         })
