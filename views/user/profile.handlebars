@@ -1,0 +1,98 @@
+<div class="container rounded bg-white mt-5 mb-5">
+    <div class="row">
+        <div class="col-md-4 border-right">
+            <div class="d-flex flex-column align-items-center text-center p-3 py-5"><img class="rounded-circle mt-5" width="150px" src="https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg">
+                <span class="font-weight-bold">{{user.name}}</span>
+                <span class="text-black-50">{{user.email}}</span>
+            </div>
+        </div>
+        <div class="col-md-6 border-right">
+            <div class="p-3 py-5">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h4 class="text-right">Profile Settings</h4>
+                </div>
+                <form method="POST">
+                    <div class="row mt-2">
+                        <div class="col-md-12">
+                            <label class="labels">Name</label>
+                            <input name="name" type="text" class="form-control" placeholder="name" value="{{user.name}}">
+                        </div>
+                        <div class="col-md-12">
+                            <label class="labels">Email</label>
+                            <input name="email" type="text" class="form-control" placeholder="email" value="{{user.email}}">
+                        </div>
+                        <div class="col-md-12">
+                            <label class="labels">Mobile Number</label>
+                            <input name="phoneNumber" type="number" class="form-control" placeholder="phone number" value="{{user.phoneNumber}}">
+                        </div>
+                        <div class="col-md-12">
+                            <label class="labels">Address Line 1</label>
+                            <input name="address" type="text" class="form-control" placeholder="address line 1" value="{{user.address}}">
+                        </div>
+                        <div class="col-md-12">
+                            <label class="labels">Address Line 2</label>
+                            <input name="address2" type="text" class="form-control" placeholder="address line 2" value="{{user.address2}}">
+                        </div>
+                        <div class="col-md-12">
+                            <label class="labels">Postal code</label>
+                            <input name="postalCode" type="number" class="form-control" placeholder="postal code" value="{{user.postalCode}}">
+                        </div>
+
+                        <input type="hidden" name="password" value="{{user.password}}">
+                    </div>
+                    <div class="mt-5 text-center">
+                        <button class="btn btn-primary profile-button" type="button">Change Password</button>
+                        <button class="btn btn-primary profile-button" type="submit">Save Profile</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+  body {
+    background: #EEEEEE;
+}
+
+.form-control:focus {
+    box-shadow: none;
+    border-color: #BA68C8;
+}
+
+.profile-button {
+    background: rgb(99, 39, 120);
+    box-shadow: none;
+    border: none
+}
+
+.profile-button:hover {
+    background: #682773
+}
+
+.profile-button:focus {
+    background: #682773;
+    box-shadow: none
+}
+
+.profile-button:active {
+    background: #682773;
+    box-shadow: none
+}
+
+.back:hover {
+    color: #682773;
+    cursor: pointer
+}
+
+.labels {
+    font-size: 12px;
+}
+
+.add-experience:hover {
+    background: #BA68C8;
+    color: #fff;
+    cursor: pointer;
+    border: solid 1px #BA68C8
+}
+</style>

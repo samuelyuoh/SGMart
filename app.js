@@ -101,13 +101,12 @@ app.use(function (req, res, next) {
 // mainRoute is declared to point to routes/main.js
 const mainRoute = require('./routes/main');
 const userRoute = require('./routes/user');
-const videoRoute = require('./routes/video');
 
 // Any URL with the pattern ‘/*’ is directed to routes/main.js
 app.use('/', mainRoute);
 app.use('/user', userRoute);
-app.use('/video', videoRoute);
-
+// app.use('/', userRoute);
+// app.use('/user', mainRoute);
 /*
 * Creates a port for express server since we don't want our app to clash with well known
 * ports such as 80 or 8080.

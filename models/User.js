@@ -5,6 +5,10 @@ const User = db.define('user',
     {
         name: { type: Sequelize.STRING },
         email: { type: Sequelize.STRING },
-        password: { type: Sequelize.STRING }
+        password: { type: Sequelize.STRING },
+        phoneNumber:{ type: Sequelize.INTEGER },
+        address: { type: Sequelize.STRING },
+        address2: { type: Sequelize.STRING },
+        postalCode: { type: Sequelize.INTEGER }
     });
 module.exports = User;
