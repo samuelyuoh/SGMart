@@ -21,10 +21,8 @@ router.post('/flash', (req, res) => {
 	flashMessage(res, 'error', error2, 'fas fa-sign-in-alt', true);
 	res.redirect('/about');
 });
-
-module.exports = router;
-
 router.get('/about', (req, res) => {
 	const author = 'Your Name';
 	res.render('about', { author });
 	});
+	module.exports = router;
