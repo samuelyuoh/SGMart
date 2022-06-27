@@ -9,6 +9,7 @@
   "dependencies": {
     "@handlebars/allow-prototype-access": "^1.0.5",
     "bcryptjs": "^2.4.3",
+    "bootstrap-show-modal": "^3.0.4",
     "connect-flash": "^0.1.1",
     "cookie-parser": "^1.4.4",
     "dotenv": "^16.0.1",
@@ -22,7 +23,7 @@
     "mysql2": "^2.3.3",
     "passport": "^0.5.3",
     "passport-local": "^1.0.0",
-    "sequelize": "^6.19.1",
+    "sequelize": "^6.21.0",
     "sqlite3": "^5.0.8"
   }
 }
