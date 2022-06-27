@@ -95,7 +95,7 @@ router.get('/profile/:id', ensureAuthenticated, (req, res) => {
         .catch(err => console.log(err));
 });
 
-router.post('/profile/:id', ensureAuthenticated, (req, res) => {
+router.post('/editprofile/:id', ensureAuthenticated, (req, res) => {
     let name = req.body.name ? req.body.name : null;
     let email = req.body.email ? req.body.email : null;
     let phoneNumber = req.body.phoneNumber ? req.body.phoneNumber : null;
@@ -103,16 +103,59 @@ router.post('/profile/:id', ensureAuthenticated, (req, res) => {
     let address2 = req.body.address2 ? req.body.address2 : null;
     let postalCode = req.body.postalCode ? req.body.postalCode : null;
     let password = req.body.password ? req.body.password : null;
-    // FHHA9XFM.isd/Uqx1tTMOkrcQC68H5ce2o2W8mYa
     User.update(
         { name, email, password, phoneNumber, address, address2, postalCode }, 
         { where: { id: req.params.id } }
     )
-        .then((result) => {
-            flashMessage(res, 'success', 'Profile updated');
-            res.redirect('/');
+        .catch(err => console.log(err));
+    User.findByPk(req.params.id)
+        .then ((user) => {
+            flashMessage(res, 'success', 'Information updated');
+            res.redirect(`/user/profile/${user.id}`);
         })
         .catch(err => console.log(err));
+});
+
+router.get('/editprofile/:id', ensureAuthenticated, (req, res) => {
+    User.findByPk(req.params.id)
+        .then((user) => {
+            if (!user) {
+                flashMessage(res, 'error', 'User not found');
+                res.redirect('/user/login');
+                return;
+            }
+            if (req.user.id != req.params.id) {
+                flashMessage(res, 'error', 'Unauthorised access');
+                res.redirect('/');
+                return;
+            }
+            res.render('user/editprofile', { user });
+            
+        })
+        .catch(err => console.log(err));
+});
+
+router.get('/deleteAccount/:id', ensureAuthenticated, async function (req, res) {
+    try {
+        let user = await User.findByPk(req.params.id);
+        if (!user) {
+            flashMessage(res, 'error', 'Account not found');
+            res.redirect('/user/login');
+            return;
+        }
+        if (req.user.id != user.id) {
+            flashMessage(res, 'error', 'Unauthorised access');
+            res.redirect('/user/login');
+            return;
+        }
+        req.logout();
+        let result = await User.destroy({ where: { id: user.id } });
+        console.log(result + ' user deleted');
+        res.redirect('/');
+    }
+    catch (err) {
+        console.log(err);
+    }
 });
 
 module.exports = router;

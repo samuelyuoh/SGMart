@@ -1,4 +1,4 @@
-const flashMessage = (res, messageType, message, icon, dismissable) =>
+const flashMessage = (res, title, body, confirm, link) =>
 {
     let alert;
         switch (messageType) {
