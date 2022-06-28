@@ -6,11 +6,7 @@ const ensureAuthenticated = require('../helpers/auth');
 
 
 router.get('/inventory', (req, res) => {
-    Product.findAll({
-        where: {product_id: 'product_id'},
-        order: [['price', 'DESC']],
-        raw: true
-    })
+    Product.findAll()
         .then((products) => {
             // pass object to listVideos.handlebar
             res.render('product/inventory', { products });
