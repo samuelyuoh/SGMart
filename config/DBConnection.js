@@ -1,5 +1,7 @@
 const mySQLDB = require('./DBConfig');
 const User = require('../models/User');
+const Product = require('../models/Product');
+const Brand = require('../models/Brand');
 
 // If drop is true, all existing tables are dropped and recreated
 const setUpDB = (drop) => {
@@ -10,6 +12,8 @@ const setUpDB = (drop) => {
             Defines the relationship where a user has many videos.
             The primary key from user will be a foreign key in video.
             */
+           Product.belongsTo(Brand);
+           Brand.hasMany(Product);
             mySQLDB.sync({
                 force: drop
             });

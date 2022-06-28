@@ -13,4 +13,6 @@ const Product = db.define('product',
         category_id: { type: Sequelize.INTEGER },
         image: { type: Sequelize.STRING }
     });
+
+
 module.exports = Product;
