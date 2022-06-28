@@ -1,1 +1,93 @@
-<h1>hello</h1>
+<main>
+    <h1>Dashboard</h1>
+    <div class="analytics">
+
+      <div class="money">
+        <span class="material-icons-sharp">analytics</span>
+        <div class="center">
+          <div class="lside">
+            <h3>Total Sales</h3>
+            {{!-- <h1>{{"$%.2f"|format(l24_sales)}}</h1> --}}
+            <h1>100</h1>
+          </div>
+          <div class="dvp">
+            <svg>
+              <!-- <circle cx="38" cy="38" r="36"></circle> -->
+            </svg>
+            <div class="score">
+              <!-- <p>67%</p> -->
+            </div>
+          </div>
+        </div>
+        <small class="gray">Last 24 hours</small>
+      </div>
+
+      <div class="spent">
+        <span class="material-icons-sharp">bar_chart</span>
+        <div class="center">
+          <div class="lside">
+            <h3>Total Expenses</h3>
+            {{!-- <h1>{{"$%.2f"|format(total_expenses)}}</h1> --}}
+            <h1>100</h1>
+          </div>
+          <div class="dvp">
+            <svg>
+              <!-- <circle cx="38" cy="38" r="36"></circle> -->
+            </svg>
+            <div class="score">
+              <!-- <p>45%</p> -->
+            </div>
+          </div>
+        </div>
+        <small class="gray">Lifetime</small>
+      </div>
+
+      <div class="flow">
+        <span class="material-icons-sharp">stacked_line_chart</span>
+        <div class="center">
+          <div class="lside">
+            <h3>Total Sales</h3>
+            {{!-- <h1>{{"$%.2f"|format(total_sales)}}</h1> --}}
+            <h1>100</h1>
+          </div>
+          <div class="dvp">
+            <svg>
+              <!-- <circle cx="38" cy="38" r="36"></circle> -->
+            </svg>
+            <div class="score">
+                <!-- <p>89%</p> -->
+            </div>
+          </div>
+        </div>
+        <small class="gray">Lifetime</small>
+      </div>
+    </div>
+
+    
+  
+    <div>
+      <h2 style="margin-top: 2px !important;">Profits of last 7 days</h2>
+      <canvas id="profitChart" width="100%" height="50%">
+
+      </canvas>
+      <script>
+        {{!-- var ctx = document.getElementById ("profitChart").getContext("2d");
+        var lineChart = new Chart(ctx, {
+          type: "line",
+          data: {
+            labels: {{ labels | safe }},
+            datasets: [
+              {
+                label: "Profits",
+                data: {{ values | safe }},
+                fill: false,
+                borderColor: "rgb(75, 192, 192)",
+                lineTension: 0
+              }
+            ]
+          }
+        }) --}}
+      </script>
+    </div>
+
+  </main>

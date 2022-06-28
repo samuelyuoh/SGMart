@@ -121,21 +121,22 @@ img{
     width: 100%;
 }
 h1{
-    font-weight: 800;
-    font-size: 1.79rem;
+    font-weight: 800 !important;
+    font-size: 1.79rem !important;
 }
 h2{
-    font-size: 1.39rem;
+    font-size: 1.39rem !important; 
+    font-weight: bold !important;
 }
 h3{
     font-size: 0.87rem !important;
     margin-bottom: 0 !important;
 }
 h4{
-    font-size: 0.79rem;
+    font-size: 0.79rem !important;
 }
 h5{
-    font-size: 0.77rem;
+    font-size: 0.77rem !important;
 }
 small{
     font-size: 0.75rem !important;
@@ -162,7 +163,7 @@ aside .above{
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-top: 1.39rem;
+    /* margin-top: 1.39rem; */
 }
 aside .ham{
     display: none;
@@ -311,7 +312,7 @@ main .analytics .money svg circle{
 }
 main .latest table{
     background: var(--bs-white);
-    width: 100%;
+    width: 80%;
     border-radius: var(--card-border-radius);
     padding: var(--padding-1);
     text-align: center;
