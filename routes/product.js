@@ -7,17 +7,12 @@ const ensureAuthenticated = require('../helpers/auth');
 
 router.get('/inventory', (req, res) => {
     Product.findAll({
-<<<<<<< Updated upstream
-        where: {product_id: 'product_id'},
-        order: [['price', 'DESC']],
-        raw: true
-=======
+
         include : [{
             model: Brand,
             required: false,
         }],
         raw:true
->>>>>>> Stashed changes
     })
         .then((products) => {
             // pass object to inventory.handlebar
