@@ -19,7 +19,7 @@
                         <div class="panel">
                             <ul class="nav nav-pills nav-stacked">
                                 <li><a href="/user/profile/{{user.id}}"> <i class="fa fa-user"></i> Account Overview</a></li>
-                                <li class="active"><a href="#"><i class="fa fa-edit"></i> Edit information</a></li>
+                                <li class="active"><a href="#"><i class="fa fa-edit"></i> Edit Information</a></li>
                             </ul>
                         </div>
                     </div>
@@ -35,7 +35,7 @@
                                         <h4 class="text-right">Edit Profile</h4>
                                     </div>
                                     <form method="POST">
-                                        <div class="row mt-2">
+                                        <div class="row mt-2 editp">
                                             <div class="col-md-12">
                                                 <label class="labels">Name</label>
                                                 <input name="name" type="text" class="form-control" placeholder="name" value="{{user.name}}">
@@ -57,14 +57,14 @@
                                                 <input name="address2" type="text" class="form-control" placeholder="address line 2" value="{{user.address2}}">
                                             </div>
                                             <div class="col-md-12">
-                                                <label class="labels">Postal code</label>
+                                                <label class="labels">Postal Code</label>
                                                 <input name="postalCode" type="number" class="form-control" placeholder="postal code" value="{{user.postalCode}}">
                                             </div>
 
                                             <input type="hidden" name="password" value="{{user.password}}">
                                         </div>
-                                        <div class="mt-5 text-center" style="float: right !important">
-                                            <a style="text-decoration: none !important; color: black;" href="/user/profile/{{user.id}}">Cancel</a>
+                                        <div class="mt-5" style="float: right !important; width: 25%;">
+                                            <a class="cancel" style="" href="/user/profile/{{user.id}}">Cancel</a>
                                             <button class="btn btn-primary profile-button" type="submit">Save Profile</button>
                                         </div>
                                     </form>
@@ -93,7 +93,18 @@
   body {
     background: #EEEEEE;
 }
+.editp input{
+    box-shadow: 10px 5px 5px black;
+}
 
+.cancel {
+    text-decoration: none !important; 
+    color: black; 
+    padding-right: 2% ;
+}
+.editp ::placeholder{
+    color: #ababab;
+}
 .form-control:focus {
     box-shadow: none;
     border-color: #BA68C8;
@@ -113,17 +124,13 @@
     box-shadow: none
 }
 
-.profile-button:active {
-    background: #682773;
-    box-shadow: none
-}
-
 .back:hover {
     color: #682773;
     cursor: pointer
 }
 .labels {
-    font-size: 12px;
+    font-size: 15px;
+    padding: 10px 0;
 }
 
 .add-experience:hover {
