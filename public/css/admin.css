@@ -75,7 +75,7 @@
   box-sizing: border-box;
   outline: none;
   border: none;
-  text-decoration: none;
+  text-decoration: none !important;
   list-style: none;
 }
 html{
@@ -84,19 +84,23 @@ html{
 body{
     width: 100vw;
     height: 100vh;
-    font-family: poppins, sans-serif;
+    font-family: poppins, sans-serif !important;
     font-size: 0.88rem;
-    background: var(--bs-background);
+    background-color: #f6f6f9 !important;
     user-select: none;
     overflow-x: hidden;
     color: var(--bs-dark);
 }
+.acc .details p {
+    margin-bottom: 0 !important;
+}
 .box{
-    display: grid;
-    width: 96%;
-    margin: 0 auto;
+    display: block;
+    width: 13.99rem;
+    margin: 0 2.5%;
     gap: 1.79rem;
-    grid-template-columns: 13.99rem auto 22.99rem;
+    float: left;
+    /* grid-template-columns: 13.99rem auto ; */
 }
 .logo{
     color:var(--bs-black);
@@ -124,7 +128,8 @@ h2{
     font-size: 1.39rem;
 }
 h3{
-    font-size: 0.87rem;
+    font-size: 0.87rem !important;
+    margin-bottom: 0 !important;
 }
 h4{
     font-size: 0.79rem;
@@ -133,7 +138,7 @@ h5{
     font-size: 0.77rem;
 }
 small{
-    font-size: 0.75rem;
+    font-size: 0.75rem !important;
 }
 .profile-photo{
     width: 2.79rem;
@@ -181,6 +186,7 @@ aside .sidenav a{
     position: relative;
     height: 3.69rem;
     transition: all 300ms ease;
+    text-decoration: none;
 }
 aside .sidenav a span{
     font-size: 1.59rem;   
@@ -323,18 +329,20 @@ main table tbody td{
 main table tbody tr:last-child td{
     border: none;
 }
-.rside{
+.top{
     margin-top: 1.39rem;
+    margin-right: 2.5%;
 }
-.rside .up{
+.top .up{
     display: flex;
     justify-content: end;
     gap: 1.99rem;
+    margin-right: 0 !important;
 }
-.rside .up button{
+.top .up button{
     display: none;
 }
-.rside .dark{
+.top .dark{
     background: var(--bs-light);
     display: flex;
     justify-content: space-between;
@@ -344,7 +352,7 @@ main table tbody tr:last-child td{
     cursor: pointer;
     border-radius: var(--border-radius-1);
 }
-.rside .dark span{
+.top .dark span{
     font-size: 1.19rem;
     width: 50%;
     height: 100%;
@@ -352,45 +360,45 @@ main table tbody tr:last-child td{
     align-items: center;
     justify-content: center;
 }
-.rside .dark span.active{
+.top .dark span.active{
     background: var(--bs-green);
     color: var(--bs-white);
     border-radius: var(--border-radius-1);
 }
-.rside .up .acc{
+.top .up .acc{
     display: flex;
     gap: 1.99rem;
     text-align: right;
 }
-.rside .latest2{
+.top .latest2{
     margin-top: 0.99rem;
 }
-.rside .latest2 h2{
+.top .latest2 h2{
     margin-bottom: 0.79rem;
 }
-.rside .latest2 .dts{
+.top .latest2 .dts{
     background: var(--bs-white);
     padding: var(--padding-1);
     border-radius: var(--border-radius-1);
     box-shadow: var(--box-shadow);
     transition: all 300ms ease;
 }
-.rside .latest2 .dts:hover{
+.top .latest2 .dts:hover{
     box-shadow: none;
 }
-.rside .latest2 .dts .dt{
+.top .latest2 .dts .dt{
     display: grid;
     grid-template-columns: 2.59rem auto;
     gap: 0.99rem;
     margin-bottom: 0.99rem;
 }
-.rside .insgt{
+.top .insgt{
     margin-top: 1.99rem;
 }
-.rside .insgt h2{
+.top .insgt h2{
     margin-bottom: 0.79rem;
 }
-.rside .insgt .item{
+.top .insgt .item{
     background: var(--bs-white);
     display: flex;
     align-items: center;
@@ -402,30 +410,30 @@ main table tbody tr:last-child td{
     box-shadow: var(--box-shadow);
     transition: all 300ms ease;
 }
-.rside .insgt .item:hover{
+.top .insgt .item:hover{
     box-shadow: none;
 }
-.rside .insgt .item .rside{
+.top .insgt .item .top{
     display: flex;
     justify-content: space-between;
     align-items: start;
     margin: 0;
     width: 100%;
 }
-.rside .insgt .item .sbl{
+.top .insgt .item .sbl{
     padding: 0.6rem;
     color: var(--bs-white);
     border-radius: 50%;
     background: var(--bs-primary);
     display: flex;
 }
-.rside .insgt .item.pdt2 .sbl{
+.top .insgt .item.pdt2 .sbl{
     background: var(--bs-danger);
 }
-.rside .insgt .item.pdt3 .sbl{
+.top .insgt .item.pdt3 .sbl{
     background: var(--bs-warning);
 }
-.rside .insgt .apdt{
+.top .insgt .apdt{
     background: transparent;
     border: 1.99px dashed var(--bs-green);
     color: var(--bs-green);
@@ -433,12 +441,12 @@ main table tbody tr:last-child td{
     align-items: center;
     justify-content: center;
 }
-.rside .insgt .apdt div{
+.top .insgt .apdt div{
     display: flex;
     align-items: center;
     gap: 0.59rem;
 }
-.rside .insgt .apdt div h3{
+.top .insgt .apdt div h3{
     font-weight: 600;
 }
 
