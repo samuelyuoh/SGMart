@@ -14,9 +14,9 @@ router.get('/inventory', (req, res) => {
         }],
         raw:true
     })
-
         .then((products) => {
             // pass object to inventory.handlebar
+            console.log(products)
             res.render('product/inventory', { products });
     })
         .catch (err => console.log(err));
