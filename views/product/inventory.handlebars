@@ -2,5 +2,70 @@
 {{#each products}}
 {{product_name}}
 {{'brand.brand_name'}}
+{{'category.category_name'}}
 {{/each}}
+
+<div class="container">
+
+<div class="row">
+        {{#each products }}
+        <div class="col-md-3 mt-3">
+            <div class="card">
+
+                <img src="{{product_image}}" alt="{{product_name}}">
+                <div class="card-body">
+                    <h4 class="text-center">{{product_name}}</h4>
+                    {{!-- {{ #if product_discount > 0 }} --}}
+                    <h5 class="discp">{{product_discount}}% OFF</h5>
+                    <p class="text-center">${{product_price}}</p>
+                    {{!-- {{#else }}
+                    <p class="text-center">${{product_price}}</p>
+                    {{/if }} --}}
+                </div>
+
+
+                <div class="card-footer">
+                    <a type="submit" href="" class="float-start btn btn-primary">Details</a> 
+                    {{!-- {{#if product.stock > 0 }} --}}
+                    <form action="" method="post">
+                        <input type="hidden" name="product_id" value="">
+                        <button type="submit" class="btn btn-warning float-end">Add to Cart</button>
+                        <input type="hidden" name="quantity" value="1">
+                    </form>
+                    {{!-- {{#elif product.stock == 0 or product.stock < 0 }}
+                        <button type="submit" disabled class="btn btn-danger float-end">Out of Stock</button>
+                    {{/if }} --}}
+                </div>
+
+
+                
+
+            </div>
+        </div>
+        {{/each }}
+    </div>
+    <div class="row" style="padding: 30px;"> 
+        <div class="col text-center">
+            {{#if products.has_prev }}
+                <a href=""class="btn mt-3 btn-outline-info">Previous</a>
+            {{/if }}
+            {{!-- {{ #if products.total > 8 }} --}}
+            {{!-- {{#each page_num in products.iter_pages(left_edge=1, right_edge=2, left_current=1, right_current=2) }}
+            {{ #if page_num }}
+            {{ #if products.page == page_num }}
+            <a href="" class="btn btn mt-3 btn-info">{{page_num}}</a>
+            {{#else }}
+            <a href="" class="btn btn mt-3 btn-outline-info">{{page_num}}</a>
+            {{/if }} --}}
+            {{!-- {{#else }}
+            ...
+            {{/if }} --}}
+            {{!-- {{/if }}
+            {{ #if products.has_next }}
+            <a href="{{url_for('home', page=products.next_num)}}"class="btn  mt-3 btn-outline-info">Next</a>
+            {{/if }} --}}
+        </div>
+      </div>
+    </div>
+</div>
 

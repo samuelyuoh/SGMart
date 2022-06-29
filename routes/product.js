@@ -4,14 +4,20 @@ const moment = require('moment');
 const Product = require("../models/Product");
 const Brand = require("../models/Brand");
 const ensureAuthenticated = require('../helpers/auth');
+const Category = require('../models/Category');
 
 router.get('/inventory', (req, res) => {
     Product.findAll({
 
         include : [{
             model: Brand,
-            required: false,
-        }],
+            required: true,
+        },
+        {
+            model: Category,
+            required: true,
+        }
+    ],
         raw:true
     })
         .then((products) => {
