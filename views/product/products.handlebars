@@ -1,9 +1,4 @@
 
-{{#each products}}
-{{product_name}}
-{{'brand.brand_name'}}
-{{'category.category_name'}}
-{{/each}}
 
 <div class="container">
 
@@ -12,20 +7,20 @@
         <div class="col-md-3 mt-3">
             <div class="card">
 
-                <img src="{{product_image}}" alt="{{product_name}}">
+                <img src="/images/{{image}}" alt="{{product_name}}">
                 <div class="card-body">
                     <h4 class="text-center">{{product_name}}</h4>
-                    {{!-- {{ #if product_discount > 0 }} --}}
-                    <h5 class="discp">{{product_discount}}% OFF</h5>
+                    {{#if (checkdiscount discount) }}
+                    <h5 class="discp">{{discount}}% OFF</h5>
                     <p class="text-center">${{product_price}}</p>
-                    {{!-- {{#else }}
+                    {{else }}
                     <p class="text-center">${{product_price}}</p>
-                    {{/if }} --}}
+                    {{/if }}
                 </div>
 
 
                 <div class="card-footer">
-                    <a type="submit" href="" class="float-start btn btn-primary">Details</a> 
+                    <a type="submit" href="/product/details/{{id}}" class="float-start btn btn-primary">Details</a> 
                     {{!-- {{#if product.stock > 0 }} --}}
                     <form action="" method="post">
                         <input type="hidden" name="product_id" value="">

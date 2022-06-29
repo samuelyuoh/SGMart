@@ -6,7 +6,7 @@ const Brand = require("../models/Brand");
 const ensureAuthenticated = require('../helpers/auth');
 const Category = require('../models/Category');
 
-router.get('/inventory', (req, res) => {
+router.get('/products', (req, res) => {
     Product.findAll({
 
         include : [{
@@ -22,11 +22,16 @@ router.get('/inventory', (req, res) => {
     })
         .then((products) => {
             // pass object to inventory.handlebar
-            console.log(products)
-            res.render('product/inventory', { products });
+            res.render('product/products', { products });
     })
         .catch (err => console.log(err));
 })
 
+router.get('/details/:id', (req, res) => {
+    Product.findByPk(req.params.id)
+        .then((products) => {
+            res.render('product/details', { products });
+        })
+})
 
 module.exports = router;

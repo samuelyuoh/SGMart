@@ -42,8 +42,7 @@ app.use(express.urlencoded({
 app.use(express.json());
 
 // Creates static folder for publicly accessible HTML, CSS and Javascript files
-app.use(express.static(path.join(__dirname, 'public')));
-
+app.use(express.static(__dirname + '/public'));
 // Enables session to be stored using browser's Cookie ID
 app.use(cookieParser());
 
@@ -103,6 +102,7 @@ const mainRoute = require('./routes/main');
 const userRoute = require('./routes/user');
 const adminRoute = require('./routes/admin');
 const productRoute = require('./routes/product');
+const { application } = require('express');
 
 // Any URL with the pattern ‘/*’ is directed to routes/main.js
 app.use('/', mainRoute);

@@ -16,7 +16,7 @@ const setUpDB = (drop) => {
            Product.belongsTo(Brand);
            Brand.hasMany(Product);
            Product.belongsTo(Category);
-           Category.hasMany(Product)
+           Category.hasMany(Product);
             mySQLDB.sync({
                 force: drop
             });
