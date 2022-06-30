@@ -6,21 +6,44 @@
                 <h1 class="text-center p-2 mt-3">Add a product</h1>
                 <form method="post">
                 <div>
+                  {{#if addproduct}}
                     <label for='product_name'>Enter product name</label>
                     <input type="text" class="form-control" name="product_name" placeholder="Enter product name" value="{{product_name}}"required>
+                  {{else}}
+                  {{#product}}
+                    <label for='product_name'>Edit product name</label>
+                    <input type="text" class="form-control" name="product_name" placeholder="{{product_name}}" value="{{product_name}}" required>
+                  {{/product}}
+                  {{/if}}
                     <div class="p-2"></div>
+                  {{#if addproduct}}
                     <label for='product_price'>Enter price</label>
                     <input type="number" class="form-control" name="product_price" placeholder="Enter price" step = ".01" min ="0.1" value="{{product_price}}" required>
+                  {{else}}
+                  {{#product}}
+                    <label for='product_price'>Edit price</label>
+                    <input type="number" class="form-control" name="product_price" placeholder="{{product_price}}" step = ".01" min ="0.1" value="{{product_price}}" required>
+                  {{/product}}
+                  {{/if}}
                     <div class="p-2"></div>
-                    {{!-- {{ form-label 'expenses' 'Please enter expenses of product'}}
-                    <div class="p-2"></div> --}}
+                  {{#if addproduct}}
                     <label for='discount'>Discount</label>
                     <input type="number" class="form-control" name="discount" step=".01" min = "0" value="{{discount}}" required>
+                  {{else}}
+                  {{#product}}
+                    <label for="discount">Edit Discount</label>
+                    <input type="number" class="form-control" name="discount" step=".01" min ="0.1" value="{{discount}}" placeholder ={{discount}} required>
+                  {{/product}}
+                  {{/if}}
+                    {{!-- {{ form-label 'expenses' 'Please enter expenses of product'}}
+                    <div class="p-2"></div> --}}
                     <div class="p-2"></div>
+                  {{#if addproduct}}
                     <label for='stock'>Enter stock</label>
                     <input type="number" class="form-control" name="stock" placeholder="Enter stock" value="{{stock}}" required>
                     <div class="p-2"></div>
-
+                  {{/if}}
+                  {{#if addproduct}}
                     <label for="brandId">Add a brand</label>
                     <select name="brandId" id="brandId" class="form-control" required>
                      <option value="" selected="selected" hidden="hidden"> Select A Brand</option>
@@ -28,9 +51,19 @@
                      <option value="{{id}}">{{brand_name}}</option>
                      {{/each}}
                     </select>
+                  {{else}}
+                    <label for="brandId">change brand</label>
+                    <select name="brandId" id="brandId" class="form-control" required>
+                  {{#brand_name}}
+                    <option value="{{brandId}}" selected="selected" hidden="hidden">{{brand_name}}</option>
+                  {{/brand_name}}
+                     {{#each brands}}
+                     <option value="{{id}}">{{brand_name}}</option>
+                     {{/each}}
+                    </select>
+                  {{/if}}
                     <div class="p-2"></div>
-
-
+                  {{#if addproduct}} 
                     <label for="categoryId">Add a category</label>
                     <select name="categoryId" id="categoryId" class="form-control" required>
                       <option value="" selected="selected" hidden="hidden"> Add a Category</option>Select A category</option>
@@ -38,12 +71,32 @@
                       <option value="{{id}}">{{category_name}}</option> 
                       {{/each}}
                     </select>
+                  {{else}}
+                  {{#category_name}}
+                  <label for="CategoryId">Change Category</label>
+                  <select name="categoryId" id="categoryId" class="form-control" required>
+                  <option value="{{id}}" selected="selected" hidden="hidden">{{category_name}}</option>
+                  {{/category_name}}
+                      {{#each category}}
+                      <option value="{{id}}">{{category_name}}</option> 
+                      {{/each}}
+                    </select>
+                  {{/if}}
+
                     <div class="p-2"></div>
+                    {{#if addproduct}}
                     <label for="desc">Description</label>
                     <textarea name="desc" id="desc" class="form-control" rows=10 value="{{desc}}"></textarea>
+                    {{else}}
+                    {{#product}}
+                    <label for="desc">Description</label>
+                    <textarea name="desc" id="desc" class="form-control" rows=10 value="{{desc}}" placeholder="{{desc}}">{{desc}}</textarea>
+                    {{/product}}
+                    {{/if}}
                     <div class="p-2"></div>
 
                 </div>
+                {{#if addproduct}}
                 <div class="container">
                     <div class="row">
                         <div class="col-md-4"> 
@@ -52,9 +105,21 @@
                         </div>
                     </div>
                 </div>
+                {{else}}
+                  <div class="container">
+                    <div class="row">
+                        <div class="col-md-4"> 
+                    {{#product}}
+                        <input type="file" name="image" id="image" onload="imagePreview(event)" onchange="imagePreview(event)" accept="image/*" value="{{image}}" required>
+                        <img src="/images/{{image}}" id="output">
+                    {{/product}}
+                        </div>
+                    </div>
+                </div>
+                {{/if}}
                 <div class="p-2"></div>
 
-                <p><input type="submit" value="{{#if getproduct}}Update {{else}}Add{{/if}} product" class="btn btn-success"></p>
+                <p><input type="submit" value="{{#if addproduct}}Add {{else}}Update{{/if}} product" class="btn btn-success"></p>
                 </form>
                 <div class="p-2"></div>
                 <div class="p-2"></div>
