@@ -3,6 +3,8 @@ const User = require('../models/User');
 const Product = require('../models/Product');
 const Brand = require('../models/Brand');
 const Category = require('../models/Category');
+const Blog = require('../models/Category');
+
 
 // If drop is true, all existing tables are dropped and recreated
 const setUpDB = (drop) => {
