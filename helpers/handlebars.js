@@ -39,4 +39,5 @@ const checkstock = function(stock){
     }
 };
 
+
 module.exports = {formatDate, replaceCommas, checkboxCheck, radioCheck, ifEquals, checkdiscount, checkstock};
