@@ -1,0 +1,65 @@
+<div class="container">
+    <div class="row">
+        <div class="col-md-1"></div>
+            <div class="col-md-10">
+            
+                <h1 class="text-center p-2 mt-3">Add a product</h1>
+                <form method="post" enctype="multipart/form-data">
+                <div>
+                    <label for='name'>Enter product name</label>
+                    <input type="text" class="form-control" name="name" placeholder="Enter product name" required>
+                    <div class="p-2"></div>
+                    <label for='price'>Enter price</label>
+                    <input type="number" class="form-control" name="price" placeholder="Enter price" step = ".01" min ="0.1" required>
+                    <div class="p-2"></div>
+                    {{!-- {{ form-label 'expenses' 'Please enter expenses of product'}}
+                    <div class="p-2"></div> --}}
+                    <label for='discount'>Discount</label>
+                    <input type="number" class="form-control" name="discount" step=".01" min = "0.1" required>
+                    <div class="p-2"></div>
+                    <label for='stock'>Enter stock</label>
+                    <input type="number" class="form-control" name="stock" placeholder="Enter stock" required>
+                    <div class="p-2"></div>
+
+                    <label for="brand">Add a brand</label>
+                    <select name="brand" id="brand" class="form-control" required>
+                     <option value=""> Select A brand</option>
+                     {{#each brands}}
+                     <option value="{{id}}">{{brand_name}}</option>
+                     {{/each}}
+                    </select>
+                    <div class="p-2"></div>
+                </form>
+
+
+                    <label for="category">Add a category</label>
+                    <select name="category" id="category" class="form-control" required>
+                      <option value="{{id}}" style="display: none;">{{category_name}}</option>
+                      {{#each category}}
+                      <option value="{{id}}">{{category_name}}</option>
+                      {{/each}}
+                    </select>
+                    <div class="p-2"></div>
+                    <div class="p-2"></div>
+
+                </div>
+                {{!-- <div class="container">
+                    <div class="row">
+                        <div class="col-md-4"> 
+                          <input type="file" name="image" id="image" onchange="imagePreview(event)" accept="image/*" required>
+                          <img src="" id="output">
+                        </div>
+                    </div>
+                </div>
+                <div class="p-2"></div>
+
+                <p><input type="submit" value="{% if getproduct %}Update {% else %}Add{% endif %} product" class="btn btn-success"></p>
+                </form>
+                <div class="p-2"></div>
+                <div class="p-2"></div>
+                <div class="p-2"></div>
+
+            </div>
+      <div class="col-md-10"></div>
+    </div>
+</div> --}}

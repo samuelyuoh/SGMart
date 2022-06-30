@@ -9,4 +9,7 @@ router.get('/inventory', (req, res) => {
     Brand.findAll()
 })
 
+router.get('/addproduct', (req, res) => {
+    Brand.findAll()
+})
 module.exports = router;

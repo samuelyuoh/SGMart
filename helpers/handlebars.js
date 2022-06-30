@@ -1,5 +1,6 @@
 const Handlebars = require('handlebars');
 const moment = require('moment');
+const Brand = require('../models/Brand');
 const formatDate = function (date, targetFormat) {
     return moment(date).format(targetFormat);
 };
@@ -37,4 +38,5 @@ const checkstock = function(stock){
         return false;
     }
 };
+
 module.exports = {formatDate, replaceCommas, checkboxCheck, radioCheck, ifEquals, checkdiscount, checkstock};

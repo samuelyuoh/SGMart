@@ -10,5 +10,8 @@ router.get('/inventory', (req, res) => {
     Category.findAll()
 })
 
+router.get('/addproduct', (req, res) => {
+    Category.findAll()
+})
 
 module.exports = router;
