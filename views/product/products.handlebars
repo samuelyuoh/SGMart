@@ -22,7 +22,7 @@
                 <div class="card-footer">
                     <a type="submit" href="/product/details/{{id}}" class="float-start btn btn-primary">Details</a> 
                     {{!-- {{#if product.stock > 0 }} --}}
-                    <form action="" method="post">
+                    <form action="/cart/add/{{id}}" method="post">
                         <input type="hidden" name="product_id" value="">
                         <button type="submit" class="btn btn-warning float-end">Add to Cart</button>
                         <input type="hidden" name="quantity" value="1">

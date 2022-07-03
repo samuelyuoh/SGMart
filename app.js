@@ -102,6 +102,10 @@ const mainRoute = require('./routes/main');
 const userRoute = require('./routes/user');
 const adminRoute = require('./routes/admin');
 const productRoute = require('./routes/product');
+// const cartRoute = require('./routes/cart');
+const blogRoute = require('./routes/blog');
+
+
 const { application } = require('express');
 
 // Any URL with the pattern ‘/*’ is directed to routes/main.js
@@ -109,6 +113,10 @@ app.use('/', mainRoute);
 app.use('/user', userRoute);
 app.use('/admin', adminRoute);
 app.use('/product', productRoute);
+// app.use('/cart', cartRoute);
+app.use('/blog', blogRoute);
+
+
 
 /*
 * Creates a port for express server since we don't want our app to clash with well known
