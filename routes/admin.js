@@ -43,7 +43,7 @@ router.get('/updateproduct/:id', async (req, res) => {
 	var brand = await Brand.findAll({raw: true})
 	var category = await Category.findAll({raw: true})
 	var product = await Product.findByPk(req.params.id)
-	var brand_name = await Brand.findByPk(product.brandId)
+	var brand_name = await Brand.findByPk(product.brandId);
 	var category_name = await Category.findByPk(product.categoryId)
 	res.render('admin/addproducts', { brands: brand, category, product, brand_name ,category_name, layout: 'admin', nav: { sidebarActive:	'addproduct'}})
 })
