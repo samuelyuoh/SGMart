@@ -38,7 +38,7 @@ router.post('/register', async function (req, res) {
         let user = await User.findOne({ where: { email: email } });
         if (user) {
             // If user is found, that means email has already been registered
-            flashMessage(res, 'error', email + ' alreay registered');
+            flashMessage(res, 'error', email + ' already registered');
             res.render('user/register', {
                 name, email
             });
@@ -103,8 +103,9 @@ router.post('/editprofile/:id', ensureAuthenticated, (req, res) => {
     let address2 = req.body.address2 ? req.body.address2 : null;
     let postalCode = req.body.postalCode ? req.body.postalCode : null;
     let password = req.body.password ? req.body.password : null;
+    let amountSpent = req.body.amountSpent ? req.body.amountSpent : null;
     User.update(
-        { name, email, password, phoneNumber, address, address2, postalCode }, 
+        { name, email, password, phoneNumber, address, address2, postalCode, amountSpent }, 
         { where: { id: req.params.id } }
     )
         .catch(err => console.log(err));
