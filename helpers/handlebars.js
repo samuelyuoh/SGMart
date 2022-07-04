@@ -39,5 +39,13 @@ const checkstock = function(stock){
     }
 };
 
+const checkurl = function(arg1, arg2) {
+    if (arg1 == arg2){
+        return true;
+    }else{
+        return false;
+    }
+}
 
-module.exports = {formatDate, replaceCommas, checkboxCheck, radioCheck, ifEquals, checkdiscount, checkstock};
+
+module.exports = {formatDate, replaceCommas, checkboxCheck, radioCheck, ifEquals, checkdiscount, checkstock,checkurl};
