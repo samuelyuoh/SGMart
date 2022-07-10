@@ -1,5 +1,6 @@
 const mySQLDB = require('./DBConfig');
 const User = require('../models/User');
+const Delivery = require('../models/Delivery')
 
 // If drop is true, all existing tables are dropped and recreated
 const setUpDB = (drop) => {

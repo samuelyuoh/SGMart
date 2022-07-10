@@ -1,0 +1,74 @@
+{{!-- <img src="https://i.kym-cdn.com/entries/icons/original/000/021/703/smiley-face-thumbs-up-thank-you-clipart-panda-free-clipart-images-4eZHzt-clipart.jpeg" alt=""></img> --}}
+
+<div class="container">
+    {{#if delivery}}
+    <div class="card card-body">
+        <h3 class="text-primary">Delivery Time Slot</h3>
+        {{#each delivery}}
+        <div class="card border-primary mb-2 w-100 mx-auto">
+            <div class="card-header">
+                <h5 class="card-title">{{couponName}}</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-sm-12 col-md-12 col-lg-3">
+                        <p class="font-italic">ID</p>
+                        <p class="text-info">
+                            {{id}}
+                        </p>
+                    </div>
+                    <div class="col-sm-12 col-md-12 col-lg-3">
+                        <p class="font-italic">Delivery Date</p>
+                        <p class="text-info">
+                            {{formatDate delivery_date 'YYYY-MM-DD'}}
+                        </p>
+                    </div>
+                    <div class="col-sm-12 col-md-12 col-lg-2">
+                        <p class="font-italic">Delivery Time</p>
+                        <p class="text-info">{{delivery_time}}</p>
+                    </div>
+                    <!-- Button trigger modal -->
+                    <a type="button" href="/user/editDelivery/{{id}}" class="btn btn-primary" data-bs-toggle="" data-bs-target="">
+                    Edit
+                    </a>
+                    <a type="button" href="/user/deleteDelivery/{{id}}" class="btn btn-primary" data-bs-toggle="" data-bs-target="">
+                    Delete
+                    </a>
+
+                    <!-- Modal -->
+                    {{!-- <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal-dialog">
+                        <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            Are you sure you want to delete?
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+                            <button type="button" class="btn btn-primary" >Yes</button>
+                        </div>
+                        </div>
+                    </div> --}}
+                    </div>
+                </div>
+            </div>
+
+            
+        </div>
+        {{/each}}
+    </div>
+    {{else}}
+    <h3>No Delivery Time Slot recorded</h3>
+    {{/if}}
+</div>
+<script>
+    var myModal = document.getElementById('myModal')
+    var myInput = document.getElementById('myInput')
+
+    myModal.addEventListener('shown.bs.modal', function () {
+    myInput.focus()
+    })
+</script>
