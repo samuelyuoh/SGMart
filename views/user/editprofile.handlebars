@@ -38,11 +38,11 @@
                                         <div class="row mt-2 editp">
                                             <div class="col-md-12">
                                                 <label class="labels">Name</label>
-                                                <input name="name" type="text" class="form-control" placeholder="name" value="{{user.name}}">
+                                                <input name="name" type="text" class="form-control" placeholder="name" value="{{user.name}}" required>
                                             </div>
                                             <div class="col-md-12">
                                                 <label class="labels">Email</label>
-                                                <input name="email" type="text" class="form-control" placeholder="email" value="{{user.email}}">
+                                                <input name="email" type="text" class="form-control" placeholder="email" value="{{user.email}}" required>
                                             </div>
                                             <div class="col-md-12">
                                                 <label class="labels">Mobile Number</label>
@@ -94,7 +94,7 @@
     background: #EEEEEE;
 }
 .editp input{
-    box-shadow: 10px 5px 5px black;
+    box-shadow: 5px 10px 5px #666667;
 }
 
 .cancel {
@@ -237,10 +237,12 @@
 
 .profile-nav ul > li > a:hover, .profile-nav ul > li > a:focus, .profile-nav ul li.active  a {
     background: #f8f7f5 !important;
-    border-left: 5px solid #fbc02d;
+    border-left: 5px solid #27ae60;
     color: #89817f !important;
 }
-
+.py-5 {
+    padding-top: 0 !important;
+}
 .profile-nav ul > li:last-child > a:last-child {
     border-radius: 0 0 4px 4px;
     -webkit-border-radius: 0 0 4px 4px;

@@ -151,6 +151,7 @@ router.get('/deleteAccount/:id', ensureAuthenticated, async function (req, res) 
         req.logout();
         let result = await User.destroy({ where: { id: user.id } });
         console.log(result + ' user deleted');
+        flashMessage(res, 'success', 'Account Deleted');
         res.redirect('/');
     }
     catch (err) {
