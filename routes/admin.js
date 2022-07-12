@@ -23,7 +23,8 @@ router.get('/', (req, res) => {
 router.get('/addproduct',async (req, res) => {
 	var brand = await Brand.findAll({raw: true})
 	var category = await Category.findAll({raw: true})
-	res.render('admin/addproducts', { brands: brand , category: category , layout: 'admin', nav: { sidebarActive: 'addproduct' } })
+	var path = req.path
+	res.render('admin/addproducts', { brands: brand , category: category , layout: 'admin', nav: { sidebarActive: 'addproduct' },path })
 });
 
 router.post('/addproduct',async function (req, res) {	
