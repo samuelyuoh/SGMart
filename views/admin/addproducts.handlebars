@@ -17,6 +17,7 @@
                   {{/if}}
                     <div class="p-2"></div>
                   {{#if (checkurl path "/addproduct")}}
+
                     <label for='product_price'>Enter price</label>
                     <input type="number" class="form-control" name="product_price" placeholder="Enter price" step = ".01" min ="0.1" value="{{product_price}}" required>
                   {{else}}
@@ -27,6 +28,7 @@
                   {{/if}}
                     <div class="p-2"></div>
                   {{#if (checkurl path "/addproduct")}}
+
                     <label for='discount'>Discount</label>
                     <input type="number" class="form-control" name="discount" step=".01" min = "0" value="{{discount}}" required>
                   {{else}}
@@ -39,11 +41,13 @@
                     <div class="p-2"></div> --}}
                     <div class="p-2"></div>
                   {{#if (checkurl path "/addproduct")}}
+
                     <label for='stock'>Enter stock</label>
                     <input type="number" class="form-control" name="stock" placeholder="Enter stock" value="{{stock}}" required>
                     <div class="p-2"></div>
                   {{/if}}
                   {{#if (checkurl path "/addproduct")}}
+
                     <label for="brandId">Add a brand</label>
                     <select name="brandId" id="brandId" class="form-control" required>
                      <option value="" selected="selected" hidden="hidden"> Select A Brand</option>
@@ -64,6 +68,7 @@
                   {{/if}}
                     <div class="p-2"></div>
                   {{#if (checkurl path "/addproduct")}} 
+
                     <label for="categoryId">Add a category</label>
                     <select name="categoryId" id="categoryId" class="form-control" required>
                       <option value="" selected="selected" hidden="hidden"> Add a Category</option>Select A category</option>
@@ -85,6 +90,7 @@
 
                     <div class="p-2"></div>
                     {{#if (checkurl path "/addproduct")}}
+
                     <label for="desc">Description</label>
                     <textarea name="desc" id="desc" class="form-control" rows=10 value="{{desc}}"></textarea>
                     {{else}}
@@ -97,6 +103,7 @@
 
                 </div>
                 {{#if (checkurl path "/addproduct")}}
+
                 <div class="container">
                     <div class="row">
                         <div class="col-md-4"> 
@@ -120,6 +127,7 @@
                 <div class="p-2"></div>
 
                 <p><input type="submit" value="{{#if (checkurl path "/addproduct")}}Add{{else}}Update{{/if}} product" class="btn btn-success"></p>
+
                 </form>
                 <div class="p-2"></div>
                 <div class="p-2"></div>
