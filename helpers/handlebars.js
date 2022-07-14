@@ -28,4 +28,30 @@ const ifmoney = function(amountSpent) {
 // Handlebars.registerHelper('ifEquals', function(arg1, arg2, options) {
 //     return (arg1 == arg2) ? options.fn(this) : options.inverse(this);
 // });
-module.exports = {formatDate, replaceCommas, checkboxCheck, radioCheck, ifEquals, ifmoney};
+
+const checkdiscount = function(discount){
+    if (discount > 0) {
+        return true;
+    }else{
+        return false;
+    }
+};
+
+const checkstock = function(stock){
+    if (stock > 0) {
+        return true;
+    }else{
+        return false;
+    }
+};
+
+const checkurl = function(arg1, arg2) {
+    if (arg1 == arg2){
+        return true;
+    }else{
+        return false;
+    }
+}
+
+
+module.exports = {formatDate, replaceCommas, checkboxCheck, radioCheck, ifEquals, checkdiscount, checkstock,checkurl, ifmoney};

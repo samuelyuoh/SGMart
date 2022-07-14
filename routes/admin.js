@@ -30,6 +30,12 @@ router.get('/admincouponcreate', (req, res) => {
 	res.render('admin/admincouponcreate', metadata)
 	});
 
+router.get('/addproduct',async (req, res) => {
+	var brand = await Brand.findAll({raw: true})
+	var category = await Category.findAll({raw: true})
+	var path = req.path
+	res.render('admin/addproducts', { brands: brand , category: category , layout: 'admin', nav: { sidebarActive: 'addproduct' },path })
+});
 
 router.post('/admincouponcreate', (req, res) => {
 	let { couponName, percentageDiscount, expiryDate } = req.body;
