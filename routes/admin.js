@@ -3,6 +3,8 @@ const router = express.Router();
 const flashMessage = require('../helpers/messenger');
 const Coupon = require('../models/Coupon');
 const moment = require('moment');
+const Brand = require('../models/Brand');
+const Category = require('../models/Category');
 const { condition } = require('sequelize');
 
 
