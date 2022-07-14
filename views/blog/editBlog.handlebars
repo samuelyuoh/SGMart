@@ -7,10 +7,6 @@
 				<input class="form-control" id="title" name="title" value="{{blog.title}}">
 			</div>
             <div class="form-group mb-4 mt-4">
-				<label class="fst-italic" for="image">Image: </label>
-				<input class="form-control" id="image" name="image" value="{{blog.image}}"></input>
-			</div>
-            <div class="form-group mb-4 mt-4">
 				<label class="fst-italic" for="topic">Topic: </label>
 				<input class="form-control" id="topic" name="topic" value="{{blog.topic}}"></input>
 			</div>
@@ -43,6 +39,15 @@
 				<label class="fst-italic" for="article">Article: </label>
 				<textarea class="form-control" id="article" name="article" rows="7" maxlength="2000">{{blog.article}}</textarea>
 			</div>
+			<div class="form-group mb-4 mt-4">
+				<label class="fst-italic" for="image">Image: </label>
+				<input type="file" id="image-input"  name="image" accept="image/jpeg, image/png, image/jpg" class="form-control" value="{{blog.image}}">
+				<br>
+				<div id="display-image">
+					<img src="" id="output">
+				</div>
+			</div>
+
             {{!-- <div class="col-12 col-sm-12 col-md-12 col-lg-6 mb-4">
                 <label for="date" class="col-1 col-form-label">Date</label>
                 <div class="col-5">
@@ -68,5 +73,28 @@
     font-weight: bold;
     text-align: center;
 }
+#display-image{
+	width: 375px;
+	height: 211px;
+	border: 1px solid lightgray;
+	background-position: center;
+	background-size: cover;
+}
 </style>
+
+<script>
+const image_input = document.querySelector("#image-input");
+
+image_input.addEventListener("change", function() {
+  const reader = new FileReader();
+  reader.addEventListener("load", () => {
+    const uploaded_image = reader.result;
+    document.querySelector("#display-image").style.backgroundImage = `url(${uploaded_image})`;
+  });
+  reader.readAsDataURL(this.files[0]);
+});
+
+
+
+</script>
 

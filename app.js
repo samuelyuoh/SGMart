@@ -105,13 +105,18 @@ const adminRoute = require('./routes/admin');
 
 const deliveryRoute = require('./routes/delivery')
 const productRoute = require('./routes/product');
+const cartRoute = require('./routes/cart');
+const blogRoute = require('./routes/blog');
+
+const { application } = require('express');
 const couponRoute = require('./routes/coupon');
 
 // Any URL with the pattern ‘/*’ is directed to routes/main.js
 app.use('/', mainRoute);
 app.use('/user', userRoute);
 app.use('/admin', adminRoute);
-
+app.use('/cart', cartRoute);
+app.use('/blog', blogRoute);
 app.use('/delivery', deliveryRoute)
 app.use('/product', productRoute);
 app.use('/coupon', couponRoute);
