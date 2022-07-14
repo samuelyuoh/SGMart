@@ -101,6 +101,8 @@ app.use(function (req, res, next) {
 const mainRoute = require('./routes/main');
 const userRoute = require('./routes/user');
 const adminRoute = require('./routes/admin');
+
+const deliveryRoute = require('./routes/delivery')
 const productRoute = require('./routes/product');
 // const cartRoute = require('./routes/cart');
 const blogRoute = require('./routes/blog');
@@ -112,6 +114,8 @@ const { application } = require('express');
 app.use('/', mainRoute);
 app.use('/user', userRoute);
 app.use('/admin', adminRoute);
+
+app.use('/delivery', deliveryRoute)
 app.use('/product', productRoute);
 // app.use('/cart', cartRoute);
 app.use('/blog', blogRoute);

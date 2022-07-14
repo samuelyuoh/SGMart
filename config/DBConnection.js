@@ -1,5 +1,7 @@
 const mySQLDB = require('./DBConfig');
 const User = require('../models/User');
+
+const Delivery = require('../models/Delivery')
 const Product = require('../models/Product');
 const Brand = require('../models/Brand');
 const Category = require('../models/Category');
