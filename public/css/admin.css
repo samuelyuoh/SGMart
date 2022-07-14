@@ -193,7 +193,7 @@ aside .sidenav a span{
     transition: all 300ms ease;
 }
 aside .sidenav a:last-child{
-    position: absolute;
+    /* position: absolute; */
     bottom: 1.99rem;
     width: 100%;
 }
