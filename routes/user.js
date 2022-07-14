@@ -5,7 +5,6 @@ const User = require('../models/User');
 const bcrypt = require('bcryptjs');
 const passport = require('passport');
 const ensureAuthenticated = require('../helpers/auth');
-const Delivery = require('../models/Delivery')
 
 router.get('/login', (req, res) => {
     res.render('user/login');
@@ -39,7 +38,7 @@ router.post('/register', async function (req, res) {
         let user = await User.findOne({ where: { email: email } });
         if (user) {
             // If user is found, that means email has already been registered
-            flashMessage(res, 'error', email + ' already registered');
+            flashMessage(res, 'error', email + ' alreay registered');
             res.render('user/register', {
                 name, email
             });
@@ -104,9 +103,8 @@ router.post('/editprofile/:id', ensureAuthenticated, (req, res) => {
     let address2 = req.body.address2 ? req.body.address2 : null;
     let postalCode = req.body.postalCode ? req.body.postalCode : null;
     let password = req.body.password ? req.body.password : null;
-    let amountSpent = req.body.amountSpent ? req.body.amountSpent : null;
     User.update(
-        { name, email, password, phoneNumber, address, address2, postalCode, amountSpent }, 
+        { name, email, password, phoneNumber, address, address2, postalCode }, 
         { where: { id: req.params.id } }
     )
         .catch(err => console.log(err));
@@ -158,93 +156,6 @@ router.get('/deleteAccount/:id', ensureAuthenticated, async function (req, res) 
     catch (err) {
         console.log(err);
     }
-});
-
-// router.get('/check_delivery', (req, res) => {
-//     res.render('user/check_delivery');
-// });
-
-router.get('/check_delivery', (req, res) => {
-    const metadata = {
-        // layout: 'user',
-        // nav: {
-        //     sidebarActive: 'dashboard'
-        // }
-    }
-    Delivery.findAll({
-        order: [['id']],
-        raw: true
-    })
-        .then((delivery) => {
-            // pass object to admincouponlist.handlebars
-            metadata.delivery = delivery
-            res.render('user/check_delivery', metadata);
-        })
-        .catch(err => console.log(err));
-});
-
-router.get('/deleteDelivery/:id', ensureAuthenticated, async function(req, res) {
-    try {
-        console.log("hi")
-        let delivery = await Delivery.findByPk(req.params.id);
-        // if (!video) {
-        //     flashMessage(res, 'error', 'Delivery Time Slot not found');
-        //     res.redirect('/about');
-        //     return;
-        // }
-        // if (req.user.id != video.userId) {
-        //     flashMessage(res, 'error', 'Unauthorised access');
-        //     res.redirect('/about');
-        //     return;
-        // }
-        let result = await Delivery.destroy({ where: { id: delivery.id } });
-        console.log(result + ' Delivery Time Slot deleted');
-        flashMessage(res, 'success', "Successfully deleted Delivery Time Slot")
-        res.redirect('/user/check_delivery');
-    }
-    catch (err) {
-        console.log(err);
-    }
-});
-
-router.get('/editDelivery/:id', ensureAuthenticated, async function(req, res) {
-    try {
-        console.log("fak u")
-        let delivery = await Delivery.findByPk(req.params.id);
-        // if (!video) {
-        //     flashMessage(res, 'error', 'Delivery Time Slot not found');
-        //     res.redirect('/about');
-        //     return;
-        // }
-        // if (req.user.id != video.userId) {
-        //     flashMessage(res, 'error', 'Unauthorised access');
-        //     res.redirect('/about');
-        //     return;
-        // }
-        // let result = await Delivery.destroy({ where: { id: delivery.id } });
-        // console.log(result + ' Delivery Time Slot editted');
-        // flashMessage(res, 'success', "Successfully editted Delivery Time Slot")
-        res.render('user/edit_delivery');
-    }
-    catch (err) {
-        console.log(err);
-    }
-});
-
-router.post('/editDelivery/:id', ensureAuthenticated, (req, res) => {
-    let delivery_time = req.body.time;
-    let delivery_date = req.body.fromDate;
-    Delivery.update(
-        { delivery_time, delivery_date }, 
-        { where: { id: req.params.id } }
-    )
-        .catch(err => console.log(err));
-    Delivery.findByPk(req.params.id)
-        .then ((delivery) => {
-            flashMessage(res, 'success', 'Information updated');
-            res.redirect(`/user/check_delivery`);
-        })
-        .catch(err => console.log(err));
 });
 
 module.exports = router;

@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
 const flashMessage = require('../helpers/messenger');
-const User = require('../models/User');
 
 router.get('/', (req, res) => {
 	const title = 'Video Jotter';
@@ -26,42 +25,4 @@ router.get('/about', (req, res) => {
 	const author = 'Your Name';
 	res.render('about', { author });
 	});
-
-router.get('/usercoupongenerate', (req, res) => {
-	User.findAll({
-		order: [['amountSpent', 'DESC']],
-		raw: true
-	})
-		.then((users) => {
-			// pass object to admincouponlist.handlebars
-			res.render('coupon/usercoupongenerate');
-		})
-		.catch(err => console.log(err));
-
-
-	res.render('coupon/usercoupongenerate')
-});
-
-// router.post('/admincouponedit/:id', (req, res) => {
-// 	let couponName = req.body.couponName;
-// 	let percentageDiscount = req.body.percentageDiscount;
-// 	let expiryDate = moment(req.body.expiryDate, ' YYYY-MM-DD HH:MI:SS');
-	
-// 	const metadata = {
-// 		layout: 'admin',
-// 		nav: {
-// 			sidebarActive: 'dashboard'
-// 		}
-// 	}
-//     Coupon.update(
-//         { couponName, percentageDiscount, expiryDate },
-//         { where: { id: req.params.id } }
-//     )
-//         .then((result) => {
-//             console.log(result[0] + ' coupon updated');
-//             res.redirect('/admin/admincouponlist');
-//         })
-//         // .catch(err => console.log(err));
-// 	});
-
-module.exports = router;
+	module.exports = router;
