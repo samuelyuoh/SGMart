@@ -42,6 +42,7 @@ router.get('/detailBlog/:id', (req, res) => {
     .catch(err => console.log(err));
 });
 
+
 router.get('/listBlogs', (req, res) => {
     Blog.findAll({
         raw: true
@@ -59,6 +60,7 @@ router.get('/addBlog', (req, res) => {
 });
 
 router.post('/addBlog', upload.single('image') ,(req, res) => {
+
     let title = req.body.title;
     let article = req.body.article;
     let image = req.body.image
@@ -72,6 +74,7 @@ router.post('/addBlog', upload.single('image') ,(req, res) => {
         .then((blog) => {
             console.log(blog.toJSON());
             res.redirect('/blog/listBlogs');
+
         })
         .catch(err => console.log(err))
 });
@@ -82,6 +85,7 @@ router.get('/editBlog/:id', (req, res) => {
         if (!blog) {
             // flashMessage(res, 'error', 'Blog not found');
             res.render('blog/listBlogs');
+
             return
         }
         res.render('blog/editBlog', { blog , layout: 'admin'});
@@ -127,6 +131,7 @@ router.get('/deleteBlog/:id', async function (req, res) {
         let result = await Blog.destroy({ where: { id: blog.id } });
         console.log(result + ' blog deleted');
         res.redirect('/blog/listBlogs');
+
     }
     catch (err) {
         console.log(err);

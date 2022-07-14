@@ -13,6 +13,7 @@
 <div class="box">
   <aside>
     <div class="above">
+
       <a class="logo" href=""><i class="fas fa-shopping-basket"></i>SGMart Admin</a>
       <div class="ham" id="no-btn">
         <span class="material-icons-sharp">close</span>
@@ -48,6 +49,11 @@
         <span class="material-icons-sharp">newspaper</span>
         <h3>Blogs</h3>
       </a>       
+
+      <a href="/admin/admincouponlist" class={{ifEquals nav.sidebarActive 'cat'}}>
+        <span class="material-icons-sharp">local_offer</span>
+        <h3>Coupons</h3>
+      </a>
       <a href="" class={{ifEquals nav.sidebarActive 'addproduct'}}>
         <span class="material-icons-sharp">add</span>
         <h3>Add Product</h3>
@@ -68,7 +74,13 @@
         <span class="material-icons-sharp">add</span>
         <h3>Create Discount</h3>
       </a>
-      <a href="">
+
+      <a href="/admin/admincouponcreate"  class={{ifEquals nav.sidebarActive 'coupon'}} style="text-decoration: none;">
+        <span class="material-icons-sharp">add</span>
+        <h3>Create Coupon</h3>
+      </a>
+
+      <a href="" class={{ifEquals nav.sidebarActive 'logout'}}>
         <span class="material-icons-sharp">logout</span>
         <h3>Logout</h3>
       </a>

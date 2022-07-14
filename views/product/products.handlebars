@@ -7,7 +7,7 @@
         <div class="col-md-3 mt-3">
             <div class="card">
 
-                <img src="/images/{{image}}" alt="{{product_name}}">
+                <img src="/images/{{image}}" alt="{{product_name}}"  class="card-img-top">
                 <div class="card-body">
                     <h4 class="text-center">{{product_name}}</h4>
                     {{#if (checkdiscount discount) }}
@@ -25,6 +25,7 @@
                     <form action="/cart/add/{{id}}" method="post">
                         <input type="hidden" name="" value="">
                         <button type="submit" class="btn btn-warning float-end" value="{{id}}">Add to Cart</button>
+
                         <input type="hidden" name="quantity" value="1">
                     </form>
                     {{!-- <a href = '/cart/add/{{id}}'>Add to Cart</a> --}}
