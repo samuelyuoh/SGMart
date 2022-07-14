@@ -21,8 +21,11 @@ router.get('/products', (req, res) => {
         raw:true
     })
         .then((products) => {
+            for(product in products){
+                console.log(product)
+            };
             // pass object to inventory.handlebar
-            res.render('product/products', { products });
+            // res.render('product/products', { products });
     })
         .catch (err => console.log(err));
 })
