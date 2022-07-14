@@ -33,6 +33,26 @@ router.get('/admincouponcreate', (req, res) => {
 	res.render('admin/admincouponcreate', metadata)
 	});
 
+router.get('/inventory', async (req, res) => {
+	Product.findAll({
+		include: [{
+			model: Brand,
+			required: true,
+		},
+		{
+			model: Category,
+			required: true
+		}
+	],
+		raw: true
+	})
+		.then((product) => {
+			console.log(product);
+		res.render('admin/inventory', {product: product})
+	})
+	.catch(err => console.log(err));
+})
+
 router.get('/addproduct',async (req, res) => {
 	var brand = await Brand.findAll({raw: true})
 	var category = await Category.findAll({raw: true})

@@ -6,29 +6,25 @@ const Brand = require("../models/Brand");
 const ensureAuthenticated = require('../helpers/auth');
 const Category = require('../models/Category');
 
-// router.get('/products', (req, res) => {
-//     Product.findAll({
-
-//         include : [{
-//             model: Brand,
-//             required: true,
-//         },
-//         {
-//             model: Category,
-//             required: true,
-//         }
-//     ],
-//         raw:true
-//     })
-//         .then((products) => {
-//             for(product in products) {
-//                 console.log(product)
-//             }
-//             // pass object to inventory.handlebar
-//             res.render('product/products', { products });
-//     })
-//         .catch (err => console.log(err));
-// })
+router.get('/products', async (req, res) => {
+	Product.findAll({
+		include: [{
+			model: Brand,
+			required: true,
+		},
+		{
+			model: Category,
+			required: true
+		}
+	],
+		raw: true
+	})
+		.then((product) => {
+			console.log(product);
+		res.render('product/products', {product: product})
+	})
+	.catch(err => console.log(err));
+})
 
 router.get('/details/:id', (req, res) => {
     Product.findByPk(req.params.id)
