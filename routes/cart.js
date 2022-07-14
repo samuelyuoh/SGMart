@@ -1,55 +1,45 @@
-const express = require('express');
-const router = express.Router();
-const moment = require('moment');
-const Product = require('../models/Product');
-const Cart = require('../models/cart');
-const flashMessage = require('../helpers/messenger');
+// const express = require('express');
+// const router = express.Router();
+// const moment = require('moment');
+// const Product = require("../models/Product");
 
-router.post('/add/:id', async function(req, res, next) {
-    let productid = req.params.id;
-    console.log(productid)
-    var product = await Product.findByPk(productid)
-    console.log(product.product_name)
-    let cart_item = await Cart.create({productId: productid})
-    flashMessage(res, 'success', 'Product added successfully.');
-    res.redirect('/product/products')
-});
+// var Cart = require('../models/cart');
+// var fs = require('fs');
+
+// router.post('/add/:id', function(req, res, next) {
+//     var productId = req.params.id;
+//     var cart = new Cart(req.session.cart ? req.session.cart : {});
+//     Product.findByPk(req.params.id)
+//         .then((product) => {
+//             cart.add(product[0], productId);
+//             return product.id == productId;
+//         })      
+//     req.session.cart = cart;
+//     res.redirect('/');
+// });
   
-router.get('/cart', function(req, res, next) {
-    Cart.findAll({
-        raw: true,
-        include:{
-            model: Product,
-            required:false
-        }
-    })
-        .then((carts) => {
-            console.log(carts)
-            res.render('cart/cart', { carts });
-            
-        })
-        .catch(err => console.log(err));
-});
+// router.get('/cart', function(req, res, next) {
+//     if (!req.session.cart) {
+//         return res.render('cart', {
+//         products: null
+//         });
+// }
 
-router.get('/delete/:id', async function (req, res) {
-    try {
-        let cart = await Cart.findByPk(req.params.id);
+// var cart = new Cart(req.session.cart);
+//     res.render('cart', {
+//         title: 'NodeJS Shopping Cart',
+//         products: cart.getItems(),
+//         // totalPrice: cart.totalPrice
+//     });
+// });
 
-        if (!cart) {
-            // flashMessage(res, 'error', 'Blog not found');
-            res.redirect('/product/products');
-            return;
-        }
+// router.get('/remove/:id', function(req, res, next) {
+//     var productId = req.params.id;
+//     var cart = new Cart(req.session.cart ? req.session.cart : {});
 
-        let result = await Cart.destroy({ where: { id: cart.id } });
-        console.log(result + ' cart deleted');
-        res.redirect('/cart/cart');
-    }
-    catch (err) {
-        console.log(err);
-    }
-});
+//     cart.remove(productId);
+//     req.session.cart = cart;
+//     res.redirect('/cart');
+// });
 
-
-module.exports = router;
-
+// // module.exports = router;

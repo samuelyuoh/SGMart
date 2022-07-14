@@ -14,12 +14,12 @@
             <p style="font-size: 24px; color: #4a4a4a; font-weight: 400; line-height: 24px; vertical-align: top; text-align: left; padding: 0px;">{{products.product_name}}</p>
             <hr>
             <p style="font-size: 16px; color: #4a4a4a; font-weight: 400; line-height: 24px; vertical-align: top; text-align: left; margin: 0px 0px 30px;">{{products.desc}}</p>
-            <form action="/cart/add/{{id}}" method="post">
+            <form action="" method="post">
                 {{#if (checkstock products.stock)}}
                 <input type="hidden" name="product_id" value="{{products.id}}">
                 <button type="submit" class="btn btn-sm btn-warning">Add to Cart</button>
                 <label for="quantity">Quantity: </label>
-                <input type="number" id="quantity" name="quantity" value="1" min="1" max="{{products.stock}}">
+                <input type="number" name="quantity" value="1" min="1" max="{{products.stock}}">
                 {{else}}
                 <button type="submit" disabled class="btn btn-sm btn-danger">Out of Stock</button>
                 {{/if}}

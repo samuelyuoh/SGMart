@@ -42,8 +42,7 @@ app.use(express.urlencoded({
 app.use(express.json());
 
 // Creates static folder for publicly accessible HTML, CSS and Javascript files
-app.use(express.static(path.join(__dirname, 'public')));
-
+app.use(express.static(__dirname + '/public'));
 // Enables session to be stored using browser's Cookie ID
 app.use(cookieParser());
 
@@ -102,24 +101,23 @@ app.use(function (req, res, next) {
 const mainRoute = require('./routes/main');
 const userRoute = require('./routes/user');
 const adminRoute = require('./routes/admin');
-
-const deliveryRoute = require('./routes/delivery')
 const productRoute = require('./routes/product');
-const cartRoute = require('./routes/cart');
+// const cartRoute = require('./routes/cart');
 const blogRoute = require('./routes/blog');
 
+
 const { application } = require('express');
-const couponRoute = require('./routes/coupon');
 
 // Any URL with the pattern ‘/*’ is directed to routes/main.js
 app.use('/', mainRoute);
 app.use('/user', userRoute);
 app.use('/admin', adminRoute);
-app.use('/cart', cartRoute);
-app.use('/blog', blogRoute);
-app.use('/delivery', deliveryRoute)
 app.use('/product', productRoute);
-app.use('/coupon', couponRoute);
+// app.use('/cart', cartRoute);
+app.use('/blog', blogRoute);
+
+
+
 /*
 * Creates a port for express server since we don't want our app to clash with well known
 * ports such as 80 or 8080.
