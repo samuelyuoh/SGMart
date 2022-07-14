@@ -1,0 +1,72 @@
+<div class="container">
+	<div class="card card-body">
+		<p class="head1">Edit Blog<p>
+		<form action="" method="post">
+			<div class="form-group mb-3 ">
+				<label class="fst-italic" for="title">Title:</label>
+				<input class="form-control" id="title" name="title" value="{{blog.title}}">
+			</div>
+            <div class="form-group mb-4 mt-4">
+				<label class="fst-italic" for="image">Image: </label>
+				<input class="form-control" id="image" name="image" value="{{blog.image}}"></input>
+			</div>
+            <div class="form-group mb-4 mt-4">
+				<label class="fst-italic" for="topic">Topic: </label>
+				<input class="form-control" id="topic" name="topic" value="{{blog.topic}}"></input>
+			</div>
+            <div class="mb-4 mt-4">
+						<label class="font-italic">Language</label>
+						<br>
+						{{!-- Practical 5 Exercise 2: Language radio buttons here named 'language'--}}
+						<div class="form-check form-check-inline">
+							<input class="form-check-input" type="checkbox" name="language" id="langChinese"
+								value="Chinese" >
+							<label class="form-check-label" for="chinese">Chinese</label>
+						</div>
+						<div class="form-check form-check-inline">
+							<input class="form-check-input" type="checkbox" name="language" id="langEnglish"
+								value="English" checked>
+							<label class="form-check-label" for="englishLang">English</label>
+						</div>
+						<div class="form-check form-check-inline">
+							<input class="form-check-input" type="checkbox" name="language" id="langMalay"
+								value="Malay">
+							<label class="form-check-label" for="malay">Malay</label>
+						</div>
+						<div class="form-check form-check-inline">
+							<input class="form-check-input" type="checkbox" name="language" id="langTamil"
+								value="Tamil">
+							<label class="form-check-label" for="tamil">Tamil</label>
+						</div>
+					</div>
+			<div class="form-group mb-4 mt-4">
+				<label class="fst-italic" for="article">Article: </label>
+				<textarea class="form-control" id="article" name="article" rows="7" maxlength="2000">{{blog.article}}</textarea>
+			</div>
+            {{!-- <div class="col-12 col-sm-12 col-md-12 col-lg-6 mb-4">
+                <label for="date" class="col-1 col-form-label">Date</label>
+                <div class="col-5">
+                <div class="input-group date" id="datepicker">
+                    <input type="text" class="form-control" id="date"/>
+                    <span class="input-group-append">
+                    <span class="input-group-text bg-light d-block">
+                        <i class="fa fa-calendar"></i>
+                    </span>
+                    </span>
+                </div>
+                </div>
+            </div> --}}
+			<br>
+			<button id="btnSubmit" type="submit" class="btn btn-primary">Save</button>
+		</form>
+	</div>
+</div>
+
+<style>
+.head1{
+    font-size: 34px;
+    font-weight: bold;
+    text-align: center;
+}
+</style>
+

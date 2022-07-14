@@ -1,0 +1,133 @@
+<div class="container">
+	{{#if blogs}}
+	<div class="mb-4 mt-4">
+		<h3 class="head2">BLOGS</h3>
+		<hr>
+	</div>
+		{{#each blogs}}
+		{{!-- <div class="row">
+			<div class="column">
+				<div class="card mt-5 mb-5">
+					<p style="float: right;">hi</p>
+					<div class="mt-2 mb-2">
+						<img src="https://blog.hubspot.com/hubfs/GettyImages-974683580.jpg" alt="">
+						<h3 style="font-size: 22px !important;">{{id}}. {{title}}</h3>
+						<hr>
+						<p style="font-size: 18px !important;">{{article}}</p>
+					</div>
+				</div>
+			</div>
+		</div> --}}
+				<div class="card border-primary mb-2 w-100 mx-auto">
+			<div class="card-header">
+				<h5 class="card-title">Blog {{id}}</h5>
+			</div>
+						<div class="card-body">
+				<div class="row">
+					<div class="col-sm-12 col-md-12 col-lg-3 mt-5 mb-5">
+						<h4 class="font-italic">Subtitles</h4>
+						<h4 class="text-info">
+							{{title}}
+						</h4>
+					</div>
+					<div class="col-sm-12 col-md-12 col-lg-3 mt-5 mb-5">
+						<h4 class="font-italic">Language</h4>
+						<h4 class="text-info">
+							{{topic}}
+						</h4>
+					</div>
+					<div class="col-sm-12 col-md-12 col-lg-3 mt-5 mb-5">
+						<h4 class="font-italic">Classification</h4>
+						<h4 class="text-info">{{replaceCommas language}}</h4>
+					</div>
+					<div class="col-sm-12 col-md-12 col-lg-3 mt-5 mb-">
+						<h4>
+							<a href="/blog/editBlog/{{id}}" class="card-link mb-2">
+								<i class="fas fa-pencil-alt"></i>
+								Edit
+							</a>
+						</h4>
+						<p>
+							<a href="/blog/deleteBlog/{{id}}" class="card-link" data-bs-toggle="confirmation" data-bs-title="Confirm delete?">
+								<i class="far fa-trash-alt"></i>
+								Delete
+							</a>
+							{{!-- <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+								<div class="modal-dialog">
+									<div class="modal-content">
+									<div class="modal-header">
+										<h5 class="modal-title" id="exampleModalLabel">Delete Blog</h5>
+										<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+									</div>
+									<div class="modal-body">
+										Are you sure you want to delete this blog?
+									</div>
+									<div class="modal-footer">
+										<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+										<button type="submit" onclick="/blog/deleteBlog/{{id}' class="btn btn-primary">Save changes</button>
+									</div>
+									</div>
+								</div>
+							</div> --}}
+						</p>
+					</div>
+				</div>
+			</div>
+
+			<div class="accordion" id="storyAccordion">
+				<div class="card-header" id="headingOne">
+					<button class="btn btn-link" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne{{id}}"
+						aria-expanded="false" aria-controls="collapseOne{{id}}" style="text-decoration: none;">
+						Story <i class="fas fa-chevron-down"></i>
+					</button>
+				</div>
+				<div id="collapseOne{{id}}" class="collapse" aria-labelledby="headingOne" data-bs-parent="#storyAccordion">
+					<div class="card-body">
+						{{article}}
+					</div>
+				</div>
+			</div>
+		</div>
+		{{/each}}
+	{{else}}
+	<h3 class="mt-2">No blogs written</h3>
+	{{/if}}
+</div>
+
+<style>
+	.head2{
+		text-align: center;
+	}
+	.container{
+		box-sizing: border-box;
+	}
+	.column {
+		float: left;
+		width: 100%;
+		padding: 0 10px;
+	}	
+
+	.row {margin: 0 -5px;}
+
+	/* Clear floats after the columns */
+	.row:after {
+		content: "";
+		display: table;
+		clear: both;
+	}
+
+	/* Responsive columns */
+	@media screen and (max-width: 600px) {
+	.column {
+		width: 100%;
+		display: block;
+		margin-bottom: 20px;
+	}
+	}
+</style>
+
+<script>
+	$('[data-bs-toggle=confirmation]').confirmation({
+		rootSelector: '[data-bs-toggle=confirmation]',
+	});
+</script>

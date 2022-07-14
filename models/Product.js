@@ -4,13 +4,12 @@ const db = require('../config/DBConfig');
 const Product = db.define('product',
     {
         product_name: { type: Sequelize.STRING },
-        product_price: { type: Sequelize.STRING(2000) },
-        discount: { type: Sequelize.STRING },
-        stock: { type: Sequelize.STRING },
+        product_price: { type: Sequelize.DECIMAL(5,2) },
+        discount: { type: Sequelize.DECIMAL(5,2) },
+        stock: { type: Sequelize.INTEGER },
         desc: { type: Sequelize.STRING },
-        pub_date: { type: Sequelize.DATE },
-        brand_id: { type: Sequelize.INTEGER },
-        category_id: { type: Sequelize.INTEGER },
         image: { type: Sequelize.STRING }
     });
+
+
 module.exports = Product;
