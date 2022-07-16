@@ -1,0 +1,140 @@
+<!-- blog -->
+{{#if blogs}}
+<section class ="blog" id = "blog">
+	<div class = "container">
+	
+	<div class = "title1">
+		<h2>Latest Blogs</h2>
+		<p>recent blogs about food</p>
+        <hr></hr>
+	</div>
+	<div class = "blog-content">
+		<!-- item -->
+	  <div class="row">
+		{{#each blogs}}
+		<div class = "blog-item">
+		<div class = "blog-img">
+			<img src = "/images/{{image}}" alt = "">
+		</div>
+		<div class = "blog-text">
+			<button style="font-size: 22px;" type="button" data-bs-toggle="modal" data-bs-target="#myModal" class="button1">{{title}}</button>
+
+			<div class="modal" id="myModal">
+				<div class="modal-dialog">
+					<div class="modal-content">
+					<div class="modal-header">
+						<div class="modal-title" style="font-size: 18.72px; font-weight:bold; font-family: var(--Playfair);">Article</div>
+						<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+					</div>
+					<div class="modal-body" style="font-size: 16px; font-family:var(--Quicksand);">
+						{{article}}
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+					</div>
+					</div>
+				</div>
+			</div>			
+
+			<p>{{topic}}</p>
+			<a href='/blog/detailBlog/{{id}}'>View</a>
+		</div>
+		</div>
+		{{/each}}
+		</div>
+		<!-- end of item -->
+	</div>
+	</div>
+</section>
+{{else}}
+<h2>No blogs wrritten</h2>
+{{/if}}
+
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700;800;900&family=Quicksand:wght@300;400;500;600;700&display=swap');
+
+:root{
+	--Playfair: 'Playfair Display', serif;
+	--Quicksand: 'Quicksand', sans-serif;
+	--Roboto: 'Roboto', sans-serif;
+	--dark: #3c393d;
+	--exDark: #2b2b2b;
+}
+*{
+	padding: 0;
+	margin: 0;
+	box-sizing: border-box;
+}
+body{
+	line-height: 1.4;
+	color: var(--dark);
+}
+.container{
+	max-width: 1360px;
+}
+.title{
+    text-align: center;
+}
+.title1 h2{
+    font-family: var(--Playfair);
+    font-size: 2.4rem;
+    text-align: center;
+}
+.title1 p{
+    text-transform: uppercase;
+    padding: 0.6rem 0;
+    font-family: var(--Quicksand);
+    text-align: center;
+}
+
+.blog{
+    padding: 4.5rem 0;
+}
+.blog-content{
+    margin: 2rem 0;
+}
+.blog-img img{
+    position: relative;
+	height: 350px ;
+	width: 350px;
+}
+.row {margin: 0 -5px;}
+.blog-item{
+	float: left;
+	width: 40%;
+	padding: 0 10px;
+}
+.blog-text{
+    margin: 2.3rem 0;
+    padding: 0 1rem;
+}
+.blog-text .button1{
+    font-family: var(--Playfair);
+    padding: 1rem 0;
+    font-size: 1.65rem;
+    font-weight: 500;
+    background-color: white;
+}
+.blog-text p{
+    font-weight: 300;
+    font-size: 1.1rem;
+    opacity: 0.9;
+    padding-bottom: 1.2rem;
+    font-family: var(--Quicksand);
+}
+.blog-text a{
+    font-family: var(--Roboto);
+    font-size: 1.1rem;
+    text-decoration: none;
+    color: var(--dark);
+    display: inline-block;
+    background: var(--dark);
+    color: #fff;
+    padding: 0.55rem 1.2rem;
+    transition: all 0.5s ease;
+}
+.blog-text a:hover{
+    background: var(--exDark);
+}
+</style>
