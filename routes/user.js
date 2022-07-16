@@ -49,7 +49,7 @@ router.post('/register', async function (req, res) {
             var salt = bcrypt.genSaltSync(10);
             var hash = bcrypt.hashSync(password, salt);
             // Use hashed password
-            let user = await User.create({ name, email, password: hash });
+            let user = await User.create({ name, email, password: hash, 'userType': 'customer' });
             flashMessage(res, 'success', email + ' registered successfully');
             res.redirect('/user/login');
         }
@@ -97,16 +97,19 @@ router.get('/profile/:id', ensureAuthenticated, (req, res) => {
 });
 
 router.post('/editprofile/:id', ensureAuthenticated, (req, res) => {
-    let name = req.body.name ? req.body.name : null;
-    let email = req.body.email ? req.body.email : null;
+    let name = req.body.name;
+    let email = req.body.email;
     let phoneNumber = req.body.phoneNumber ? req.body.phoneNumber : null;
     let address = req.body.address ? req.body.address : null;
     let address2 = req.body.address2 ? req.body.address2 : null;
     let postalCode = req.body.postalCode ? req.body.postalCode : null;
-    let password = req.body.password ? req.body.password : null;
-    let amountSpent = req.body.amountSpent ? req.body.amountSpent : null;
     User.update(
-        { name, email, password, phoneNumber, address, address2, postalCode, amountSpent }, 
+        {   'name' : name,
+            'email' : email,
+            'phoneNumber' : phoneNumber,
+            'address' : address,
+            'address2' : address2,
+            'postalCode' : postalCode}, 
         { where: { id: req.params.id } }
     )
         .catch(err => console.log(err));
@@ -153,6 +156,7 @@ router.get('/deleteAccount/:id', ensureAuthenticated, async function (req, res) 
         req.logout();
         let result = await User.destroy({ where: { id: user.id } });
         console.log(result + ' user deleted');
+        flashMessage(res, 'success', 'Account Deleted');
         res.redirect('/');
     }
     catch (err) {
