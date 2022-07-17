@@ -8,18 +8,24 @@ const Category = require('../models/Category');
 const Product = require('../models/Product');
 const { condition } = require('sequelize');
 
+const isStaff = function(userType) {
+	return (userType == 'staff' || userType == 'admin')
+};
+
 
 router.get('/', (req, res) => {
-	const title = 'Admin';
-	// renders views/index.handlebars, passing title as an object
-
-	const metadata = {
-		layout: 'admin',
-		nav: {
-			sidebarActive: 'dashboard'
+	if (!isStaff(req.user.userType)) {
+		res.redirect('/');
+	} else {
+		const metadata = {
+			layout: 'admin',
+			nav: {
+				sidebarActive: 'dashboard'
+			}
 		}
+		res.render('admin/index', metadata)
 	}
-	res.render('admin/index', metadata)
+	
 });
 
 router.get('/admincouponcreate', (req, res) => {
