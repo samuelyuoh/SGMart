@@ -47,8 +47,7 @@ router.get('/inventory', async (req, res) => {
 		raw: true
 	})
 		.then((product) => {
-			console.log(product);
-		res.render('admin/inventory', {product: product})
+			res.render('admin/inventory', {product: product, layout: 'admin', nav: { sidebarActive: 'product' }})
 	})
 	.catch(err => console.log(err));
 })

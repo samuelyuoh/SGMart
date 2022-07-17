@@ -1,36 +1,39 @@
-<main>
-        <div class="container">
-            <table class="table table-striped" style="font-size: 1.125rem!important;">
-                <thead style="text-align: left!important;">
-                    <th>Sr</th>
-                    <th>Image</th>
-                    <th>Name</th>
-                    <th>Price</th>
-                    <th>Discount</th>
-                    {{!-- <th>Brand</th> --}}
-                    <th>Amount in Stock</th>
-                    <th>Stock</th>
-                    <th>Edit</th>
-                    <th>Delete</th>
-                </thead>
-                <tbody>
-                  {{#product}}
-                  <tr>
-                    <td>{{loop.index}}</td>
-                    <td> <img src="/images/{{image}}" alt="{{product_name}}" style="width: 80px !important; height: 80px !important;"></td>
-                    <td>{{ product_name }}</td>
-                    <td>{{ product_price }}</td>
-                    <td>{{ discount }}</td>
-                    {{!-- <td>{{ product.brand.name}}</td> --}}
-                    <td>{{ stock }}</td>
-                    <td><a href="" class="btn btn-success">Stock</a></td>
-                    <td><a href="" class="btn btn-info">Edit </a> </td>
-                    <form action="" method='POST'>
-                    <td>
-                        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#myModal_{{product.id}}">
-                            Delete
-                        </button>
-                    </td>
 
-                  </tr>
-                {{/product}}
+<div class="container">
+  <div class="row">
+        <div class="col-md-1"></div>
+            <div class="col-md-10">
+    <table class="table table-striped" style="font-size: 1.125rem!important;">
+        <thead style="text-align: left!important;">
+            <th>Sr</th>
+            <th>Image</th>
+            <th>Name</th>
+            <th>Price</th>
+            <th>Discount</th>
+            <th>Brand</th>
+            <th>Amount in Stock</th>
+            <th>Stock</th>
+            <th>Edit</th>
+            <th>Delete</th>
+        </thead>
+        <tbody>
+          {{#product}}
+          <tr>
+            <td>{{loop.index}}</td>
+            <td> <img src="/images/{{image}}" alt="{{product_name}}" style="width: 80px !important; height: 80px !important;"></td>
+            <td>{{ product_name }}</td>
+            <td>{{ product_price }}</td>
+            <td>{{ discount }}</td>
+            <td>{{ "brand.brand_name"}}</td>
+            <td>{{ stock }}</td>
+            <td><a href="" class="btn btn-success">Stock</a></td>
+            <td><a href="/admin/updateproduct/{{id}}" class="btn btn-info">Edit </a> </td>
+            <form action="" method='POST'>
+            <td>
+                <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#myModal_{{product.id}}">
+                    Delete
+                </button>
+            </td>
+
+          </tr>
+        {{/product}}
