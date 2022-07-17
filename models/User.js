@@ -12,5 +12,6 @@ const User = db.define('user',
         postalCode: { type: Sequelize.INTEGER },
         amountSpent: { type: Sequelize.INTEGER },
         userType: { type: Sequelize.STRING }, //admin, staff, customer
+        verified: { type: Sequelize.BOOLEAN },
     });
 module.exports = User;
