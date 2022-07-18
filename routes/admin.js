@@ -80,30 +80,47 @@ router.get('/updateproduct/:id', async (req, res) => {
 	res.render('admin/addproducts', { brands: brand, category, product, brand_name ,category_name, layout: 'admin', nav: { sidebarActive:	'addproduct'}})
 })
 
-router.post('/updateproduct/:id', async function(req, res) {
-	let { product_name, product_price, discount, stock, desc, image, brandId, categoryId } = req.body;
+router.post('/updateproduct/:id', function(req, res) {
+	let { product_name, product_price, discount, desc, image, brandId, categoryId } = req.body;
+	Product.update(
+		{
+			product_name, product_price, discount, desc, image, brandId, categoryId 
+		},
+		{
+			where: { id: req.params.id}
+		})
+		.catch(err => console.log(err));
+		flashMessage(res, 'success', 'Product updated successfully.')
+		res.redirect('/admin/inventory')
+})
+
+router.get('/updatestock/:id', async (req, res) => {
 	try{
-		Product.update(
-			{
-				product_name, product_price, discount, stock, desc, image, brandId, categoryId 
-			},
-			{
-				where: { id: req.params.id}
-			})
-			flashMessage(res, 'success', 'Product updated successfully.')
-			res.redirect('/')
+		let product = await Product.findByPk(req.params.id);
+		res.render('admin/updatestock', { product: product, layout: 'admin', nav: { sidebarActive:	'addproduct'} })
 	}
 	catch(err){
 		console.log(err);
 	}
 })
 
-router.get('/deleteproduct/:id', async function(req, res){
+router.post('/updatestock/:id', async (req, res) =>{
+		let product = await Product.findByPk(req.params.id).then((products)=>
+		current_stock = products.stock)
+		Product.update(
+				{stock: parseInt(req.body.stock) + parseInt(current_stock)},
+				{where: {id: req.params.id}}
+		)
+		.catch(err => console.log(err));
+		res.redirect('/admin/inventory')
+})
+
+router.post('/deleteproduct/:id', async (req, res) =>{
 	try{
 		let product = await Product.findByPk(req.params.id)
 		let result = await Product.destroy({where: { id: product.id}})
-		console.log(result +' product deleted')
-		res.redirect('/')
+		flashmessage(res, 'success', result +' product deleted')
+		res.redirect('/admin/inventory')
 	}catch(err){
 		console.log(err)
 	}

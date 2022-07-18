@@ -7,14 +7,14 @@
                         {{#product}}
                         <h2>Current stock: {{stock}}</h2>
                         <div class="p-2"></div>
-                        <form action="" method="POST" enctype="multipart/form-data">
+                        <form method="POST">
                             <label for='stock'>Enter stock</label>
-                            <input type="number" class="form-control" name="stock" placeholder="Enter stock" value="{{stock}}"" min="0" required>
+                            <input type="number" class="form-control" name="stock" placeholder="Enter stock" value="0" min="0" required>
                             <div class="p-2"></div>
                             <input type="submit" value="Add stock" class="btn btn-success mt-2 ">
                         </form>
                         {{/product}}
-                        <img class="mt-5" src="/public/images/veg.jpg" >
+                        <img class="mt-5" src="/images/veg.jpg" >
 
                     </div>
                     <div class="col-md-3"></div>

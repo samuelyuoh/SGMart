@@ -19,21 +19,47 @@
         <tbody>
           {{#product}}
           <tr>
-            <td>{{loop.index}}</td>
+            <td>{{id}}</td>
             <td> <img src="/images/{{image}}" alt="{{product_name}}" style="width: 80px !important; height: 80px !important;"></td>
             <td>{{ product_name }}</td>
             <td>{{ product_price }}</td>
             <td>{{ discount }}</td>
             <td>{{ "brand.brand_name"}}</td>
             <td>{{ stock }}</td>
-            <td><a href="" class="btn btn-success">Stock</a></td>
+            <td><a href="/admin/updatestock/{{id}}" class="btn btn-success">Stock</a></td>
             <td><a href="/admin/updateproduct/{{id}}" class="btn btn-info">Edit </a> </td>
-            <form action="" method='POST'>
+            <form action="/admin/deleteproduct/{{id}}" method='POST'>
             <td>
-                <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#myModal_{{product.id}}">
+                <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#myModal_{{id}}">
                     Delete
                 </button>
             </td>
 
           </tr>
+
+<div class="modal" id="myModal_{{id}}">
+      <div class="modal-dialog">
+        <div class="modal-content">
+
+          <!-- Modal Header -->
+          <div class="modal-header">
+            <h4 class="modal-title">Delete Confirmation</h4>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+
+          <!-- Modal body -->
+          <div class="modal-body">
+            Are you sure you want to delete {{product_name}}?
+          </div>
+
+          <!-- Modal footer -->
+          <div class="modal-footer">
+            <input type="submit" value="Delete" class="btn btn-danger">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </form>
         {{/product}}
