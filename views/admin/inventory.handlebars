@@ -26,7 +26,29 @@
             <td>{{ discount }}</td>
             <td>{{ "brand.brand_name"}}</td>
             <td>{{ stock }}</td>
-            <td><a href="/admin/updatestock/{{id}}" class="btn btn-success">Stock</a></td>
+            <td>
+            <form action="/admin/updatestock/{{id}}" method="POST">
+                <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#updatestock_{{id}}">
+                  Add Stock
+                </button>
+              <div class="modal" id="updatestock_{{id}}">
+                <div class="modal-dialog">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h4 class="modal-title">Add Stock</h4>
+                    </div>
+                      <div class="modal-body">
+                        Currently in stock: {{stock}}
+                      </div>
+                      <div class="modal-footer">
+                        <input type="number" class="form-control" name="stock" placeholder="Enter stock">
+                        <input type="submit" value="Add" class="btn btn-success">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                      </div>
+                </div>
+              </div>
+            </form>
+            </td>
             <td><a href="/admin/updateproduct/{{id}}" class="btn btn-info">Edit </a> </td>
             <form action="/admin/deleteproduct/{{id}}" method='POST'>
             <td>
@@ -61,5 +83,5 @@
         </div>
       </div>
     </div>
-  </form>
-        {{/product}}
+</form>
+{{/product}}
