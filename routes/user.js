@@ -10,15 +10,9 @@ require('dotenv').config();
 const jwt = require('jsonwebtoken');
 const sgMail = require('@sendgrid/mail');
 
-function sendEmail(toEmail, url) {
+function sendEmail(message) {
     key = rot13(process.env.SENDGRID_API_KEY)
     sgMail.setApiKey(key);
-    const message = {
-        to: toEmail,
-        from: `SGMart <${process.env.SENDGRID_SENDER_EMAIL}>`,
-        subject: 'Verify SGMart Account',
-        html: `Thank you registering with SGMart.<br><br> Please <a href=\"${url}"><strong>verify</strong></a> your account.`
-    };
 
     // Returns the promise from SendGrid to the calling function
     return new Promise((resolve, reject) => {
@@ -81,7 +75,13 @@ router.post('/register', async function (req, res) {
             // Send email
             let token = jwt.sign(email, process.env.APP_SECRET);
             let url = `${process.env.BASE_URL}:${process.env.PORT}/user/verify/${user.id}/${token}`;
-            sendEmail(user.email, url)
+            const message = {
+                to: user.email,
+                from: `SGMart <${process.env.SENDGRID_SENDER_EMAIL}>`,
+                subject: 'Verify SGMart Account',
+                html: `Thank you registering with SGMart.<br><br> Please <a href=\"${url}"><strong>verify</strong></a> your account.`
+            };
+            sendEmail(message)
                 .then(response => {
                     console.log(response);
                     flashMessage(res, 'success', user.email + ' registered successfully');

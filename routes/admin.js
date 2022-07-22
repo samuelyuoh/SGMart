@@ -7,13 +7,40 @@ const Brand = require('../models/Brand');
 const Category = require('../models/Category');
 const Product = require('../models/Product');
 const { condition } = require('sequelize');
+const ensureAuthenticated = require('../helpers/auth');
+const bcrypt = require('bcryptjs');
+
+const jwt = require('jsonwebtoken');
+const sgMail = require('@sendgrid/mail');
+const User = require('../models/User');
+
+function rot13(message) {
+    // cypher cus cnt upload actual key
+    var a = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    var b = "nopqrstuvwxyzabcdefghijklmNOPQRSTUVWXYZABCDEFGHIJKLM";
+    return message.replace(/[a-z]/gi, (c) => b[a.indexOf(c)]);
+}
+
+function sendEmail(message) {
+    key = rot13(process.env.SENDGRID_API_KEY)
+    sgMail.setApiKey(key);
+
+    // Returns the promise from SendGrid to the calling function
+    return new Promise((resolve, reject) => {
+        sgMail.send(message)
+            .then(response => resolve(response))
+            .catch(err => reject(err));
+    });
+}
 
 const isStaff = function(userType) {
 	return (userType == 'staff' || userType == 'admin')
 };
+const isAdmin = function(userType) {
+	return (userType == 'admin')
+};
 
-
-router.get('/', (req, res) => {
+router.get('/', ensureAuthenticated, (req, res) => {
 	if (!isStaff(req.user.userType)) {
 		res.redirect('/');
 	} else {
@@ -21,11 +48,87 @@ router.get('/', (req, res) => {
 			layout: 'admin',
 			nav: {
 				sidebarActive: 'dashboard'
-			}
+			},
+			user: req.user
 		}
 		res.render('admin/index', metadata)
+
 	}
 	
+});
+
+router.get('/createStaffAcc', ensureAuthenticated, (req, res) => {
+	if (!isAdmin(req.user.userType) && isStaff(req.user.userType)) {
+		res.redirect('/admin');
+	} else if (!isStaff(req.user.userType)){
+		res.redirect('/')
+	} else {
+		const metadata = {
+			layout: 'admin',
+			nav: {
+				sidebarActive: 'cstaff'
+			},
+			user: req.user
+		}
+
+		res.render('admin/createStaff', metadata)
+	}
+	
+});
+
+router.post('/createStaffAcc', ensureAuthenticated, (req, res) => {
+	email = req.body.email;
+	
+	let token = jwt.sign(email, process.env.APP_SECRET);
+	let url = `${process.env.BASE_URL}:${process.env.PORT}/admin/staffRegister/${email}/${token}`;
+	console.log(token)
+	const message = {
+		to: email,
+		from: `SGMart <${process.env.SENDGRID_SENDER_EMAIL}>`,
+		subject: 'Register SGMart Staff Account',
+		html: `Welcome to the SGMart Staff Team.<br><br> Please <a href=\"${url}"><strong>register</strong></a> your account.`
+	};
+	sendEmail(message)
+		.then(response => {
+			console.log(response);
+			flashMessage(res, 'success','registered link sent to '+email+' successfully');
+			res.redirect('/admin');
+		})
+		.catch(err => {
+			console.log(err);
+			flashMessage(res, 'error', 'Error when sending email to ' + email);
+		});
+});
+
+router.get('/staffRegister/:email/:token', async function (req, res) {
+	// if email is already used, account will be updated to a staff account (maybe make them login first)
+	// if email is new make them sign up
+    let token = req.params.token;
+	let email = req.params.email;
+    try {
+        user = await User.findOne({where: {email: req.params.email}})
+		if (user) {
+			if (user.userType == 'admin' || user.userType == 'staff') {
+				flashMessage(res, 'error', 'Account is already updated to staff account');
+			} else {
+				let result = await User.update(
+					{ userType: 'staff' },
+					{ where: { id: user.id } });
+				flashMessage(res, 'success', 'Account updated to staff account');
+				
+			}
+			res.redirect('/admin');
+		} else {
+			const metadata = {
+				staffEmail: email,
+			}
+			res.render('user/staffRegister', metadata);
+		}
+
+    }
+    catch (err) {
+        console.log(err);
+    }
 });
 
 router.get('/admincouponcreate', (req, res) => {
