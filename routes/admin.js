@@ -6,9 +6,10 @@ const moment = require('moment');
 const Brand = require('../models/Brand');
 const Category = require('../models/Category');
 const Product = require('../models/Product');
-const { condition } = require('sequelize');
+const { Op } = require('sequelize');
 const ensureAuthenticated = require('../helpers/auth');
 const bcrypt = require('bcryptjs');
+const Sequelize = require('sequelize');
 
 const jwt = require('jsonwebtoken');
 const sgMail = require('@sendgrid/mail');
@@ -130,6 +131,101 @@ router.get('/staffRegister/:email/:token', async function (req, res) {
         console.log(err);
     }
 });
+
+router.get('/userList', async (req, res) => {
+	const metadata = {
+		layout: 'admin',
+		nav: {
+			sidebarActive: 'cstaff'
+		},
+		user: req.user,
+	}
+
+	User.findAll({
+		where: {
+			userType: {
+			  [Op.eq]: 'customer'
+			}
+		  },
+		raw: true
+	})
+		.then((users) => {
+			metadata.users = users;
+			res.render('admin/userList', metadata);
+			
+		})
+		.catch(err => console.log(err));
+
+})
+
+router.get('/staffList', async (req, res) => {
+	const metadata = {
+		layout: 'admin',
+		nav: {
+			sidebarActive: 'cstaff'
+		},
+		user: req.user,
+	}
+
+	User.findAll({
+		where: {
+			userType: {
+			  [Op.or]: ['admin', 'staff']
+			}
+		  },
+		raw: true
+	})
+		.then((users) => {
+			metadata.users = users;
+			res.render('admin/userList', metadata);
+			
+		})
+		.catch(err => console.log(err));
+
+})
+
+router.get('/status/:change/:id', async (req, res) => {
+	// if banned status will change to 1 and must reactivate acc
+
+	change = req.params.change;
+	user = await User.findByPk(req.params.id);
+	if (!user) {
+		flashMessage(res, 'error', 'No user found');
+		
+	} else {
+		if (change == 'ban') {
+			if (user.status == 2) {
+				flashMessage(res, 'error', 'User already banned');
+			} else {
+				await User.update(
+					{status: 2},
+					{where: {id: req.params.id}}
+				)
+				.then((result) => {
+					console.log('user banned');
+					flashMessage(res, 'success', `User ${req.params.id} has been banned`);
+				})
+			}
+			
+		} 
+		else if (change == 'unban') {
+			if (user.status == 0) {
+				flashMessage(res, 'error', 'User is not banned');
+			} else {
+				await User.update(
+					{status: 1},
+					{where: {id: req.params.id}}
+				)
+				.then((result) => {
+					console.log('user unbanned');
+					flashMessage(res, 'success', `User ${req.params.id} has been unbanned`);
+				})
+			}
+		}
+
+	}
+	res.redirect('/admin');
+})
 
 router.get('/admincouponcreate', (req, res) => {
 	const metadata = {

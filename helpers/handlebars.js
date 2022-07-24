@@ -52,6 +52,8 @@ const checkurl = function(arg1, arg2) {
         return false;
     }
 }
+const ifstatus = function(value, cvalue) {
+    return (value == cvalue ? true : false)
+}
 
-
-module.exports = {formatDate, replaceCommas, checkboxCheck, radioCheck, ifEquals, checkdiscount, checkstock,checkurl, ifmoney};
+module.exports = {formatDate, replaceCommas, checkboxCheck, radioCheck, ifEquals, checkdiscount, checkstock,checkurl, ifmoney, ifstatus};

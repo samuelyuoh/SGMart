@@ -149,6 +149,7 @@ router.post('/login', (req, res, next) => {
 });
 
 router.get('/logout', (req, res) => {
+    console.log(req.params)
     req.logout();
     res.redirect('/');
 });
