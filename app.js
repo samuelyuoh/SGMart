@@ -90,6 +90,8 @@ passportConfig.localStrategy(passport);
 app.use(passport.initialize());
 app.use(passport.session());
 
+var LocalStorage = require('node-localstorage').LocalStorage;
+
 // Place to define global variables
 app.use(function (req, res, next) {
 	res.locals.messages = req.flash('message');

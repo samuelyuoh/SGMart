@@ -20,23 +20,76 @@
 
 
                 <div class="card-footer">
-                    <a type="submit" href="/product/details/{{id}}" class="float-start btn btn-primary">Details</a> 
-                    {{!-- {{#if product.stock > 0 }} --}}
+                {{!-- <a type="submit" href="/product/details/{{id}}" class="float-start btn btn-primary">Details</a> --}}
+                <button type="button" class="btn btn-primary float-start" data-bs-toggle="modal" data-bs-target="#details_{{id}}">Details</button>
+                {{!-- modal --}}
+                    <div class="modal fade" id="details_{{id}}" data-backdrop="static">
+                        <div class="modal-dialog modal-lg modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-header"style="background-color:white">
+                                    <h4>Item Detail</h4>
+                                    <button type="submit" class="close fa-2x" data-bs-dismiss="modal" aria-label="Close" style="background-color:white">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-footer" style="background-color:white">
+                                    <div class="row">
+                                        <div class="col-md-6" id="b_image">
+                                            <img src="/images/{{image}}" alt="{{product_name}}" width="200" height="200">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div style="float:right!important">
+                                                <form action="/product/wishlist/{{id}}" method="POST">
+                                                    <input type="hidden" name="id" value="{{id}}" >
+                                                    <button type="submit" class="btn btn-sm" data-bs-dismiss="modal">
+                                                        <span class = "bi bi-bookmark fa-lg"></span>
+                                                    </button>
+                                                </form>
+                                            </div>
+                                            <p style="font-size: 32px; color: #319e40; font-weight: 500; line-height: 32px; vertical-align:top; text-align: left;">${{product_price}}</p>
+                                            {{#if (checkdiscount discount) }}
+                                            <p style="font-size: 21px; color: #f05229; font-weight: 600; line-height: 37.8px; vertical-align:top; text-align: left;">{{discount}}% OFF </p>
+                                            {{/if}}
+                                            <p style="font-size: 24px; color: #4a4a4a; font-weight: 400; line-height: 24px; vertical-align: top; text-align: left; padding: 0px;">{{product_name}}</p>
+                                            <hr>
+                                            <p style="font-size: 16px; color: #4a4a4a; font-weight: 400; line-height: 24px; vertical-align: top; text-align: left; margin: 0px 0px 30px;">{{desc}}</p>
+                                            <form action="/cart/add/{{id}}" method="post">
+                                                {{#if (checkstock stock)}}
+                                                <input type="hidden" name="product_id" value="{{id}}">
+                                                <div class="form-group">
+                                                    <button type="submit" class="btn btn-sm btn-warning">Add to Cart</button>
+                                                    <label for="quantity">Quantity: </label>
+                                                    <input type="number" id="quantity" name="quantity" value="1" min="1" max="{{stock}}" />
+                                                </div>
+                                                {{else}}
+                                                <button type="submit" disabled class="btn btn-sm btn-danger">Out of Stock</button>
+                                                {{/if}}
+                                                <br>
+                                                <br>
+                                                <h3>Stock: {{stock}}</h1>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {{!-- end of modal --}}
+                    {{#if (checkstock stock) }}
                     <form action="/cart/add/{{id}}" method="post">
                         <input type="hidden" name="" value="">
                         <button type="submit" class="btn btn-warning float-end" value="{{id}}">Add to Cart</button>
 
                         <input type="hidden" name="quantity" value="1">
                     </form>
+                    {{else}}
+                        <button type="submit" class="btn btn-warning float-end disabled" value="{{id}}">Out of Stock</button>
+                    {{/if}}
                     {{!-- <a href = '/cart/add/{{id}}'>Add to Cart</a> --}}
                     {{!-- {{#elif product.stock == 0 or product.stock < 0 }}
                         <button type="submit" disabled class="btn btn-danger float-end">Out of Stock</button>
                     {{/if }} --}}
                 </div>
-
-
-                
-
             </div>
         </div>
         {{/product }}

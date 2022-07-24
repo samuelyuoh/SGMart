@@ -5,6 +5,7 @@ const Blog = require('../models/Blog');
 const multer = require('multer');
 const path = require('path')
 const e = require('connect-flash');
+const Brand = require('../models/Brand'); 
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
@@ -18,18 +19,20 @@ const storage = multer.diskStorage({
 
 const upload = multer({storage: storage})
 
-router.get('/viewBlogs', (req, res) => {
+router.get('/viewBlogs', async (req, res) => {
+    var brands = await Brand.findAll();
     Blog.findAll({
         raw: true
     })
         .then((blogs) => {
-            res.render('blog/viewBlogs', { blogs });
+            res.render('blog/viewBlogs', { blogs, brands });
             
         })
         .catch(err => console.log(err));
 });
 
-router.get('/detailBlog/:id', (req, res) => {
+router.get('/detailBlog/:id', async (req, res) => {
+    var brands = await Brand.findAll();
     Blog.findByPk(req.params.id)
     .then((blog) => {
         if (!blog) {
@@ -37,26 +40,28 @@ router.get('/detailBlog/:id', (req, res) => {
             res.render('blog/listBlogs');
             return
         }
-        res.render('blog/detailBlog', { blog });
+        res.render('blog/detailBlog', { blog, brands });
     })
     .catch(err => console.log(err));
 });
 
 
-router.get('/listBlogs', (req, res) => {
+router.get('/listBlogs', async (req, res) => {
+    var brands = await Brand.findAll();
     Blog.findAll({
         raw: true
     })
         .then((blogs) => {
-            res.render('blog/listBlogs', { blogs , layout: 'admin'});
+            res.render('blog/listBlogs', { blogs , layout: 'admin', brands});
             
         })
         .catch(err => console.log(err));
 });
 
 
-router.get('/addBlog', (req, res) => {
-    res.render('blog/addBlog', { layout: 'admin' });
+router.get('/addBlog', async (req, res) => {
+    var brands = await Brand.findAll();
+    res.render('blog/addBlog', { layout: 'admin', brands });
 });
 
 router.post('/addBlog', upload.single('image') ,(req, res) => {
@@ -79,7 +84,8 @@ router.post('/addBlog', upload.single('image') ,(req, res) => {
         .catch(err => console.log(err))
 });
 
-router.get('/editBlog/:id', (req, res) => {
+router.get('/editBlog/:id', async (req, res) => {
+    var brands = await Brand.findAll();
     Blog.findByPk(req.params.id)
     .then((blog) => {
         if (!blog) {
@@ -88,7 +94,7 @@ router.get('/editBlog/:id', (req, res) => {
 
             return
         }
-        res.render('blog/editBlog', { blog , layout: 'admin'});
+        res.render('blog/editBlog', { blog , layout: 'admin', brands});
     })
     .catch(err => console.log(err));
 });

@@ -7,6 +7,14 @@
             <img src="/images/{{products.image}}" alt="{{products.product_name}}" width="400" height="400">
         </div>
         <div class="col-md-6">
+            <div style="float:right;">
+                <form action="/product/wishlist/{{products.id}}" method="POST">
+                    <input type="hidden" name="product_id" value="{{products.id}}">
+                    <button type="submit" class="btn btn-sm">
+                        <span class="bi bi-bookmark fa-3x"></span>
+                    </button>
+                </form>
+            </div>
             <p style="font-size: 32px; color: #319e40; font-weight: 500; line-height: 32px; vertical-align:top; text-align: left;">${{products.product_price}}</p>
             {{#if (checkdiscount products.discount) }}
             <p style="font-size: 21px; color: #f05229; font-weight: 600; line-height: 37.8px; vertical-align:top; text-align: left;">{{products.discount}}% OFF </p>
@@ -14,6 +22,7 @@
             <p style="font-size: 24px; color: #4a4a4a; font-weight: 400; line-height: 24px; vertical-align: top; text-align: left; padding: 0px;">{{products.product_name}}</p>
             <hr>
             <p style="font-size: 16px; color: #4a4a4a; font-weight: 400; line-height: 24px; vertical-align: top; text-align: left; margin: 0px 0px 30px;">{{products.desc}}</p>
+
             <form action="/cart/add/{{id}}" method="post">
                 {{#if (checkstock products.stock)}}
                 <input type="hidden" name="product_id" value="{{products.id}}">

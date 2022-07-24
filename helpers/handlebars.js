@@ -53,5 +53,9 @@ const checkurl = function(arg1, arg2) {
     }
 }
 
+const getJSONContent = function (data){
+    return JSON.parse(data)
+}
 
-module.exports = {formatDate, replaceCommas, checkboxCheck, radioCheck, ifEquals, checkdiscount, checkstock,checkurl, ifmoney};
+
+module.exports = {formatDate, replaceCommas, checkboxCheck, radioCheck, ifEquals, checkdiscount, checkstock,checkurl, ifmoney, getJSONContent};

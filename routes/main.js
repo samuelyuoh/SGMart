@@ -2,11 +2,15 @@ const express = require('express');
 const router = express.Router();
 const flashMessage = require('../helpers/messenger');
 const User = require('../models/User');
+const Brand = require('../models/Brand');
 
-router.get('/', (req, res) => {
-	const title = 'Video Jotter';
+router.get('/', async (req, res) => {
+	var brands = await Brand.findAll({raw:true});
+	// var brands = localStorage.getItem("brand");
+	// console.log(JSON.parse(brands))
+
 	// renders views/index.handlebars, passing title as an object
-	res.render('index', { title: title })
+	res.render('index', {brands})
 });
 
 router.post('/flash', (req, res) => {
@@ -27,14 +31,15 @@ router.get('/about', (req, res) => {
 	res.render('about', { author });
 	});
 
-router.get('/usercoupongenerate', (req, res) => {
+router.get('/usercoupongenerate', async (req, res) => {
+	var brands = await Brand.findAll();
 	User.findAll({
 		order: [['amountSpent', 'DESC']],
 		raw: true
 	})
 		.then((users) => {
 			// pass object to admincouponlist.handlebars
-			res.render('coupon/usercoupongenerate');
+			res.render('coupon/usercoupongenerate', brands);
 		})
 		.catch(err => console.log(err));
 
