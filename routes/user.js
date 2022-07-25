@@ -231,7 +231,9 @@ router.get('/deleteAccount/:id', ensureAuthenticated, async function (req, res) 
             return;
         }
         req.logout();
-        let result = await User.destroy({ where: { id: user.id } });
+        let result = await User.update(
+            {status: 1},
+            { where: { id: user.id } });
         console.log(result + ' user deleted');
         flashMessage(res, 'success', 'Account Deleted');
         res.redirect('/');
@@ -241,6 +243,73 @@ router.get('/deleteAccount/:id', ensureAuthenticated, async function (req, res) 
     }
 });
 
+router.get('/resetpassword', (req, res) => {
+    res.render('user/resetpwd');
+})
+
+router.post('/resetpassword', async (req, res) => {
+    email = req.body.email;
+    user = await User.findOne({where: {email: email}});
+    if (!user) {
+        flashMessage(res, 'error', 'No email found');
+        res.redirect('/user/resetpassword')
+    } else {
+        let token = jwt.sign(email, process.env.APP_SECRET);
+        let url = `${process.env.BASE_URL}:${process.env.PORT}/user/resetpassword/${user.id}/${token}`;
+        const message = {
+            to: email,
+            from: `SGMart <${process.env.SENDGRID_SENDER_EMAIL}>`,
+            subject: 'Reset SGMart Account Password',
+            html: `<br><br> Please <a href=\"${url}"><strong>click here</strong></a> to reset your password.`
+        };
+        sendEmail(message)
+            .then(response => {
+                console.log(response);
+                flashMessage(res, 'success','Reset email sent successfully to ' +  email);
+                res.redirect('/user/resetpassword');
+            })
+            .catch(err => {
+                console.log(err);
+                flashMessage(res, 'error', 'Error when sending email to ' + email);
+                res.redirect('/');
+            });
+    }
+    
+})
+
+router.get('/resetpassword/:id/:token', (req, res) => {
+    
+    res.render('user/newpwd')
+})
+
+router.post('/resetpassword/:id/:token', async (req, res) => {
+    let {password, password2} = req.body;
+    valid = true
+    if (password != password2) {
+        flashMessage(res, 'error', 'Passwords do not match');
+        valid = false;
+    } 
+    if  (password.length < 6) {
+        flashMessage(res, 'error', 'Password must be at least 6 characters');
+        valid = false;
+    } 
+    if (!valid) {
+        res.render('user/newpwd');
+        return;
+    } else {
+        var salt = bcrypt.genSaltSync(10);
+        var hash = bcrypt.hashSync(password, salt);
+        await User.update(
+            {password: hash},
+            {where: {id: req.params.id}})
+            .then((result) => {
+                flashMessage(res, 'success', 'Password has been changed');
+                res.redirect('/user/login');
+            })
+    }
+
+
+});
 // router.get('/check_delivery', (req, res) => {
 //     res.render('user/check_delivery');
 // });
