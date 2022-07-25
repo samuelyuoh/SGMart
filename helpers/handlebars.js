@@ -57,5 +57,43 @@ const getJSONContent = function (data){
     return JSON.parse(data)
 }
 
+const checkWishlist = function(id, wishlist){
+    if(id == wishlist){
+        return false;
+    }else{
+        return true
+    }
+}
 
-module.exports = {formatDate, replaceCommas, checkboxCheck, radioCheck, ifEquals, checkdiscount, checkstock,checkurl, ifmoney, getJSONContent};
+const paginate = function(totalPages){
+    if (totalPages > 0){
+        pass
+    }
+}
+const next = function(currentPage){
+    return currentPage + 1
+}
+
+const previous = function(currentPage){
+    return currentPage - 1
+}
+
+const havePrevious = function(currentPage){
+    if (currentPage == 0){
+        return false
+    }else{
+        return true
+    }
+}
+
+const haveNext = function(currentPage, totalPages){
+    if(currentPage+1 == totalPages){
+        return false
+    }else{return true}
+}
+
+
+module.exports = 
+    {formatDate, replaceCommas, checkboxCheck, radioCheck, ifEquals, 
+    checkdiscount, checkstock,checkurl, ifmoney, getJSONContent, 
+    checkWishlist, paginate, next, previous, haveNext, havePrevious};

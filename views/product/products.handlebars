@@ -1,13 +1,13 @@
 
-
+<script src="/js/data.js"></script>
 <div class="container">
 
 <div class="row">
-        {{#product }}
+        {{#each product }}
         <div class="col-md-3 mt-3">
             <div class="card">
 
-                <img src="/images/{{image}}" alt="{{product_name}}"  class="card-img-top">
+                <img src="/images/{{image}}" alt="{{product_name}}"  class="card-img-top" width="100px" height="300px" >
                 <div class="card-body">
                     <h4 class="text-center">{{product_name}}</h4>
                     {{#if (checkdiscount discount) }}
@@ -39,12 +39,11 @@
                                         </div>
                                         <div class="col-md-6">
                                             <div style="float:right!important">
-                                                <form action="/product/wishlist/{{id}}" method="POST">
-                                                    <input type="hidden" name="id" value="{{id}}" >
-                                                    <button type="submit" class="btn btn-sm" data-bs-dismiss="modal">
-                                                        <span class = "bi bi-bookmark fa-lg"></span>
-                                                    </button>
-                                                </form>
+                                                {{#if (checkWishlist id wishlist.productId)}}
+                                                <button value={{id}} class="btn btn-sm bx bx-bookmark bxs-bookmark" onclick="submitForm(this)" style="font-size:2rem"></button>
+                                                {{else}}
+                                                <button value={{id}} class="btn btn-sm bx bx-bookmark" onclick="submitForm(this)" style="font-size:2rem"></button>
+                                                {{/if}}
                                             </div>
                                             <p style="font-size: 32px; color: #319e40; font-weight: 500; line-height: 32px; vertical-align:top; text-align: left;">${{product_price}}</p>
                                             {{#if (checkdiscount discount) }}
@@ -92,30 +91,18 @@
                 </div>
             </div>
         </div>
-        {{/product }}
-    </div>
-    <div class="row" style="padding: 30px;"> 
-        <div class="col text-center">
-            {{#if products.has_prev }}
-                <a href=""class="btn mt-3 btn-outline-info">Previous</a>
-            {{/if }}
-            {{!-- {{ #if products.total > 8 }} --}}
-            {{!-- {{#each page_num in products.iter_pages(left_edge=1, right_edge=2, left_current=1, right_current=2) }}
-            {{ #if page_num }}
-            {{ #if products.page == page_num }}
-            <a href="" class="btn btn mt-3 btn-info">{{page_num}}</a>
-            {{#else }}
-            <a href="" class="btn btn mt-3 btn-outline-info">{{page_num}}</a>
-            {{/if }} --}}
-            {{!-- {{#else }}
-            ...
-            {{/if }} --}}
-            {{!-- {{/if }}
-            {{ #if products.has_next }}
-            <a href="{{url_for('home', page=products.next_num)}}"class="btn  mt-3 btn-outline-info">Next</a>
-            {{/if }} --}}
-        </div>
-      </div>
+{{/each }}
     </div>
 </div>
-
+<div class="row text-center" style="padding: 30px;"> 
+    {{totalPages}}
+    <ul style="text-align: center">
+    {{#if (havePrevious currentPage)}}
+    <a type="button" class="btn btn-outline-info" href="/product/products?page={{previous currentPage}}">Previous</a>
+    {{/if}}
+    <a type="button" class="btn btn-outline-info" href="/product/products?page={{currentPage}}">{{next currentPage}}</a>
+    {{#if (haveNext currentPage totalPages)}}
+    <a type="button" class="btn btn-outline-info" href="/product/products?page={{next currentPage}}">Next</a>
+    {{/if}}
+    </ul>
+</div>
