@@ -127,22 +127,24 @@
                     </div>
                   </div>
                 </div> --}}
-                <div class="col-md-12">
-                    <div class="card mb-3">
-                        <div class="card-body">
-                            <h2>Delete Account</h2>
-                            <hr>
-                            <p class="delete">Note: Deleting your account is a <span class="bold red">permanent </span>
-                                 action and <span class="bold red">cannot be reversed</span></p>
-                            <div class="row">
-                                <div class="col-sm-12" style="padding-right: 5%;">
-                                    <a type="button" class="btn btn-info" style="float: right !important;" data-toggle="modal" data-target="#exampleModal">Delete Account</a>
+                {{#unless (isMAdmin user.userType)}}
+                    <div class="col-md-12">
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                <h2>Delete Account</h2>
+                                <hr>
+                                <p class="delete">Note: Deleting your account is a <span class="bold red">permanent </span>
+                                    action and <span class="bold red">cannot be reversed</span></p>
+                                <div class="row">
+                                    <div class="col-sm-12" style="padding-right: 5%;">
+                                        <a type="button" class="btn btn-info" style="float: right !important;" data-toggle="modal" data-target="#exampleModal">Delete Account</a>
+                                    </div>
                                 </div>
                             </div>
+                            
                         </div>
-                        
                     </div>
-                </div>
+                {{/unless}}
             </div> 
         </div>
     </div>

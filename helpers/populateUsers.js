@@ -9,7 +9,7 @@ User.create({
     name: 'master admin',
     email: 'admin@site.com',
     password: bcrypt.hashSync('12345678', salt),
-    userType: 'admin',
+    userType: 'madmin',
     status: 0,
     verified: 1,
 });

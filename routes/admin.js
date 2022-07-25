@@ -35,10 +35,13 @@ function sendEmail(message) {
 }
 
 const isStaff = function(userType) {
-	return (userType == 'staff' || userType == 'admin')
+	return (userType == 'staff' || userType == 'admin' || userType == 'madmin')
 };
 const isAdmin = function(userType) {
-	return (userType == 'admin')
+	return (userType == 'admin' || userType == 'madmin')
+};
+const isMAdmin = function(userType) {
+	return (userType == 'madmin')
 };
 
 router.get('/', ensureAuthenticated, (req, res) => {

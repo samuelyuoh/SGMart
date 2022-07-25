@@ -282,14 +282,16 @@ router.get('/resetpassword/:id/:token', (req, res) => {
         token = req.params.token;
         a = jwt.decode(token);
         if (Date.now() >= a['exp'] * 1000) {
-            flashMessage(res, 'error', 'Reset password has expired')//expired token
+            flashMessage(res, 'error', 'Reset password has expired');//expired token
+            res.redirect('/user/resetpassword');
+        } else {
+            res.render('user/newpwd');
         }
     }
     catch (err){
-        console.log(err)
+        console.log(err);
     }
     
-    res.render('user/newpwd')
 })
 
 router.post('/resetpassword/:id/:token', async (req, res) => {
