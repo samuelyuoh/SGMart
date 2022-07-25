@@ -10,6 +10,4 @@ const Product = db.define('product',
         desc: { type: Sequelize.STRING },
         image: { type: Sequelize.STRING }
     });
-
-
 module.exports = Product;

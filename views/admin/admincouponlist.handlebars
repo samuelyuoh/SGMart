@@ -1,0 +1,98 @@
+<div class="container ">
+	{{#if coupons}}
+	<div class="card card-body ">
+		<h3 class="text-primary heado">Coupon</h3>
+		{{#each coupons}}
+		<div class="card border-primary mb-2 w-100 mx-auto heado">
+			<div class="card-header ">
+				<h5 class="card-title">{{couponName}}</h5>
+			</div>
+			<div class="card-body">
+				<div class="row">
+					<div class="col-sm-12 col-md-12 col-lg-3">
+						<p class="font-italic">couponName</p>
+						<p class="text-info">
+							{{couponName}}
+						</p>
+					</div>
+					<div class="col-sm-12 col-md-12 col-lg-3">
+						<p class="font-italic">percentageDiscount</p>
+						<p class="text-info">
+							{{percentageDiscount}}%
+						</p>
+					</div>
+					<div class="col-sm-12 col-md-12 col-lg-2">
+						<p class="font-italic">expiryDate</p>
+						<p class="text-info">{{formatDate expiryDate 'YYYY-MM-DD HH:MI:SS'}}</p>
+					</div>
+					{{!-- <!-- Button trigger modal -->
+					<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+					Launch demo modal
+					</button>
+
+					<!-- Modal -->
+					<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+					<div class="modal-dialog">
+						<div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+							<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+						</div>
+						<div class="modal-body">
+							Are you sure you want to delete?
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+							<button type="button" class="btn btn-primary" >Yes</button>
+						</div>
+						</div>
+					</div>
+					</div> --}}
+					<div class="col-sm-12 col-md-12 col-lg-2">
+						<p>
+							<a href="/admin/admincouponedit/{{id}}" class="card-link mb-2">
+								<i class="fas fa-pencil-alt"></i>
+								Edit
+							</a>
+						</p>
+						<p>
+							<a href="/admin/admincoupondelete/{{id}}" class="card-link" data-toggle="confirmation"
+								data-title="Confirm delete?">
+								<i class="far fa-trash-alt"></i>
+								Delete
+							</a>
+						</p>
+					</div>
+				</div>
+			</div>
+
+			
+		</div>
+		{{/each}}
+	</div>
+	{{else}}
+	<h3>No Coupon Created</h3>
+	{{/if}}
+</div>
+
+<style>
+    .heado {
+        border-color: #198754;
+		outline-color: #198754;
+    }
+
+    .addo:hover {
+        background-color: #198754;
+        border-color: #198754;
+    }
+</style>
+
+<script>
+	var myModal = document.getElementById('myModal')
+	var myInput = document.getElementById('myInput')
+
+	myModal.addEventListener('shown.bs.modal', function () {
+	myInput.focus()
+	})
+</script>
+

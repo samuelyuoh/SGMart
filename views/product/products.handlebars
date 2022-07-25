@@ -3,7 +3,7 @@
 <div class="container">
 
 <div class="row">
-        {{#each products }}
+        {{#product }}
         <div class="col-md-3 mt-3">
             <div class="card">
 
@@ -23,10 +23,12 @@
                     <a type="submit" href="/product/details/{{id}}" class="float-start btn btn-primary">Details</a> 
                     {{!-- {{#if product.stock > 0 }} --}}
                     <form action="/cart/add/{{id}}" method="post">
-                        <input type="hidden" name="product_id" value="">
-                        <button type="submit" class="btn btn-warning float-end">Add to Cart</button>
+                        <input type="hidden" name="" value="">
+                        <button type="submit" class="btn btn-warning float-end" value="{{id}}">Add to Cart</button>
+
                         <input type="hidden" name="quantity" value="1">
                     </form>
+                    {{!-- <a href = '/cart/add/{{id}}'>Add to Cart</a> --}}
                     {{!-- {{#elif product.stock == 0 or product.stock < 0 }}
                         <button type="submit" disabled class="btn btn-danger float-end">Out of Stock</button>
                     {{/if }} --}}
@@ -37,7 +39,7 @@
 
             </div>
         </div>
-        {{/each }}
+        {{/product }}
     </div>
     <div class="row" style="padding: 30px;"> 
         <div class="col text-center">
