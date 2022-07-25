@@ -252,9 +252,9 @@ router.post('/resetpassword', async (req, res) => {
     user = await User.findOne({where: {email: email}});
     if (!user) {
         flashMessage(res, 'error', 'No email found');
-        res.redirect('/user/resetpassword')
+        res.redirect('/user/resetpassword');
     } else {
-        let token = jwt.sign(email, process.env.APP_SECRET);
+        let token = jwt.sign({email}, process.env.APP_SECRET, {expiresIn: 5 * 60});
         let url = `${process.env.BASE_URL}:${process.env.PORT}/user/resetpassword/${user.id}/${token}`;
         const message = {
             to: email,
@@ -278,6 +278,16 @@ router.post('/resetpassword', async (req, res) => {
 })
 
 router.get('/resetpassword/:id/:token', (req, res) => {
+    try {
+        token = req.params.token;
+        a = jwt.decode(token);
+        if (Date.now() >= a['exp'] * 1000) {
+            flashMessage(res, 'error', 'Reset password has expired')//expired token
+        }
+    }
+    catch (err){
+        console.log(err)
+    }
     
     res.render('user/newpwd')
 })
