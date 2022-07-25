@@ -1,1 +1,2 @@
 
+npm i express cookie-parser dotenv ejs
