@@ -1,13 +1,10 @@
-
-
 <div class="container">
-
 <div class="row">
-        {{#product }}
+        {{#each product }}
         <div class="col-md-3 mt-3">
             <div class="card">
 
-                <img src="/images/{{image}}" alt="{{product_name}}"  class="card-img-top">
+                <img src="/images/{{image}}" alt="{{product_name}}"  class="card-img-top" width="100px" height="300px" >
                 <div class="card-body">
                     <h4 class="text-center">{{product_name}}</h4>
                     {{#if (checkdiscount discount) }}
@@ -20,49 +17,162 @@
 
 
                 <div class="card-footer">
-                    <a type="submit" href="/product/details/{{id}}" class="float-start btn btn-primary">Details</a> 
-                    {{!-- {{#if product.stock > 0 }} --}}
+                {{!-- <a type="submit" href="/product/details/{{id}}" class="float-start btn btn-primary">Details</a> --}}
+                <button type="button" class="btn btn-primary float-start" data-bs-toggle="modal" data-bs-target="#details_{{id}}">Details</button>
+                {{!-- modal --}}
+                    <div class="modal fade" id="details_{{id}}" data-backdrop="static" data-bs-focus="false">
+                        <div class="modal-dialog modal-lg modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-header"style="background-color:white">
+                                    <h4>Item Detail</h4>
+                                    <button type="submit" class="close fa-2x" data-bs-dismiss="modal" aria-label="Close" style="background-color:white">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-footer" style="background-color:white">
+                                    <div class="row">
+                                        <div class="col-md-6" id="b_image">
+                                            <img src="/images/{{image}}" alt="{{product_name}}" width="200" height="200">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div style="float:right!important">
+                                                {{#if (checkWishlist id wishlist.productId)}}
+                                                <button value={{id}} class="btn btn-sm bx bx-bookmark bxs-bookmark" onclick="submitForm(this)" style="font-size:2rem"></button>
+                                                {{else}}
+                                                <button value={{id}} class="btn btn-sm bx bx-bookmark" onclick="submitForm(this)" style="font-size:2rem"></button>
+                                                {{/if}}
+                                            </div>
+                                            <p style="font-size: 32px; color: #319e40; font-weight: 500; line-height: 32px; vertical-align:top; text-align: left;">${{product_price}}</p>
+                                            {{#if (checkdiscount discount) }}
+                                            <p style="font-size: 21px; color: #f05229; font-weight: 600; line-height: 37.8px; vertical-align:top; text-align: left;">{{discount}}% OFF </p>
+                                            {{/if}}
+                                            <p style="font-size: 24px; color: #4a4a4a; font-weight: 400; line-height: 24px; vertical-align: top; text-align: left; padding: 0px;">{{product_name}}</p>
+                                            <hr>
+                                            <p style="font-size: 16px; color: #4a4a4a; font-weight: 400; line-height: 24px; vertical-align: top; text-align: left; margin: 0px 0px 30px;">{{desc}}</p>
+                                            <div style="float: left">
+                                            <form action="/cart/add/{{id}}" method="post">
+                                                {{#if (checkstock stock)}}
+                                                <input type="hidden" name="product_id" value="{{id}}">
+                                                <div class="form-group">
+                                                    <button type="submit" class="btn btn-sm btn-warning">Add to Cart</button>
+                                                    <label for="quantity">Quantity: </label>
+                                                    <input type="number" id="quantity" name="quantity" value="1" min="1" max="{{stock}}" />
+                                                </div>
+                                                {{else}}
+                                                <button type="submit" disabled class="btn btn-sm btn-danger">Out of Stock</button>
+                                                {{/if}}
+                                            </div>
+                                            </form>
+                                                <h4 style="float: right">Stock: {{stock}}</h4>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {{!-- end of modal --}}
+                    {{#if (checkstock stock) }}
                     <form action="/cart/add/{{id}}" method="post">
                         <input type="hidden" name="" value="">
                         <button type="submit" class="btn btn-warning float-end" value="{{id}}">Add to Cart</button>
 
                         <input type="hidden" name="quantity" value="1">
                     </form>
+                    {{else}}
+                        <button type="submit" class="btn btn-warning float-end disabled" value="{{id}}">Out of Stock</button>
+                    {{/if}}
                     {{!-- <a href = '/cart/add/{{id}}'>Add to Cart</a> --}}
                     {{!-- {{#elif product.stock == 0 or product.stock < 0 }}
                         <button type="submit" disabled class="btn btn-danger float-end">Out of Stock</button>
                     {{/if }} --}}
                 </div>
-
-
-                
-
             </div>
         </div>
-        {{/product }}
-    </div>
-    <div class="row" style="padding: 30px;"> 
-        <div class="col text-center">
-            {{#if products.has_prev }}
-                <a href=""class="btn mt-3 btn-outline-info">Previous</a>
-            {{/if }}
-            {{!-- {{ #if products.total > 8 }} --}}
-            {{!-- {{#each page_num in products.iter_pages(left_edge=1, right_edge=2, left_current=1, right_current=2) }}
-            {{ #if page_num }}
-            {{ #if products.page == page_num }}
-            <a href="" class="btn btn mt-3 btn-info">{{page_num}}</a>
-            {{#else }}
-            <a href="" class="btn btn mt-3 btn-outline-info">{{page_num}}</a>
-            {{/if }} --}}
-            {{!-- {{#else }}
-            ...
-            {{/if }} --}}
-            {{!-- {{/if }}
-            {{ #if products.has_next }}
-            <a href="{{url_for('home', page=products.next_num)}}"class="btn  mt-3 btn-outline-info">Next</a>
-            {{/if }} --}}
-        </div>
-      </div>
+{{/each }}
     </div>
 </div>
+<div class="row text-center" style="padding: 30px;"> 
+    {{totalPages}}
+    <ul style="text-align: center">
+    {{#if (havePrevious currentPage)}}
+    <a type="button" class="btn btn-outline-info" href="/product/products?page={{previous currentPage}}">Previous</a>
+    {{/if}}
+    <a type="button" class="btn btn-outline-info" href="/product/products?page={{currentPage}}">{{next currentPage}}</a>
+    {{#if (haveNext currentPage totalPages)}}
+    <a type="button" class="btn btn-outline-info" href="/product/products?page={{next currentPage}}">Next</a>
+    {{/if}}
+    </ul>
+</div>
 
+<script>
+    function submitForm(element){
+    var id = element.value;
+    $.ajax({
+        url : '/product/wishlist',
+        method: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify({id: id}),
+        success: function(res){
+            if (res.status == "add"){
+                // element.classList.remove("bx-bookmarks")
+                element.classList.add('bxs-bookmark')
+                element.classList.add('bx-tada')
+                setTimeout(function(){element.classList.remove('bx-tada')}, 1000)
+            } else if (res.status == "remove") {
+                // element.classList.add("bi-bookmarks")
+                element.classList.remove('bxs-bookmark')
+                element.classList.add('bx-tada')
+                setTimeout(function(){element.classList.remove('bx-tada')}, 1000)
+            }else{
+                Swal.fire({
+                    title: 'Login Form',
+                    html: `<input type="text" id="login" class="swal2-input" placeholder="Username">
+                    <input type="password" id="password" class="swal2-input" placeholder="Password">`,
+                    confirmButtonText: 'Sign in',
+                    focusConfirm: true,
+                    preConfirm: () => {
+                        const login = Swal.getPopup().querySelector('#login').value
+                        const password = Swal.getPopup().querySelector('#password').value
+                        if (!login || !password) {
+                        Swal.showValidationMessage(`Please enter login and password`)
+                        }
+                        return { login: login, password: password }
+                    }
+                    }).then((result) => {
+                        $.ajax({
+                            type: 'POST',
+                            data:{
+                                email: result.value.login,
+                                password: result.value.password
+                            },
+                            url: '/user/login',
+                        }).then((result)=>{
+                            $.ajax({
+                                type: 'POST',
+                                url: '/user/checkStatus',
+                                success: function(res){
+                                    if(res.status == 'logged in'){
+                                        swal.fire({
+                                            title: "logging in ",
+                                            timer: 1000,
+                                            didOpen: () => {
+                                            Swal.showLoading()
+                                            const b = Swal.getHtmlContainer().querySelector('b')
+                                            timerInterval = setInterval(() => {
+                                            b.textContent = Swal.getTimerLeft()
+                                            }, 100)
+                                        }
+                                        })
+                                        setTimeout(function(){swal.fire("logged in"), element.classList.add('bxs-bookmark') }, 1500)
+                                    }else if(res.status == "not logged in"){
+                                        swal.fire("invalid login")
+                                    }
+                                }
+                            })
+                        })
+                    })
+            }
+        },
+    })
+}
+</script>

@@ -190,8 +190,6 @@ router.post('/login', async (req, res, next) => {
         When a failure occur passport passes the message object as error */
         failureFlash: true
     })(req, res, next);
-    
-    
 });
 
 router.get('/logout', (req, res) => {
@@ -217,6 +215,15 @@ router.get('/profile/:id', ensureAuthenticated, (req, res) => {
         })
         .catch(err => console.log(err));
 });
+
+router.post('/checkStatus', (req, res) => {
+    if(req.isAuthenticated()){
+        res.send({status: "logged in"})
+    }else{
+        res.send({status: "not logged in"})
+    }
+})
+
 router.post('/editprofile/:id', ensureAuthenticated, (req, res) => {
     let name = req.body.name;
     let email = req.body.email;

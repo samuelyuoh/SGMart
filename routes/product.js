@@ -5,32 +5,95 @@ const Product = require("../models/Product");
 const Brand = require("../models/Brand");
 const ensureAuthenticated = require('../helpers/auth');
 const Category = require('../models/Category');
+const Wishlist = require('../models/Wishlist');
+const flashMessage = require('../helpers/messenger');
+const User = require('../models/User');
+const paginate = require('express-paginate');
+const { ifEquals } = require('../helpers/handlebars');
 
 router.get('/products', async (req, res) => {
-	Product.findAll({
-		include: [{
-			model: Brand,
-			required: true,
-		},
-		{
-			model: Category,
-			required: true
-		}
-	],
-		raw: true
-	})
-		.then((product) => {
-			console.log(product);
-		res.render('product/products', {product: product})
-	})
-	.catch(err => console.log(err));
+	var brands = await Brand.findAll({raw:true});
+	const pageAsNumber = Number.parseInt(req.query.page)
+	let page = 0
+	if(!Number.isNaN(pageAsNumber) && pageAsNumber >= 0) {
+		page = pageAsNumber;
+	}
+	if (req.isAuthenticated()){
+		var wishlist = await Wishlist.findAll({
+			where: {userId: req.user.id},
+			raw: true
+			})
+		
+		var product = await Product.findAndCountAll({
+			limit:8,
+			offset: page*8,
+			include: [{
+				model: Brand,
+				required: true,
+			},
+			{
+				model: Category,
+				required: true
+			}
+			],
+				raw: true
+			})
+		res.render('product/products', {
+			product: product.rows,
+			totalPages: Math.ceil(product.count/8),
+			currentPage: page,
+			brands: brands, 
+			wishlist: wishlist,
+			});
+	}else{
+		Product.findAndCountAll({
+			limit:8,
+			offset: page*8,
+			include: [{
+				model: Brand,
+				required: true,
+			},
+			{
+				model: Category,
+				required: true
+			}
+		],
+			raw: true
+		})
+			.then((product) => {
+			res.render('product/products', 
+			{
+				product: product.rows,
+				totalPages: Math.ceil(product.count/8),
+				currentPage: page,
+				brands: brands,
+
+			});
+		})
+		.catch(err => console.log(err));
+	}
 })
 
-router.get('/details/:id', (req, res) => {
-    Product.findByPk(req.params.id)
-        .then((products) => {
-            res.render('product/details', { products });
-        })
+router.post('/wishlist', async (req, res) => {
+	let quantity = 1;
+	let productId = req.body.id;
+	if (req.isAuthenticated()){
+		var check = await Wishlist.findAll(
+			{where: { userId: req.user.id, productId: productId}, raw:true  },
+		)
+		if (check.length != 0){
+			let wishlist = await Wishlist.destroy({where: { userId: req.user.id, productId: productId}  })
+			res.send({status: "remove"})
+			// flashMessage(res, 'success', 'Product has been removed from wishlist')
+		}else if (check.length == 0){
+			let userId = req.user.id; //this is a placeholder for the user
+			let wishlist = await Wishlist.create({quantity, userId, productId})
+			res.send({status: "add"})
+		}
+	}else{
+		res.send({status: "error"})
+	}
 })
+
 
 module.exports = router;
