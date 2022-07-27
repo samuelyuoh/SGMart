@@ -52,6 +52,17 @@ const checkurl = function(arg1, arg2) {
         return false;
     }
 }
+const ifstatus = function(value, cvalue) {
+    return (value == cvalue ? true : false)
+}
 
-
-module.exports = {formatDate, replaceCommas, checkboxCheck, radioCheck, ifEquals, checkdiscount, checkstock,checkurl, ifmoney};
+const isStaff = function(userType) {
+	return (userType == 'staff' || userType == 'admin' || userType == 'madmin')
+};
+const isAdmin = function(userType) {
+	return (userType == 'admin' || userType == 'madmin')
+};
+const isMAdmin = function(userType) {
+	return (userType == 'madmin')
+};
+module.exports = {formatDate, replaceCommas, checkboxCheck, radioCheck, ifEquals, checkdiscount, checkstock,checkurl, ifmoney, ifstatus, isStaff, isAdmin, isMAdmin};
