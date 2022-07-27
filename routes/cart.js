@@ -7,14 +7,32 @@ const flashMessage = require('../helpers/messenger');
 
 router.post('/add/:id', async function(req, res, next) {
     let productid = req.params.id;
-    console.log(productid)
+    let quantity = req.body.quantity
+    // let totalCost = req.body.totalCost
+    console.log(quantity)
+    // console.log(productid)
     var product = await Product.findByPk(productid)
-    console.log(product.product_name)
-    let cart_item = await Cart.create({productId: productid})
-    flashMessage(res, 'success', 'Product added successfully.');
-    res.redirect('/product/products')
+    let cart_item = await Cart.create({
+        productId: productid,
+        quantity: quantity, 
+        product_name: product.product_name,
+        product_price: product.product_price,
+        totalCost: quantity * product.product_price,
+        discount: product.discount,
+        stock: product.stock,
+        desc: product.desc,
+        image: product.image,
+        
+    })
+        .then((cart) => {
+            console.log(cart.toJSON());
+            flashMessage(res, 'success', 'Product added successfully.');
+            res.redirect('/product/products');
+        })
+        .catch(err => console.log(err))
+
 });
-  
+
 router.get('/cart', function(req, res, next) {
     Cart.findAll({
         raw: true,
@@ -24,12 +42,12 @@ router.get('/cart', function(req, res, next) {
         }
     })
         .then((carts) => {
-            console.log(carts)
             res.render('cart/cart', { carts });
             
         })
         .catch(err => console.log(err));
 });
+
 
 router.get('/delete/:id', async function (req, res) {
     try {
@@ -50,6 +68,16 @@ router.get('/delete/:id', async function (req, res) {
     }
 });
 
+router.post('/updateqty',(req,res)=>{
+    let quantity =req.body.quantity;
+    console.log(quantity)
+    let productId = req.body.id
+    Cart.update(
+        { quantity },
+        { where: { productId: productId } }
+    )
+        .catch(err => console.log(err));
+});
 
 module.exports = router;
 

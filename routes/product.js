@@ -20,7 +20,7 @@ router.get('/products', async (req, res) => {
 		raw: true
 	})
 		.then((product) => {
-			console.log(product);
+			// console.log(product);
 		res.render('product/products', {product: product})
 	})
 	.catch(err => console.log(err));
