@@ -106,73 +106,79 @@
 
 <script>
     function submitForm(element){
-    var id = element.value;
-    $.ajax({
-        url : '/product/wishlist',
-        method: 'POST',
-        contentType: 'application/json',
-        data: JSON.stringify({id: id}),
-        success: function(res){
-            if (res.status == "add"){
-                // element.classList.remove("bx-bookmarks")
-                element.classList.add('bxs-bookmark')
-                element.classList.add('bx-tada')
-                setTimeout(function(){element.classList.remove('bx-tada')}, 1000)
-            } else if (res.status == "remove") {
-                // element.classList.add("bi-bookmarks")
-                element.classList.remove('bxs-bookmark')
-                element.classList.add('bx-tada')
-                setTimeout(function(){element.classList.remove('bx-tada')}, 1000)
-            }else{
-                Swal.fire({
-                    title: 'Login Form',
-                    html: `<input type="text" id="login" class="swal2-input" placeholder="Username">
-                    <input type="password" id="password" class="swal2-input" placeholder="Password">`,
-                    confirmButtonText: 'Sign in',
-                    focusConfirm: true,
-                    preConfirm: () => {
-                        const login = Swal.getPopup().querySelector('#login').value
-                        const password = Swal.getPopup().querySelector('#password').value
-                        if (!login || !password) {
-                        Swal.showValidationMessage(`Please enter login and password`)
-                        }
-                        return { login: login, password: password }
-                    }
-                    }).then((result) => {
-                        $.ajax({
-                            type: 'POST',
-                            data:{
-                                email: result.value.login,
-                                password: result.value.password
-                            },
-                            url: '/user/login',
-                        }).then((result)=>{
-                            $.ajax({
-                                type: 'POST',
-                                url: '/user/checkStatus',
-                                success: function(res){
-                                    if(res.status == 'logged in'){
-                                        swal.fire({
-                                            title: "logging in ",
-                                            timer: 1000,
-                                            didOpen: () => {
-                                            Swal.showLoading()
-                                            const b = Swal.getHtmlContainer().querySelector('b')
-                                            timerInterval = setInterval(() => {
-                                            b.textContent = Swal.getTimerLeft()
-                                            }, 100)
-                                        }
-                                        })
-                                        setTimeout(function(){swal.fire("logged in"), element.classList.add('bxs-bookmark') }, 1500)
-                                    }else if(res.status == "not logged in"){
-                                        swal.fire("invalid login")
-                                    }
-                                }
-                            })
-                        })
-                    })
+        var id = element.value;
+        $.ajax({
+            url : '/product/wishlist',
+            method: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({id: id}),
+            success: function(res){
+                if (res.status == "add"){
+                    // element.classList.remove("bx-bookmarks")
+                    element.classList.add('bxs-bookmark')
+                    element.classList.add('bx-tada')
+                    setTimeout(function(){element.classList.remove('bx-tada')}, 1000)
+                } else if (res.status == "remove") {
+                    // element.classList.add("bi-bookmarks")
+                    element.classList.remove('bxs-bookmark')
+                    element.classList.add('bx-tada')
+                    setTimeout(function(){element.classList.remove('bx-tada')}, 1000)
+                }else{
+                    fireLogin(element)
+                }
+            },
+        })
+    }
+
+function fireLogin(element){
+    Swal.fire({
+        title: 'Login Form',
+        html: `<input type="text" id="login" class="swal2-input" placeholder="Username">
+        <input type="password" id="password" class="swal2-input" placeholder="Password">`,
+        confirmButtonText: 'Sign in',
+        focusConfirm: true,
+        preConfirm: () => {
+            const login = Swal.getPopup().querySelector('#login').value
+            const password = Swal.getPopup().querySelector('#password').value
+            if (!login || !password) {
+            Swal.showValidationMessage(`Please enter login and password`)
             }
-        },
+            return { login: login, password: password }
+        }
+        }).then((result) => {
+            $.ajax({
+                type: 'POST',
+                data:{
+                    email: result.value.login,
+                    password: result.value.password
+                },
+                url: '/user/login',
+            }).then((result) => {checkStatus(result, element)})
+        })
+    }
+
+function checkStatus(result, element){
+    $.ajax({
+        type: 'POST',
+        url: '/user/checkStatus',
+        success: function(res){
+            if(res.status == 'logged in'){
+                swal.fire({
+                    title: "logging in ",
+                    timer: 1000,
+                    didOpen: () => {
+                    Swal.showLoading()
+                    const b = Swal.getHtmlContainer().querySelector('b')
+                    timerInterval = setInterval(() => {
+                    b.textContent = Swal.getTimerLeft()
+                    }, 100)
+                }
+                })
+                setTimeout(function(){swal.fire("logged in"), submitForm(element) }, 1500)
+            }else if(res.status == "not logged in"){
+                swal.fire("invalid login")
+            }
+        }
     })
 }
 </script>
