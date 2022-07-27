@@ -59,17 +59,12 @@ const getJSONContent = function (data){
 
 const checkWishlist = function(id, wishlist){
     if(id == wishlist){
-        return false;
+        return true;
     }else{
-        return true
+        return false
     }
 }
 
-const paginate = function(totalPages){
-    if (totalPages > 0){
-        pass
-    }
-}
 const next = function(currentPage){
     return currentPage + 1
 }
@@ -96,4 +91,4 @@ const haveNext = function(currentPage, totalPages){
 module.exports = 
     {formatDate, replaceCommas, checkboxCheck, radioCheck, ifEquals, 
     checkdiscount, checkstock,checkurl, ifmoney, getJSONContent, 
-    checkWishlist, paginate, next, previous, haveNext, havePrevious};
+    checkWishlist, next, previous, haveNext, havePrevious};

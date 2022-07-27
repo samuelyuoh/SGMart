@@ -62,15 +62,24 @@ router.post('/register', async function (req, res) {
 router.post('/login', (req, res, next) => {
     passport.authenticate('local', {
         // Success redirect URL
-        successRedirect: '/',
+        send: {status:"logged in"},
+        successRedirect: ('/'),
         // Failure redirect URL 
         failureRedirect: '/user/login',
         /* Setting the failureFlash option to true instructs Passport to flash 
         an error message using the message given by the strategy's verify callback.
         When a failure occur passport passes the message object as error */
-        failureFlash: true
+        failureFlash: true,
     })(req, res, next);
 });
+
+router.post('/checkStatus', (req, res) => {
+    if(req.isAuthenticated()){
+        res.send({status: "logged in"})
+    }else{
+        res.send({status: "not logged in"})
+    }
+})
 
 router.get('/logout', (req, res) => {
     req.logout();

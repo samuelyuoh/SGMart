@@ -1,7 +1,4 @@
-
-<script src="/js/data.js"></script>
 <div class="container">
-
 <div class="row">
         {{#each product }}
         <div class="col-md-3 mt-3">
@@ -23,7 +20,7 @@
                 {{!-- <a type="submit" href="/product/details/{{id}}" class="float-start btn btn-primary">Details</a> --}}
                 <button type="button" class="btn btn-primary float-start" data-bs-toggle="modal" data-bs-target="#details_{{id}}">Details</button>
                 {{!-- modal --}}
-                    <div class="modal fade" id="details_{{id}}" data-backdrop="static">
+                    <div class="modal fade" id="details_{{id}}" data-backdrop="static" data-bs-focus="false">
                         <div class="modal-dialog modal-lg modal-dialog-centered">
                             <div class="modal-content">
                                 <div class="modal-header"style="background-color:white">
@@ -52,6 +49,7 @@
                                             <p style="font-size: 24px; color: #4a4a4a; font-weight: 400; line-height: 24px; vertical-align: top; text-align: left; padding: 0px;">{{product_name}}</p>
                                             <hr>
                                             <p style="font-size: 16px; color: #4a4a4a; font-weight: 400; line-height: 24px; vertical-align: top; text-align: left; margin: 0px 0px 30px;">{{desc}}</p>
+                                            <div style="float: left">
                                             <form action="/cart/add/{{id}}" method="post">
                                                 {{#if (checkstock stock)}}
                                                 <input type="hidden" name="product_id" value="{{id}}">
@@ -63,10 +61,9 @@
                                                 {{else}}
                                                 <button type="submit" disabled class="btn btn-sm btn-danger">Out of Stock</button>
                                                 {{/if}}
-                                                <br>
-                                                <br>
-                                                <h3>Stock: {{stock}}</h1>
+                                            </div>
                                             </form>
+                                                <h4 style="float: right">Stock: {{stock}}</h4>
                                         </div>
                                     </div>
                                 </div>
@@ -106,3 +103,76 @@
     {{/if}}
     </ul>
 </div>
+
+<script>
+    function submitForm(element){
+    var id = element.value;
+    $.ajax({
+        url : '/product/wishlist',
+        method: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify({id: id}),
+        success: function(res){
+            if (res.status == "add"){
+                // element.classList.remove("bx-bookmarks")
+                element.classList.add('bxs-bookmark')
+                element.classList.add('bx-tada')
+                setTimeout(function(){element.classList.remove('bx-tada')}, 1000)
+            } else if (res.status == "remove") {
+                // element.classList.add("bi-bookmarks")
+                element.classList.remove('bxs-bookmark')
+                element.classList.add('bx-tada')
+                setTimeout(function(){element.classList.remove('bx-tada')}, 1000)
+            }else{
+                Swal.fire({
+                    title: 'Login Form',
+                    html: `<input type="text" id="login" class="swal2-input" placeholder="Username">
+                    <input type="password" id="password" class="swal2-input" placeholder="Password">`,
+                    confirmButtonText: 'Sign in',
+                    focusConfirm: true,
+                    preConfirm: () => {
+                        const login = Swal.getPopup().querySelector('#login').value
+                        const password = Swal.getPopup().querySelector('#password').value
+                        if (!login || !password) {
+                        Swal.showValidationMessage(`Please enter login and password`)
+                        }
+                        return { login: login, password: password }
+                    }
+                    }).then((result) => {
+                        $.ajax({
+                            type: 'POST',
+                            data:{
+                                email: result.value.login,
+                                password: result.value.password
+                            },
+                            url: '/user/login',
+                        }).then((result)=>{
+                            $.ajax({
+                                type: 'POST',
+                                url: '/user/checkStatus',
+                                success: function(res){
+                                    if(res.status == 'logged in'){
+                                        swal.fire({
+                                            title: "logging in ",
+                                            timer: 1000,
+                                            didOpen: () => {
+                                            Swal.showLoading()
+                                            const b = Swal.getHtmlContainer().querySelector('b')
+                                            timerInterval = setInterval(() => {
+                                            b.textContent = Swal.getTimerLeft()
+                                            }, 100)
+                                        }
+                                        })
+                                        setTimeout(function(){swal.fire("logged in"), element.classList.add('bxs-bookmark') }, 1500)
+                                    }else if(res.status == "not logged in"){
+                                        swal.fire("invalid login")
+                                    }
+                                }
+                            })
+                        })
+                    })
+            }
+        },
+    })
+}
+</script>

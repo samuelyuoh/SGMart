@@ -11,7 +11,6 @@ const User = require('../models/User');
 const paginate = require('express-paginate');
 const { ifEquals } = require('../helpers/handlebars');
 
-
 router.get('/products', async (req, res) => {
 	var brands = await Brand.findAll({raw:true});
 	const pageAsNumber = Number.parseInt(req.query.page)
@@ -39,7 +38,6 @@ router.get('/products', async (req, res) => {
 			],
 				raw: true
 			})
-			console.log(product)
 		res.render('product/products', {
 			product: product.rows,
 			totalPages: Math.ceil(product.count/8),
@@ -48,7 +46,9 @@ router.get('/products', async (req, res) => {
 			wishlist: wishlist,
 			});
 	}else{
-		Product.findAll({
+		Product.findAndCountAll({
+			limit:8,
+			offset: page*8,
 			include: [{
 				model: Brand,
 				required: true,
@@ -61,7 +61,14 @@ router.get('/products', async (req, res) => {
 			raw: true
 		})
 			.then((product) => {
-			res.render('product/products', {product: product, brands: brands});
+			res.render('product/products', 
+			{
+				product: product.rows,
+				totalPages: Math.ceil(product.count/8),
+				currentPage: page,
+				brands: brands,
+
+			});
 		})
 		.catch(err => console.log(err));
 	}
@@ -84,7 +91,7 @@ router.post('/wishlist', async (req, res) => {
 			res.send({status: "add"})
 		}
 	}else{
-		flashMessage(res,'Error', 'Please login to add to wishlist')
+		res.send({status: "error"})
 	}
 })
 

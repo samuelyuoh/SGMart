@@ -17,7 +17,6 @@ function submitForm(element){
                 element.classList.add('bx-tada')
                 setTimeout(function(){element.classList.remove('bx-tada')}, 1000)
             }
-        }
+        },
     })
-    
 }
