@@ -110,6 +110,13 @@
                         <hr>
                         <div class="row">
                             <div class="col-sm-12" style="padding-right: 5%;">
+                                <a class="btn" style="float: left !important;">
+                                    {{#if user.tfa}}
+                                        <input type="checkbox" id="myButton" name="myButton" value="{{user.id}}" checked> Enable 2 Factor Authentication
+                                    {{else}}
+                                        <input type="checkbox" id="myButton" name="myButton" value="{{user.id}}"> Enable 2 Factor Authentication
+                                    {{/if}}
+                                </a>
                                 <a class="btn btn-info" style="float: right !important;" href="/user/editprofile/{{user.id}}" >Edit</a>
                             </div>
                         </div>
@@ -170,7 +177,16 @@
     </div>
   </div>
 </div>
-
+<script>
+    var button = document.getElementById('myButton');
+    var x = document.getElementById("myButton").value;
+    button.onclick = function() {
+        var atLeastOneIsChecked = $('input[name="myButton"]:checked').length > 0;
+        if (atLeastOneIsChecked) {
+            location.assign('/user/'+x+'/2fa');
+        }      
+    }
+</script>
 <style>
     .bold {
     font-weight: bold;

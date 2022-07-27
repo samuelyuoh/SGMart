@@ -14,5 +14,6 @@ const User = db.define('user',
         userType: { type: Sequelize.STRING }, //admin, staff, customer
         status: { type: Sequelize.INTEGER }, //0 active, 1 deactivated, 2 banned
         verified: { type: Sequelize.BOOLEAN },
+        tfa: { type: Sequelize.BOOLEAN },
     });
 module.exports = User;

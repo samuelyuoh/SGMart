@@ -9,6 +9,8 @@ const Delivery = require('../models/Delivery');
 require('dotenv').config();
 const jwt = require('jsonwebtoken');
 const sgMail = require('@sendgrid/mail');
+const otpGenerator = require('otp-generator');
+const Swal = require('sweetalert2');
 
 function sendEmail(message) {
     key = rot13(process.env.SENDGRID_API_KEY)
@@ -135,7 +137,49 @@ router.get('/verify/:userId/:token', async function (req, res) {
         console.log(err);
     }
 });
-router.post('/login', (req, res, next) => {
+router.post('/login', async (req, res, next) => {
+    let {email, password} = req.body;
+    user = await User.findOne({where :{email: email}});
+    valid = user.tfa ? user.tfa : false;
+    
+    if (valid) {
+        otp = otpGenerator.generate(8, { upperCaseAlphabets: false, specialChars: false });
+        let token = jwt.sign({otp}, process.env.APP_SECRET, {expiresIn: 5 * 60});
+        a = `/user/${user.id}/2fa/verifyotp/${token}`;
+        id = user.id;
+        user = await User.findByPk(id);
+        
+        console.log(jwt.decode(token))
+        const message = {
+            to: user.email,
+            from: `SGMart <${process.env.SENDGRID_SENDER_EMAIL}>`,
+            subject: 'SGMart Login OTP',
+            html: `<br><br> Please use this OTP for logging in.<br><strong>Please Note: This OTP will only last 5 minutes.</strong>
+                    <br><br>OTP: <strong>${otp}</strong>`
+        };
+        sendEmail(message)
+            .then(response => {
+                console.log(response);
+                flashMessage(res, 'success','OTP successfully sent to ' +  user.email);
+                // res.redirect(`/user/${id}/2fa/verifyotp/${token}`);
+            })
+            .catch(err => {
+                console.log(err);
+                flashMessage(res, 'error', 'Error sending OTP to ' + user.email);
+                res.redirect('/');
+            });
+        passport.authenticate('local', {
+            // Success redirect URL
+            successRedirect: a,
+            // Failure redirect URL 
+            failureRedirect: '/user/login',
+            /* Setting the failureFlash option to true instructs Passport to flash 
+            an error message using the message given by the strategy's verify callback.
+            When a failure occur passport passes the message object as error */
+            failureFlash: true
+        })(req, res, next);
+    }
+
     passport.authenticate('local', {
         // Success redirect URL
         successRedirect: '/',
@@ -146,10 +190,11 @@ router.post('/login', (req, res, next) => {
         When a failure occur passport passes the message object as error */
         failureFlash: true
     })(req, res, next);
+    
+    
 });
 
 router.get('/logout', (req, res) => {
-    console.log(req.params)
     req.logout();
     res.redirect('/');
 });
@@ -172,7 +217,6 @@ router.get('/profile/:id', ensureAuthenticated, (req, res) => {
         })
         .catch(err => console.log(err));
 });
-
 router.post('/editprofile/:id', ensureAuthenticated, (req, res) => {
     let name = req.body.name;
     let email = req.body.email;
@@ -319,9 +363,38 @@ router.post('/resetpassword/:id/:token', async (req, res) => {
                 res.redirect('/user/login');
             })
     }
-
-
 });
+router.get('/:id/2fa', async (req, res) => {
+    id = req.params.id;
+    await User.update(
+        {tfa: 1},
+        {where: {id: id}}
+    )
+    .then((user) => {
+        flashMessage(res, 'success', '2FA Enabled');
+        res.redirect(`/user/profile/${id}`)
+    })
+    .catch(err => console.log(err));
+});
+
+router.get('/:id/2fa/verifyotp/:token', (req, res) => {
+    res.render('user/otp');
+});
+router.post('/:id/2fa/verifyotp/:token', async (req, res) => {
+    let {otp} = req.body;
+    token = jwt.decode(req.params.token);
+    console.log(token);
+    user = User.findByPk(req.params.id);
+    email = user.email;
+    if (token['otp'] == otp) {
+        res.redirect('/');
+
+    } else {
+        res.redirect('/user/logout');
+    }
+
+})
+
 // router.get('/check_delivery', (req, res) => {
 //     res.render('user/check_delivery');
 // });

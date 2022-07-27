@@ -12,6 +12,7 @@ User.create({
     userType: 'madmin',
     status: 0,
     verified: 1,
+    tfa: 1,
 });
 
 for (var i=1; i < 6; i++) {
@@ -22,6 +23,7 @@ for (var i=1; i < 6; i++) {
         userType: 'customer',
         status: 0,
         verified: 1,
+        tfa: 0,
 
     })
     console.log(`User${i} added`)
