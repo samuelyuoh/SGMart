@@ -8,8 +8,6 @@ const Product = db.define('product',
         discount: { type: Sequelize.DECIMAL(5,2) },
         stock: { type: Sequelize.INTEGER },
         desc: { type: Sequelize.STRING },
-        brand_id: { type: Sequelize.INTEGER },
-        category_id: { type: Sequelize.INTEGER },
         image: { type: Sequelize.STRING }
     });
 module.exports = Product;

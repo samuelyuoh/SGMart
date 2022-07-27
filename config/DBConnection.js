@@ -22,12 +22,15 @@ const setUpDB = (drop) => {
             // */
             // User.hasMany(Coupon)
             // Coupon.belongsTo(User)
-
+           Product.belongsTo(Brand);
+           Brand.hasMany(Product);
+           Product.belongsTo(Category);
+           Category.hasMany(Product);
+           Cart.belongsTo(Product)
+           User.hasMany(Cart)
             mySQLDB.sync({
                 force: drop
             });
-            Cart.belongsTo(Product)
-            User.hasMany(Cart)
         })
         .catch(err => console.log(err));
 };

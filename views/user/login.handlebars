@@ -18,7 +18,8 @@
               <input type="password" name="password" class="form-control" value="" required>
             </div>
             <div class="text-center text-lg-start mt-4 pt-2">
-              <p><input type="submit" value="Login" class="btn btn-primary btn-lg" style="padding-left: 2.5rem; padding-right: 2.5rem;"></p>
+              <p><input type="submit" value="Login" class="btn btn-primary btn-lg" style="padding-left: 2.5rem; padding-right: 2.5rem; width: 100% !important;"></p>
+              <a href="/user/resetpassword"><p class="text-center">Forgotten Password?</p></a>
               <p class="small fw-bold mt-2 pt-1 mb-0">Don't have an account? 
               <a href="/user/register" class="link-danger">Register</a></p>
             </div>
@@ -28,3 +29,53 @@
       </div>
     </div>
 </section>
+
+
+<script>
+    {{!-- Swal.fire({
+      title: 'Enter your OTP',
+      html: `Please note: You can find your OTP in your registered email and your OTP will expire in 5 minutes
+      <input type="text" id="otp" name="otp" class="swal2-input" placeholder="OTP">`,
+      confirmButtonText: 'Sign In',
+      showCancelButton: true,
+      focusConfirm: true,
+      preConfirm: () => {
+          const otp = Swal.getPopup.querySelector('#otp').value;
+          if (!otp) {
+              Swal.showValidationMessage('Please enter OTP');
+          }
+          return {otp: otp}
+      }
+    }).then((result) => {
+      $.ajax({
+          type: 'POST',
+          data:{
+              otp: result.value.otp
+          },
+          url: '/',
+          success: function(data) {
+              Swal.fire({
+                  title: 'Logging In',
+                  timer : 1000,
+                  didOpen: () =>{
+                      Swal.showLoading();
+                      const b = Swal.getHtmlContainer().querySelector('b');
+                      timerInterval = setInterval(() => {
+                          b.textContext = Sqal.getTimerLeft()
+                      },100)
+                  },
+                  willClose: () => {
+                      clearInterval(timerInterval);
+                  }
+              })
+              setTimeout(function() {
+                  location.reload(), Swal.fire("logged in")
+              }, 1500)
+          },
+          error: function(data) {
+              console.log(err);
+          }
+      })
+    }) --}}
+
+</script>
