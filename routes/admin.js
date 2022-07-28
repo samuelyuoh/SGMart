@@ -44,7 +44,7 @@ const isMAdmin = function(userType) {
 	return (userType == 'madmin')
 };
 
-router.get('/', ensureAuthenticated, (req, res) => {
+router.get('/', ensureAuthenticated, async (req, res) => {
 	if (!isStaff(req.user.userType)) {
 		res.redirect('/');
 	} else {
@@ -55,6 +55,20 @@ router.get('/', ensureAuthenticated, (req, res) => {
 			},
 			user: req.user
 		}
+		const thirtyDaysAgo = new Date(new Date().setDate(new Date().getDate() - 30));
+		// a = new Date().add(-30).days();
+		b = moment().subtract(30, 'days');
+		curdate = moment.now()
+
+		console.log(curdate-b)
+		users = await User.findAll();
+		a = []
+		for (var i = 0;i < users.length;i++) {
+			if ((curdate - moment(users[i].createdAt))< 2592000000 ) { //num of seconds in 30 days
+				a.push(users[i])
+			}
+		}
+		metadata.l30 = a.length;
 		res.render('admin/index', metadata)
 
 	}
