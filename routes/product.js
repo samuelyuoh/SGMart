@@ -9,6 +9,7 @@ const Wishlist = require('../models/Wishlist');
 const flashMessage = require('../helpers/messenger');
 const User = require('../models/User');
 const paginate = require('express-paginate');
+const Swal = require('sweetalert2')
 const { ifEquals } = require('../helpers/handlebars');
 
 router.get('/products', async (req, res) => {
@@ -95,5 +96,10 @@ router.post('/wishlist', async (req, res) => {
 	}
 })
 
+router.post('/removewishlist', async (req, res) => {
+	let productId = req.body.id;
+	let wishlist = await Wishlist.destroy({where: { userId: req.user.id, productId: productId}  })
+	res.send({status: "deleted"})
+})
 
 module.exports = router;

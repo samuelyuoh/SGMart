@@ -2,11 +2,12 @@ const express = require('express');
 const router = express.Router();
 const flashMessage = require('../helpers/messenger');
 const User = require('../models/User');
+const Brand = require('../models/Brand');
 
-router.get('/', (req, res) => {
-	const title = 'Video Jotter';
+router.get('/', async (req, res) => {
+	var brands = await Brand.findAll()
 	// renders views/index.handlebars, passing title as an object
-	res.render('index', { title: title })
+	res.render('index', { brands })
 });
 
 router.post('/flash', (req, res) => {
