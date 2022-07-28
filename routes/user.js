@@ -216,6 +216,15 @@ router.get('/profile/:id', ensureAuthenticated, (req, res) => {
         })
         .catch(err => console.log(err));
 });
+
+router.post('/checkStatus', (req, res) => {
+    if(req.isAuthenticated()){
+        res.send({status: "logged in"})
+    }else{
+        res.send({status: "not logged in"})
+    }
+})
+
 router.post('/editprofile/:id', ensureAuthenticated, (req, res) => {
     let name = req.body.name;
     let email = req.body.email;

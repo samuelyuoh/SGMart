@@ -255,8 +255,7 @@ router.get('/inventory', async (req, res) => {
 		raw: true
 	})
 		.then((product) => {
-			console.log(product);
-		res.render('admin/inventory', {product: product})
+			res.render('admin/inventory', {product: product, layout: 'admin', nav: { sidebarActive: 'product' }})
 	})
 	.catch(err => console.log(err));
 })
@@ -305,6 +304,18 @@ router.post('/updateproduct/:id', async function(req, res) {
 	catch(err){
 		console.log(err);
 	}
+})
+
+router.post('/updatestock/:id', async (req, res) =>{
+	let product = await Product.findByPk(req.params.id).then((products)=>
+	current_stock = products.stock)
+	Product.update(
+			{stock: parseInt(req.body.stock) + parseInt(current_stock)},
+			{where: {id: req.params.id}}
+	)
+	.catch(err => console.log(err));
+	flashMessage(res, 'success', 'Stock added successfully.')
+	res.redirect('/admin/inventory')
 })
 
 router.get('/deleteproduct/:id', async function(req, res){

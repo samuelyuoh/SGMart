@@ -65,4 +65,37 @@ const isAdmin = function(userType) {
 const isMAdmin = function(userType) {
 	return (userType == 'madmin')
 };
-module.exports = {formatDate, replaceCommas, checkboxCheck, radioCheck, ifEquals, checkdiscount, checkstock,checkurl, ifmoney, ifstatus, isStaff, isAdmin, isMAdmin};
+
+const checkWishlist = function(id, wishlist){
+    if(id == wishlist){
+        return true;
+    }else{
+        return false
+    }
+}
+
+const next = function(currentPage){
+    return currentPage + 1
+}
+
+const previous = function(currentPage){
+    return currentPage - 1
+}
+
+const havePrevious = function(currentPage){
+    if (currentPage == 0){
+        return false
+    }else{
+        return true
+    }
+}
+
+const haveNext = function(currentPage, totalPages){
+    if(currentPage+1 == totalPages){
+        return false
+    }else{return true}
+}
+
+module.exports = {formatDate, replaceCommas, checkboxCheck, radioCheck, ifEquals, 
+                checkdiscount, checkstock,checkurl, ifmoney, ifstatus, isStaff, 
+                isAdmin, isMAdmin, checkWishlist, next, previous, haveNext, havePrevious};

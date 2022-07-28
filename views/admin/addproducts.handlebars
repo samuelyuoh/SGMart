@@ -34,7 +34,7 @@
                   {{else}}
                   {{#product}}
                     <label for="discount">Edit Discount</label>
-                    <input type="number" class="form-control" name="discount" step=".01" min ="0.1" value="{{discount}}" placeholder ={{discount}} required>
+                    <input type="number" class="form-control" name="discount" step=".01" min ="0.1" value="{{discount}}" placeholder ={{discount}} default="{{discount}}"required>
                   {{/product}}
                   {{/if}}
                     {{!-- {{ form-label 'expenses' 'Please enter expenses of product'}}
