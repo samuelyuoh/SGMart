@@ -73,7 +73,7 @@ router.post('/register', async function (req, res) {
             var salt = bcrypt.genSaltSync(10);
             var hash = bcrypt.hashSync(password, salt);
             // Use hashed password
-            let user = await User.create({ name, email, password: hash, 'userType': 'customer' });
+            let user = await User.create({ name, email, password: hash, 'userType': 'customer', 'status': 0  });
             // Send email
             let token = jwt.sign(email, process.env.APP_SECRET);
             let url = `${process.env.BASE_URL}:${process.env.PORT}/user/verify/${user.id}/${token}`;
@@ -395,9 +395,11 @@ router.post('/:id/2fa/verifyotp/:token', async (req, res) => {
     user = User.findByPk(req.params.id);
     email = user.email;
     if (token['otp'] == otp) {
+        flashMessage(res, 'success', 'Successfully logged in');
         res.redirect('/');
 
     } else {
+        flashMessage(res, 'error', 'Wrong OTP, please log in again');
         res.redirect('/user/logout');
     }
 

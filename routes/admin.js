@@ -150,6 +150,7 @@ router.get('/userList', async (req, res) => {
 			  [Op.eq]: 'customer'
 			}
 		  },
+		order: Sequelize.col('id'),
 		raw: true
 	})
 		.then((users) => {
@@ -216,7 +217,7 @@ router.get('/status/:change/:id', async (req, res) => {
 				flashMessage(res, 'error', 'User is not banned');
 			} else {
 				await User.update(
-					{status: 1},
+					{status: 0},
 					{where: {id: req.params.id}}
 				)
 				.then((result) => {
