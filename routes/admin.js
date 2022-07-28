@@ -59,8 +59,6 @@ router.get('/', ensureAuthenticated, async (req, res) => {
 		// a = new Date().add(-30).days();
 		b = moment().subtract(30, 'days');
 		curdate = moment.now()
-
-		console.log(curdate-b)
 		users = await User.findAll();
 		a = []
 		for (var i = 0;i < users.length;i++) {
@@ -94,28 +92,39 @@ router.get('/createStaffAcc', ensureAuthenticated, (req, res) => {
 	
 });
 
-router.post('/createStaffAcc', ensureAuthenticated, (req, res) => {
+router.post('/createStaffAcc', ensureAuthenticated, async (req, res) => {
 	email = req.body.email;
-	
-	let token = jwt.sign(email, process.env.APP_SECRET);
-	let url = `${process.env.BASE_URL}:${process.env.PORT}/admin/staffRegister/${email}/${token}`;
-	console.log(token)
-	const message = {
-		to: email,
-		from: `SGMart <${process.env.SENDGRID_SENDER_EMAIL}>`,
-		subject: 'Register SGMart Staff Account',
-		html: `Welcome to the SGMart Staff Team.<br><br> Please <a href=\"${url}"><strong>register</strong></a> your account.`
-	};
-	sendEmail(message)
-		.then(response => {
-			console.log(response);
-			flashMessage(res, 'success','registered link sent to '+email+' successfully');
-			res.redirect('/admin');
+	user = await User.findOne({where: {email: email}});
+	if (!user) {
+		let token = jwt.sign(email, process.env.APP_SECRET);
+		let url = `${process.env.BASE_URL}:${process.env.PORT}/admin/staffRegister/${email}/${token}`;
+		console.log(token)
+		const message = {
+			to: email,
+			from: `SGMart <${process.env.SENDGRID_SENDER_EMAIL}>`,
+			subject: 'Register SGMart Staff Account',
+			html: `Welcome to the SGMart Staff Team.<br><br> Please <a href=\"${url}"><strong>register</strong></a> your account.`
+		};
+		sendEmail(message)
+			.then(response => {
+				console.log(response);
+				flashMessage(res, 'success','registered link sent to '+email+' successfully');
+				res.redirect('/admin');
+			})
+			.catch(err => {
+				console.log(err);
+				flashMessage(res, 'error', 'Error when sending email to ' + email);
+			});
+	} else {
+		User.update(
+			{userType: 'staff'},
+			{where: {email: email}}
+		).then((result) => {
+			flashMessage(res, 'success', 'Account updated to staff account');
+			res.redirect('/admin')
 		})
-		.catch(err => {
-			console.log(err);
-			flashMessage(res, 'error', 'Error when sending email to ' + email);
-		});
+	}
+	
 });
 
 router.get('/staffRegister/:email/:token', async function (req, res) {
@@ -153,7 +162,7 @@ router.get('/userList', async (req, res) => {
 	const metadata = {
 		layout: 'admin',
 		nav: {
-			sidebarActive: 'cstaff'
+			sidebarActive: 'users'
 		},
 		user: req.user,
 	}
