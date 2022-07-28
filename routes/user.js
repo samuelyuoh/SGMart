@@ -88,7 +88,7 @@ router.post('/register', async function (req, res) {
             sendEmail(message)
                 .then(response => {
                     console.log(response);
-                    flashMessage(res, 'success', user.email + ' registered successfully');
+                    flashMessage(res, 'success', user.email + ' registered successfully. Please check your email to verify your email.');
                     res.redirect('/user/login');
                 })
                 .catch(err => {
@@ -180,18 +180,19 @@ router.post('/login', async (req, res, next) => {
             When a failure occur passport passes the message object as error */
             failureFlash: true
         })(req, res, next);
+    } else {
+        passport.authenticate('local', {
+            // Success redirect URL
+            successRedirect: '/',
+            // Failure redirect URL 
+            failureRedirect: '/user/login',
+            /* Setting the failureFlash option to true instructs Passport to flash 
+            an error message using the message given by the strategy's verify callback.
+            When a failure occur passport passes the message object as error */
+            failureFlash: true
+        })(req, res, next);
     }
 
-    passport.authenticate('local', {
-        // Success redirect URL
-        successRedirect: '/',
-        // Failure redirect URL 
-        failureRedirect: '/user/login',
-        /* Setting the failureFlash option to true instructs Passport to flash 
-        an error message using the message given by the strategy's verify callback.
-        When a failure occur passport passes the message object as error */
-        failureFlash: true
-    })(req, res, next);
 });
 
 router.get('/logout', (req, res) => {
