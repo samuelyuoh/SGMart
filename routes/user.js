@@ -87,7 +87,6 @@ router.post('/register', async function (req, res) {
             };
             sendEmail(message)
                 .then(response => {
-                    console.log(response);
                     flashMessage(res, 'success', user.email + ' registered successfully. Please check your email to verify your email.');
                     res.redirect('/user/login');
                 })
@@ -161,7 +160,6 @@ router.post('/login', async (req, res, next) => {
         };
         sendEmail(message)
             .then(response => {
-                console.log(response);
                 flashMessage(res, 'success','OTP successfully sent to ' +  user.email);
                 // res.redirect(`/user/${id}/2fa/verifyotp/${token}`);
             })
@@ -318,7 +316,6 @@ router.post('/resetpassword', async (req, res) => {
         };
         sendEmail(message)
             .then(response => {
-                console.log(response);
                 flashMessage(res, 'success','Reset email sent successfully to ' +  email);
                 res.redirect('/user/resetpassword');
             })
@@ -331,21 +328,39 @@ router.post('/resetpassword', async (req, res) => {
     
 })
 
-router.get('/resetpassword/:id/:token', (req, res) => {
+router.get('/resetpassword/:id/:token', async (req, res) => {
     try {
         token = req.params.token;
+        user = await User.findByPk(req.params.id)
+        .catch(err => console.log(err));
         a = jwt.decode(token);
-        if (Date.now() >= a['exp'] * 1000) {
-            flashMessage(res, 'error', 'Reset password has expired');//expired token
-            res.redirect('/user/resetpassword');
+        console.log(a);
+        if (a != null) {
+            if (user) {
+                if (a['email'] == user.email) {
+                    if (Date.now() >= a['exp'] * 1000) {
+                        flashMessage(res, 'error', 'Reset password has expired');//expired token
+                        res.redirect('/user/resetpassword');
+                    } else {
+                        res.render('user/newpwd');
+                    }
+                } else {
+                    flashMessage(res, 'error', 'Error. Access denied')
+                    res.redirect('/');
+                }
+            } else {
+                flashMessage(res, 'error', 'Error. Access denied')
+                res.redirect('/');
+            }
         } else {
-            res.render('user/newpwd');
+            flashMessage(res, 'error', 'Error. Access denied')
+            res.redirect('/')
         }
     }
     catch (err){
         console.log(err);
     }
-    
+
 })
 
 router.post('/resetpassword/:id/:token', async (req, res) => {

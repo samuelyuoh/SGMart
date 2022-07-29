@@ -251,7 +251,7 @@ router.get('/status/:change/:id', async (req, res) => {
 		}
 
 	}
-	res.redirect('/admin');
+	res.redirect('/admin/userlist');
 })
 
 router.get('/admincouponcreate', (req, res) => {
