@@ -9,8 +9,10 @@ const Delivery = require('../models/Delivery');
 require('dotenv').config();
 const jwt = require('jsonwebtoken');
 const sgMail = require('@sendgrid/mail');
+const Wishlist = require('../models/Wishlist')
 const otpGenerator = require('otp-generator');
 const Swal = require('sweetalert2');
+const Product = require('../models/Product');
 
 function sendEmail(message) {
     key = rot13(process.env.SENDGRID_API_KEY)
@@ -491,5 +493,16 @@ router.post('/editDelivery/:id', ensureAuthenticated, (req, res) => {
         })
         .catch(err => console.log(err));
 });
+
+router.get('/viewWishlist', async(req, res) => {
+    var wishlist = await Wishlist.findAll(
+        {where: { userId: req.user.id},
+        include: {model: Product,
+        required: true}, 
+        raw:true
+    }
+    )
+    res.render('user/viewWishlist', {wishlist})
+})
 
 module.exports = router;
