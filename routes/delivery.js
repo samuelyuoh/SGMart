@@ -32,16 +32,14 @@ router.post('/', async function (req, res) {
     let phone = req.body.phone;
     let delivery_date = req.body.fromDate;
     let delivery_time = req.body.time;
+    let cartId = req.body.cartId
     Delivery.create({delivery_date, delivery_time})
         .then((delivery)=> {
-            console.log(delivery.toJSON());
         })
         .catch(err => console.log(err))
     Order.create({name, email, address, phone, delivery_date, delivery_time})
         .then((order)=> {
-            console.log(order.toJSON());
             flashMessage(res,'success', 'Successfully Purchased Items')
-            res.redirect('/');
         })
         .catch(err => console.log(err))
 

@@ -11,6 +11,10 @@ const jwt = require('jsonwebtoken');
 const sgMail = require('@sendgrid/mail');
 const otpGenerator = require('otp-generator');
 const Swal = require('sweetalert2');
+const Order = require('../models/order');
+const Product = require('../models/Product');
+const Cart = require('../models/cart');
+
 
 function sendEmail(message) {
     key = rot13(process.env.SENDGRID_API_KEY)
@@ -481,5 +485,37 @@ router.post('/editDelivery/:id', ensureAuthenticated, (req, res) => {
         })
         .catch(err => console.log(err));
 });
+
+
+router.get('/orders/:id', ensureAuthenticated, (req, res) => {
+    User.findByPk(req.params.id)
+        .then((user) => {
+            if (!user) {
+                flashMessage(res, 'error', 'User not found');
+                // res.redirect('/user/login');
+                return;
+            }
+            if (req.user.id != req.params.id) {
+                flashMessage(res, 'error', 'Unauthorised access');
+                // res.redirect('/');
+                return;
+            }
+        })
+
+    Order.findAll({
+        raw: true,
+        user: req.params.id,
+        include:{
+            model: Cart,
+            required:false
+        }
+    })
+        .then((orders) => {
+            console.log(orders)
+            res.render('user/orders', {orders})
+        })        
+        .catch(err => console.log(err));
+});
+
 
 module.exports = router;

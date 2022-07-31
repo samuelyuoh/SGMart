@@ -41,10 +41,13 @@
                     <option value="5PM - 8PM">5PM - 8PM</option>
                 </select>
                 <label for="email"><i class="fa fa-envelope"></i> Delivery Time</label>
+                
           </div>
               </div>
                 <div class="text-center">
                     <input type="submit" value="Continue to payment" class="btn button-order col-md-12">
+                    {{!-- <input type="hidden" value="{{carts.id}}" id="cartId" name="cartId"> --}}
+
                 </div>
         </form>
       </div>
@@ -63,9 +66,10 @@
               </div>
               <div class="col-md-6 ms-3">
                 <p class="mb-0 text-descriptions">Product: {{product_name}} </p>
-                <p class="mb-0 text-descriptions">Price: {{product_price}}</p>
-                <p class="text-descriptions mt-0">Qty:<span class="text-descriptions fw-bold">1</span>
+                <p class="mb-0 text-descriptions">Price: {{totalCost}}</p>
+                <p class="text-descriptions mt-0">Qty:<span class="text-descriptions fw-bold">{{quantity}}</span>
                 </p>
+                <p class="mb-0 text-descriptions">Total Price: {{product_price}}</p>
               </div>
             </div>
             <hr>
@@ -160,4 +164,5 @@ label {
         
     today = yyyy + '-' + mm + '-' + dd;
     document.getElementById("datefield").setAttribute("min", today);
+    alert(document.getElementById("cartId").value)
 </script>

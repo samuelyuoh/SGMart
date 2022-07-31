@@ -239,7 +239,7 @@ router.get('/admincouponcreate', (req, res) => {
 	}
 
 	res.render('admin/admincouponcreate', metadata)
-	});
+});
 
 router.get('/inventory', async (req, res) => {
 	Product.findAll({
@@ -410,6 +410,17 @@ router.get('/admincoupondelete/:id', async function (req, res) {
 	catch (err) {
 	console.log(err);
 	}
+});
+
+router.get('/listorders', (req, res) => {
+	const metadata = {
+		layout: 'admin',
+		nav: {
+			sidebarActive: 'coupon'
+		}
+	}
+
+	res.render('admin/listorders', metadata)
 });
 
 module.exports = router;

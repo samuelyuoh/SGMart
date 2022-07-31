@@ -18,6 +18,7 @@
           <div class="product-details">
             <h1><strong><span class="item-quantity">1</span> x {{"product.product_name"}}</strong></h1>
             <p>Product Code -  {{"product.id"}}</p>
+            <input type="hidden" value="{{"product.id"}}" id="product_id">
           </div>
         </div>
         <div class="price"> {{"product.product_price"}}</div>
@@ -51,7 +52,7 @@
         </div>
         <div class="summary-total">
           <div class="total-title">Total</div>
-          <div class="total-value final-value" id="basket-total">1.20</div>
+          <div class="total-value final-value" id="basket-total"></div>
         </div>
         <div class="summary-checkout">
             <button type="submit" class="checkout-cta"  onclick="location.href = '/delivery'" >Go to Secure Checkout</button>
@@ -162,9 +163,11 @@ function recalculateCart(onlyTotal) {
 function updateQuantity(quantityInput) {
   /* Calculate line price */
   var productRow = $(quantityInput).parent().parent();
+  var product_id = document.getElementById('product_id').value;
   var price = parseFloat(productRow.children('.price').text());
   var quantity = $(quantityInput).val();
   var linePrice = price * quantity;
+
 
   /* Update line price display and recalc cart totals */
   productRow.children('.subtotal').each(function() {
@@ -177,6 +180,13 @@ function updateQuantity(quantityInput) {
 
   productRow.find('.item-quantity').text(quantity);
   updateSumItems();
+  var new_price = parseFloat(productRow.children('.price').text())*quantity;
+  $.ajax({
+    url: '/cart/updateqty',
+    method: 'POST',
+    contentType: 'application/json',
+    data: JSON.stringify({product_id:product_id, quantity: quantity, price: new_price})
+  })
 }
 
 function updateSumItems() {
