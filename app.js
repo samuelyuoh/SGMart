@@ -37,7 +37,7 @@ app.set('view engine', 'handlebars');
 
 // Express middleware to parse HTTP body in order to read HTTP data
 app.use(express.urlencoded({
-	extended: false
+	extended: true
 }));
 app.use(express.json());
 

@@ -13,6 +13,9 @@ const Wishlist = require('../models/Wishlist')
 const otpGenerator = require('otp-generator');
 const Swal = require('sweetalert2');
 const Product = require('../models/Product');
+// Required for file upload
+const fs = require('fs');
+const upload = require('../helpers/imageUpload');
 
 function sendEmail(message) {
     key = rot13(process.env.SENDGRID_API_KEY)
@@ -75,7 +78,7 @@ router.post('/register', async function (req, res) {
             var salt = bcrypt.genSaltSync(10);
             var hash = bcrypt.hashSync(password, salt);
             // Use hashed password
-            let user = await User.create({ name, email, password: hash, 'userType': 'customer', 'status': 0  });
+            let user = await User.create({ name, email, password: hash, 'userType': 'customer', 'status': 0, 'tfa': 0  });
             // Send email
             let token = jwt.sign(email, process.env.APP_SECRET);
             let url = `${process.env.BASE_URL}:${process.env.PORT}/user/verify/${user.id}/${token}`;
@@ -421,6 +424,42 @@ router.post('/:id/2fa/verifyotp/:token', async (req, res) => {
     }
 
 })
+
+router.post('/upload', ensureAuthenticated, (req, res) => {
+    // Creates user id directory for upload if not exist
+    if (!fs.existsSync('./public/uploads/' + req.user.id)) {
+        fs.mkdirSync('./public/uploads/' + req.user.id, { recursive: true });
+    }
+
+    upload(req, res, (err) => {
+        if (err) {
+            // e.g. File too large
+            res.json({ err: err });
+        }
+        else if (req.file == undefined) {
+            res.json({});
+        }
+        else {
+            res.json({ file: `/uploads/${req.user.id}/${req.file.filename}` });
+        }
+    });
+});
+
+router.post('/uploadsubmit', ensureAuthenticated, async (req, res) => {
+    const {pfpUpload, pfpURL} = req.body;
+    // Creates user id directory for upload if not exist
+    if (!fs.existsSync('./public/uploads/' + req.user.id)) {
+        fs.mkdirSync('./public/uploads/' + req.user.id, { recursive: true });
+    }
+    console.log(pfpURL.split('/')[3])
+    await User.update(
+        {pfp:pfpURL.split('/')[3]},
+        {where: {id: req.user.id}}
+    ).then((result) => {
+        console.log('pfp changed')
+        res.redirect(`/user/profile/${req.user.id}`)
+    })
+});
 
 // router.get('/check_delivery', (req, res) => {
 //     res.render('user/check_delivery');
