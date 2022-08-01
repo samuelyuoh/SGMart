@@ -32,7 +32,7 @@
                                                         </p>
                                                         <div class="photo-input"> 
                                                             <form method="POST" action="/user/uploadsubmit">
-                                                                <input type="file" class="custom-file-input" id="pfpUpload" name="pfpUpload" accept="image/png,image/jpeg,image/jpg,image/gif" onchange="imagePreview(event);"/> 
+                                                                <input type="file" class="custom-file-input" id="pfpUpload" name="pfpUpload" accept="image/png,image/jpeg,image/jpg,image/gif,image/jfif" onchange="imagePreview(event);"/> 
                                                                 <div class="text-danger small mb-2" id="pfpErr" style="display:none"></div>
                                                                 <img id="pfp" src="/img/no-image.jpg" alt="pfp" class="border img-thumbnail img-fluid rounded-circle" style="height: 150px !important;width: 150px !important;display: block !important; margin: auto !important;">
                                                                 {{!—- Hidden field to submit URL of poster to the server --}}
