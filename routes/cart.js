@@ -70,7 +70,7 @@ router.get('/cart', async function(req, res, next) {
 
 router.get('/delete/:id', async function (req, res) {
     try {
-        let cart = await Cart.findByPk(req.params.id);
+        let cart = await Cart.findAll({where: {userId: req.user.id}});
 
         if (!cart) {
             // flashMessage(res, 'error', 'Blog not found');
@@ -78,7 +78,7 @@ router.get('/delete/:id', async function (req, res) {
             return;
         }
 
-        let result = await Cart.destroy({ where: { id: cart.id } });
+        let result = await Item.destroy({ where: { productId: req.params.id, cartId: cart[0]['id'] } });
         console.log(result + ' cart deleted');
         res.redirect('/cart/cart');
     }
