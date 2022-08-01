@@ -6,23 +6,16 @@ const moment = require('moment');
 const Product = require('../models/Product');
 const Cart = require('../models/cart');
 const Order = require('../models/order');
+const Item = require('../models/item');
 
 
 router.get('/', (req, res) => {
 	const title = 'Delivery';
-    Cart.findAll({
-        raw: true,
-        include:{
-            model: Product,
-            required:false
-        }
-    })
-        .then((carts) => {
-            res.render('delivery/delivery', { carts });
-            
+    Item.findByPk(req.params.id)
+        .then((items) => {
+            res.render('delivery/delivery', { items });
         })
-        .catch(err => console.log(err));
-});
+})
 
 
 router.post('/', async function (req, res) {

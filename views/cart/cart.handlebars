@@ -13,23 +13,23 @@
     <div class="basket-product">
         <div class="item">
           <div class="product-image">
-            <img src="/images/{{"product.image"}}" alt="{{product.image}}" class="product-frame">
+            <img src="/images/{{"product.image"}}" alt="{{"product.image"}}" class="product-frame">
           </div>
           <div class="product-details">
             <h1><strong><span class="item-quantity">1</span> x {{"product.product_name"}}</strong></h1>
             <p>Product Code -  {{"product.id"}}</p>
-            <input type="hidden" value="{{"product.id"}}" id="product_id">
+            <input type="hidden" value="{{"proudct.id"}}" id="product_id">
           </div>
         </div>
         <div class="price"> {{"product.product_price"}}</div>
         
         <div class="quantity">
-          <input type="number" value="1" class="quantity-field" name="quantity" id ='quantity' min="1" max="{{product.stock}}">
+          <input type="number" value="1" class="quantity-field" name="quantity" id ='quantity' min="1" max="{{"product.stock"}}">
 
         </div>
         <div class="subtotal">{{"product.product_price"}}</div>
         <div class="remove">
-            <a href = "/cart/delete/{{id}}" class="btn btn-danger">Remove</a>
+            <a href = "/cart/delete/{{productId}}" class="btn btn-danger">Remove</a>
         </div>
       </div>
     </div>
@@ -52,7 +52,7 @@
         </div>
         <div class="summary-total">
           <div class="total-title">Total</div>
-          <div class="total-value final-value" id="basket-total"></div>
+          <div class="total-value final-value" id="basket-total">1.20</div>
         </div>
         <div class="summary-checkout">
             <button type="submit" class="checkout-cta"  onclick="location.href = '/delivery'" >Go to Secure Checkout</button>
@@ -198,6 +198,7 @@ function updateSumItems() {
 }
 
 </script>
+
 
 <style>
 @charset "utf-8";
