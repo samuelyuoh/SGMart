@@ -1,8 +1,97 @@
+<link rel="stylesheet" href="/css/product.css">
+
+<div class="container" style="padding-top: 50px;">
+  <div class="bg-white rounded d-flex align-items-center justify-content-between" id="header"> <button class="btn btn-hide text-uppercase" type="button" data-bs-toggle="collapse" data-bs-target="#filterbar" aria-expanded="false" aria-controls="filterbar" id="filter-btn" onclick="changeBtnTxt()"> <span class="fas fa-angle-left" id="filter-angle"></span> <span id="btn-txt">Hide filters</span> </button>
+    <nav class="navbar navbar-expand-lg navbar-light ps-lg-0 ps-auto"> <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mynav" aria-controls="mynav" aria-expanded="false" aria-label="Toggle navigation" onclick="chnageIcon()" id="icon"> <span class="navbar-toggler-icon"></span> </button>
+      <div class="collapse navbar-collapse" id="mynav">
+        <ul class="navbar-nav d-lg-flex align-items-lg-center">
+          <li class="nav-item active"> 
+            <select name="sort" id="sort">
+              <option value="" hidden selected>Sort by</option>
+                <option value="price">Highest Price</option>
+              <option value="price">Highest Price</option>
+              <option value="popularity">Lowest Price</option>
+              <option value="rating">Rating</option>
+            </select> </li>
+          <li class="nav-item d-lg-none d-inline-flex"> </li>
+        </ul>
+      </div>
+    </nav>
+    <div class="ms-auto mt-3 me-2">
+      <nav aria-label="Page navigation example">
+        <ul class="pagination">
+          <li class="page-item"> <a class="page-link" href="#" aria-label="Previous"> <span aria-hidden="true" class="fw-bold">&lt;</span> <span class="visually-hidden">Previous</span> </a> </li>
+          <li class="page-item active"><a class="page-link" href="#">1</a></li>
+          <li class="page-item"><a class="page-link" href="#">..</a></li>
+          <li class="page-item"><a class="page-link" href="#">10</a></li>
+          <li class="page-item"> <a class="page-link" href="#" aria-label="Next"> <span aria-hidden="true" class="fw-bold">&gt;</span> <span class="visually-hidden">Next</span> </a> </li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+  <div id="content" class="my-5">
+    <div id="filterbar" class="collapse">
+     <div class="box border-bottom">
+        <div class="form-group text-center">
+          <div class="btn-group" data-toggle="buttons"> <label class="btn btn-success form-check-label"> <input class="form-check-input" type="radio"> Reset </label> <label class="btn btn-success form-check-label active"> <input class="form-check-input" type="radio" checked> Apply </label> </div>
+        </div>
+      </div>
+      <div class="box border-bottom">
+        <div class="box-label text-uppercase d-flex align-items-center">Categories <button class="btn ms-auto" type="button" data-bs-toggle="collapse" data-bs-target="#inner-box" aria-expanded="false" aria-controls="inner-box" id="out" onclick="outerFilter()"> <span class="fas fa-plus"></span> </button> </div>
+        <div id="inner-box" class="collapse mt-2 me-1">
+          <div class="my-1"> <label class="tick">Food & Pantry<input type="checkbox"> <span class="check"></span> </label> </div>
+          <div class="my-1"> <label class="tick">Bakery, Cereal & Spreads <input type="checkbox"> <span class="check"></span> </label> </div>
+          <div class="my-1"> <label class="tick">Dairy, Chilled & Frozen <input type="checkbox"> <span class="check"></span> </label> </div>
+          <div class="my-1"> <label class="tick">Snacks & Drinks <input type="checkbox"> <span class="check"></span> </label> </div>
+          <div class="my-1"> <label class="tick">Health & Beauty <input type="checkbox"> <span class="check"></span> </label> </div>
+          <div class="my-1"> <label class="tick">Mum & Baby <input type="checkbox" > <span class="check"></span> </label> </div>
+          <div class="my-1"> <label class="tick">Fruits & Vegetables<input type="checkbox"> <span class="check"></span> </label> </div>
+          <div class="my-1"> <label class="tick">Household & Pets <input type="checkbox" > <span class="check"></span> </label> </div>
+        </div>
+      </div>
+
+      <div class="box border-bottom">
+        <div class="box-label text-uppercase d-flex align-items-center">Brands <button class="btn ms-auto" type="button" data-bs-toggle="collapse" data-bs-target="#inner-box2" aria-expanded="false" aria-controls="inner-box2"><span class="fas fa-plus"></span></button> </div>
+        <div id="inner-box2" class="collapse mt-2 me-1">
+          <div class="my-1"> <label class="tick">Meiji<input type="checkbox"> <span class="check"></span> </label> </div>
+          <div class="my-1"> <label class="tick">Sunshine <input type="checkbox"> <span class="check"></span> </label> </div>
+          <div class="my-1"> <label class="tick">Kleenex <input type="checkbox" > <span class="check"></span> </label> </div>
+          <div class="my-1"> <label class="tick">Lay's <input type="checkbox"> <span class="check"></span> </label> </div>
+          <div class="my-1"> <label class="tick">Heinz <input type="checkbox"> <span class="check"></span> </label> </div>
+          <div class="my-1"> <label class="tick">Dettol <input type="checkbox"> <span class="check"></span> </label> </div>
+          <div class="my-1"> <label class="tick">Huggies <input type="checkbox"> <span class="check"></span> </label> </div>
+          <div class="my-1"> <label class="tick">Cold Storage<input type="checkbox"> <span class="check"></span> </label> </div>
+        </div>
+      </div>
+
+      <div class="box border-bottom">
+        <div class="box-label text-uppercase d-flex align-items-center">price <button class="btn ms-auto" type="button" data-bs-toggle="collapse" data-bs-target="#price" aria-expanded="false" aria-controls="price"><span class="fas fa-plus"></span></button> </div>
+        <div class="collapse" id="price">
+          <div class="middle">
+            <div class="multi-range-slider"> <input type="range" id="input-left" min="0" max="100" value="10"> <input type="range" id="input-right" min="0" max="100" value="50">
+              <div class="slider">
+                <div class="track"></div>
+                <div class="range"></div>
+                <div class="thumb left"></div>
+                <div class="thumb right"></div>
+              </div>
+            </div>
+          </div>
+          <div class="d-flex align-items-center justify-content-between mt-2">
+            <div> <span id="amount-left" class="fw-bold"></span> SGD </div>
+            <div> <span id="amount-right" class="fw-bold"></span> SGD </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div class = "products">
     <div class = "container">
-        <div class = "product-items">
+        <div class = "product-items" style="">
             {{#product }}
-            <div class = "product">
+            <div class = "product" style="width: 90%;">
                 <div class = "product-content">
                     <div class = "product-img">
                         <a href="/product/details/{{id}}">
@@ -77,277 +166,82 @@
 {{/if }} --}}
 </div>
 
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  var inputLeft = document.getElementById("input-left");
+  var inputRight = document.getElementById("input-right");
 
-<style>
-@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&family=Roboto:wght@300;400;500;700;900&display=swap');
+  var thumbLeft = document.querySelector(".slider > .thumb.left");
+  var thumbRight = document.querySelector(".slider > .thumb.right");
+  var range = document.querySelector(".slider > .range");
 
-:root{
---white-light: rgba(255, 255, 255, 0.5);
---carribean-green: #27ae60;
---gray: #ededed;
---black:#2c2c54;
-}
-*{
-padding: 0;
-margin: 0;
-box-sizing: border-box;
-}
-body{
-font-family: 'Quicksand', sans-serif;
-}
+  var amountLeft = document.getElementById("amount-left");
+  var amountRight = document.getElementById("amount-right");
 
-/* Utility stylings */
-img{
-width: 100%;
-display: block;
-}
-.container{
-width: 88vw;
-margin: 0 auto;
-}
-.lg-title,
-.md-title,
-.sm-title{
-font-family: 'Roboto', sans-serif;
-padding: 0.6rem 0;
-text-transform: capitalize;
-}
-.lg-title{
-font-size: 2.5rem;
-font-weight: 500;
-text-align: center;
-padding: 1.3rem 0;
-opacity: 0.9;
-}
-.md-title{
-font-size: 2rem;
-font-family: 'Roboto', sans-serif;
-}
-.sm-title{
-font-weight: 300;
-font-size: 1rem;
-text-transform: uppercase;
-}
-.text-light{
-font-size: 1rem;
-font-weight: 600;
-line-height: 1.5;
-opacity: 0.5;
-margin: 0.4rem 0;
-}
+  function setLeftValue() {
+    var _this = inputLeft,
+      min = parseInt(_this.min),
+      max = parseInt(_this.max);
 
-/* product section */
-.products{
-padding: 3.2rem 0;
-}
-.products .text-light{
-text-align: center;
-width: 70%;
-margin: 0.9rem auto;
-}
-.product{
-margin: 2rem;
-position: relative;
-}
-.product-content{
-background: var(--gray);
-padding: 3rem 0.5rem 2rem 0.5rem;
-cursor: pointer;
-}
-.product-img{
-background: var(--white-light);
-box-shadow: 0 0 20px 10px var(--white-light);
-width: 200px;
-height: 200px;
-margin: 0 auto;
-border-radius: 50%;
-transition: background 0.5s ease;
-}
-.product-btns{
-display: flex;
-justify-content: center;
-margin-top: 1.4rem;
-opacity: 0;
-transition: opacity 0.6s ease;
-}
-.btn-cart, .btn-buy{
-background: transparent;
-border: 1px solid black;
-padding: 0.8rem 0;
-width: 125px;
-font-family: inherit;
-text-transform: uppercase;
-cursor: pointer;
-border: none;
-transition: all 0.6s ease;
-}
-.btn-cart{
-background: black;
-color: white;
-}
-.btn-cart:hover{
-background: var(--carribean-green);
-}
-.btn-buy{
-background: white;
-}
-.btn-buy:hover{
-background: var(--carribean-green);
-color: #fff !important;
-}
-.product-info{
-background: white;
-padding: 2rem;
-}
-.product-info-top{
-display: flex;
-justify-content: space-between;
-align-items: center;
-}
-.rating span{
-color: var(--carribean-green);
-}
-.product-name{
-color: black;
-display: block;
-text-decoration: none;
-font-size: 1rem;
-text-transform: uppercase;
-font-weight: bold;
-}
-.product-price{
-padding-top: 0.6rem;
-padding-right: 0.6rem;
-display: inline-block;
-}
-.product-price:first-of-type{
-text-decoration: line-through;
-color: var(--carribean-green);
-}
-.product-img img{
-transition: transform 0.6s ease;
-}
-.product:hover .product-img img{
-transform: scale(1.1);
-}
-.product:hover .product-img{
-background: var(--carribean-green);
-}
-.product:hover .product-btns{
-opacity: 1;
-}
-.off-info .sm-title{
-background: var(--carribean-green);
-color: white;
-display: inline-block;
-padding: 0.5rem;
-position: absolute;
-top: 0;
-left: 0;
-writing-mode: vertical-lr;
-transform: rotate(180deg);
-z-index: 1;
-letter-spacing: 3px;
-cursor: pointer;
-}
+    _this.value = Math.min(
+      parseInt(_this.value),
+      parseInt(inputRight.value) - 1
+    );
 
-/* product collection */
-.product-collection{
-padding: 3.2rem 0;
-}
-.product-collection-wrapper{
-padding: 3.2rem 0;
-}
-.product-col-left{
-background: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.3)), url("images/fashion-img-1.jpg") center/cover no-repeat;
-}
-.product-col-r-top{
-background: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.3)), url("images/fashion-img-2.png") center/cover no-repeat;
-}
-.flex{
-display: flex;
-justify-content: center;
-align-items: flex-end;
-height: 50vh;
-padding: 2rem 1.5rem 3.2rem;
-margin: 5px;
-}
-.product-col-r-bottom > div:first-child{
-background: #eaa001;
-}
-.product-col-r-bottom > div:last-child{
-background: #0090ff;
-}
-.product-col-content{
-text-align: center;
-color: white;
-}
-.product-collection .text-light{
-opacity: 1;
-font-size: 0.8;
-font-weight: 400;
-line-height: 1.7;
-}
-.btn-dark{
-background: black;
-color: white;
-outline: 0;
-border-radius: 25px;
-padding: 0.7rem 1rem;
-border: 0;
-margin-top: 1rem;
-cursor: pointer;
-transition: all 0.6s ease;
-font-size: 1rem;
-font-family: inherit;
-}
-.btn-dark:hover{
-background: var(--carribean-green);
-}
+    var percent = ((_this.value - min) / (max - min)) * 100;
 
+    thumbLeft.style.left = percent + "%";
+    range.style.left = percent + "%";
+    amountLeft.innerText = parseInt(percent * 1);
+  }
+  setLeftValue();
 
+  function setRightValue() {
+    var _this = inputRight,
+      min = parseInt(_this.min),
+      max = parseInt(_this.max);
 
+    _this.value = Math.max(
+      parseInt(_this.value),
+      parseInt(inputLeft.value) + 1
+    );
 
+    var percent = ((_this.value - min) / (max - min)) * 100;
 
+    amountRight.innerText = parseInt(percent * 1);
+    thumbRight.style.right = 100 - percent + "%";
+    range.style.right = 100 - percent + "%";
+  }
+  setRightValue();
 
+  inputLeft.addEventListener("input", setLeftValue);
+  inputRight.addEventListener("input", setRightValue);
 
-/* Media Queries */
-@media screen and (min-width: 992px){
-.product-items{
-display: grid;
-grid-template-columns: repeat(2, 1fr);
-}
-.product-col-r-bottom{
-display: grid;
-grid-template-columns: repeat(2, 1fr);
-}
-}
-@media screen and (min-width: 1200px){
-.product-items{
-grid-template-columns: repeat(3, 1fr);
-}
-.product{
-margin-right: 1rem;
-margin-left: 1rem;
-}
-.products .text-light{
-width: 50%;
-}
-}
+  inputLeft.addEventListener("mouseover", function () {
+    thumbLeft.classList.add("hover");
+  });
+  inputLeft.addEventListener("mouseout", function () {
+    thumbLeft.classList.remove("hover");
+  });
+  inputLeft.addEventListener("mousedown", function () {
+    thumbLeft.classList.add("active");
+  });
+  inputLeft.addEventListener("mouseup", function () {
+    thumbLeft.classList.remove("active");
+  });
 
-@media screen and (min-width: 1336px){
-.product-items{
-grid-template-columns: repeat(4, 1fr);
-}
-.product-collection-wrapper{
-display: grid;
-grid-template-columns: repeat(2, 1fr);
-}
-.flex{
-height: 60vh;
-}
-.product-col-left{
-height: 121.5vh;
-}
-}
-</style>
+  inputRight.addEventListener("mouseover", function () {
+    thumbRight.classList.add("hover");
+  });
+  inputRight.addEventListener("mouseout", function () {
+    thumbRight.classList.remove("hover");
+  });
+  inputRight.addEventListener("mousedown", function () {
+    thumbRight.classList.add("active");
+  });
+  inputRight.addEventListener("mouseup", function () {
+    thumbRight.classList.remove("active");
+  });
+});
+
+</script>

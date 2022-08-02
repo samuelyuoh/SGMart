@@ -89,11 +89,11 @@ router.get('/delete/:id', async function (req, res) {
 
 router.post('/updateqty',(req,res)=>{
     let new_quantity =req.body.quantity;
-    console.log(new_quantity)
+    // console.log(new_quantity)
     let productId = req.body.product_id
-    console.log(productId)
+    // console.log(productId)
     let new_totalCost = req.body.price
-    console.log(new_totalCost);
+    // console.log(new_totalCost);
         Item.update(
             { quantity: new_quantity, totalCost: new_totalCost},
             { where: { productId: productId } }

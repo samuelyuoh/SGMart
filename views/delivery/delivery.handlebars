@@ -20,6 +20,10 @@
                 <div class="form-outline mb-4">
                   <input type="email" id="email" class="form-control" name="email"/>
                   <label class="form-label" for="email">Email</label>
+                  {{#if carts}}
+                <input type="hidden" value="{{id}}" id="cartId" name="cartId">
+                  {{/if}}
+
                 </div>
 
                 <div class="form-outline mb-4">
@@ -57,19 +61,19 @@
             <h5 class="mb-0 text-font">Order Summary 
               <a class="float-end mt-1" style="font-size: 13px;" href="/cart/cart">Edit</a></h5>
           </div>
-          {{#if items}}
-          {{#each items}}
+          {{#if carts}}
+          {{#each item}}
           <div class="card-body">
             <div class="row">
               <div class="col-md-4">
-                <img src="/images/{{"product.image"}}" alt="{{product.image}}" class="rounded-3" style="width: 100px;">
+                <img src="/images/{{image}}" alt="{{image}}" class="rounded-3" style="width: 100px;">
               </div>
               <div class="col-md-6 ms-3">
                 <p class="mb-0 text-descriptions">Product: {{product_name}} </p>
-                <p class="mb-0 text-descriptions">Price: {{totalCost}}</p>
+                <p class="mb-0 text-descriptions">Price: {{product_price}}</p>
                 <p class="text-descriptions mt-0">Qty:<span class="text-descriptions fw-bold">{{quantity}}</span>
                 </p>
-                <p class="mb-0 text-descriptions">Total Price: {{product_price}}</p>
+                <p class="mb-0 text-descriptions">Total Price: {{totalCost}}</p>
               </div>
             </div>
             <hr>
