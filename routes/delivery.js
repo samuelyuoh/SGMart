@@ -41,7 +41,7 @@ router.post('/', async function (req, res) {
             orderId = order.id
             console.log(orderId)
             flashMessage(res,'success', 'Successfully Purchased Items')
-            res.redirect('/');
+            res.render('delivery/delivery_completed');
         })
     
         .catch(err => console.log(err))
