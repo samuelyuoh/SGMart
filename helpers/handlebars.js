@@ -96,6 +96,11 @@ const haveNext = function(currentPage, totalPages){
     }else{return true}
 }
 
+const calculatePrice = function(price, discount){
+    return parseFloat(parseFloat(price) * ((100-parseFloat(discount))/100)).toFixed(2)
+}
+
 module.exports = {formatDate, replaceCommas, checkboxCheck, radioCheck, ifEquals, 
                 checkdiscount, checkstock,checkurl, ifmoney, ifstatus, isStaff, 
-                isAdmin, isMAdmin, checkWishlist, next, previous, haveNext, havePrevious};
+                isAdmin, isMAdmin, checkWishlist, next, previous, haveNext, havePrevious,
+            calculatePrice};
