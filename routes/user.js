@@ -17,6 +17,10 @@ const Product = require('../models/Product');
 const fs = require('fs');
 const upload = require('../helpers/imageUpload');
 
+const isStaff = function(userType) {
+	return (userType == 'staff' || userType == 'admin' || userType == 'madmin')
+};
+
 function sendEmail(message) {
     key = rot13(process.env.SENDGRID_API_KEY)
     sgMail.setApiKey(key);
@@ -392,17 +396,58 @@ router.post('/resetpassword/:id/:token', async (req, res) => {
             })
     }
 });
-router.get('/:id/2fa', async (req, res) => {
+router.get('/:id/2fa/:action', async (req, res) => {
     id = req.params.id;
-    await User.update(
-        {tfa: 1},
-        {where: {id: id}}
-    )
-    .then((user) => {
-        flashMessage(res, 'success', '2FA Enabled');
+    a = req.params.action == 'enable' ? 1 : 0;
+    user = await User.findByPk(id);
+    if (isStaff(user.userType)) {
+        flashMessage(res, 'error', '2FA of staffs cannot be disabled')
         res.redirect(`/user/profile/${id}`)
-    })
-    .catch(err => console.log(err));
+    } else {
+        await User.update(
+            {tfa: a},
+            {where: {id: id}}
+        )
+        .then((user) => {
+            if (!a) {
+                flashMessage(res, 'success', '2FA Disabled');
+            } else {
+                flashMessage(res, 'success', '2FA Enabled');
+            }
+            res.redirect(`/user/profile/${id}`)
+        })
+        .catch(err => console.log(err));
+    } 
+});
+
+router.post('/:id/2fa/:action', async (req, res) => {
+    let {pwd} = req.body;
+    id = req.params.id;
+    user = await User.findByPk(id);
+    a = req.params.action == 'enable' ? 1 : 0;
+
+    var salt = bcrypt.genSaltSync(10);
+    var hash = bcrypt.hashSync(pwd, salt);
+    const validPassword = await bcrypt.compare(pwd, user.password);
+    if (validPassword) {
+        await User.update(
+            {tfa: a},
+            {where: {id: id}}
+        )
+        .then((user) => {
+            if (!a) {
+                flashMessage(res, 'success', '2FA Disabled');
+            } else {
+                flashMessage(res, 'success', '2FA Enabled');
+            }
+            res.redirect(`/user/profile/${id}`)
+        })
+        .catch(err => console.log(err));
+    } else {
+        flashMessage(res, 'error', 'Wrong Password. Please try again.');
+        res.redirect(`/user/profile/${id}`)
+    }
+    
 });
 
 router.get('/:id/2fa/verifyotp/:token', (req, res) => {
