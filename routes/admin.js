@@ -14,6 +14,7 @@ const Sequelize = require('sequelize');
 const jwt = require('jsonwebtoken');
 const sgMail = require('@sendgrid/mail');
 const User = require('../models/User');
+const createlogs = require('../helpers/logs');
 
 function rot13(message) {
     // cypher cus cnt upload actual key
@@ -197,7 +198,7 @@ router.get('/staffList', async (req, res) => {
 	User.findAll({
 		where: {
 			userType: {
-			  [Op.or]: ['admin', 'staff']
+			  [Op.or]: ['admin', 'staff', 'madmin']
 			}
 		  },
 		raw: true
@@ -213,7 +214,6 @@ router.get('/staffList', async (req, res) => {
 
 router.get('/status/:change/:id', async (req, res) => {
 	// if banned status will change to 1 and must reactivate acc
-
 	change = req.params.change;
 	user = await User.findByPk(req.params.id);
 	if (!user) {
@@ -231,6 +231,7 @@ router.get('/status/:change/:id', async (req, res) => {
 				.then((result) => {
 					console.log('user banned');
 					flashMessage(res, 'success', `User ${req.params.id} has been banned`);
+					createlogs(`Banned user ${req.params.id}`, req.user.id)
 				})
 			}
 			
@@ -246,6 +247,7 @@ router.get('/status/:change/:id', async (req, res) => {
 				.then((result) => {
 					console.log('user unbanned');
 					flashMessage(res, 'success', `User ${req.params.id} has been unbanned`);
+					createlogs(`Unbanned user ${req.params.id}`, req.user.id)
 				})
 			}
 		}
