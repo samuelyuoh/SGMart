@@ -16,5 +16,6 @@ const User = db.define('user',
         verified: { type: Sequelize.BOOLEAN },
         tfa: { type: Sequelize.BOOLEAN },
         pfp: { type: Sequelize.STRING },
+        otptoken: { type: Sequelize.STRING },
     });
 module.exports = User;

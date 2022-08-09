@@ -149,15 +149,19 @@ router.post('/login', async (req, res, next) => {
     let {email, password} = req.body;
     user = await User.findOne({where :{email: email}});
     valid = user.tfa ? user.tfa : false;
-    
     if (valid) {
         otp = otpGenerator.generate(8, { upperCaseAlphabets: false, specialChars: false });
-        let token = jwt.sign({otp}, process.env.APP_SECRET, {expiresIn: 5 * 60});
+        let token = jwt.sign({payload: {otp, id: user.id}}, process.env.APP_SECRET, {expiresIn: 5 * 60});
         a = `/user/${user.id}/2fa/verifyotp/${token}`;
         id = user.id;
-        user = await User.findByPk(id);
+        await User.update({otptoken: token}, 
+            {where: {id: id}})
+            .then((user) => {
+                console.log('otp saved')
+            })
+            .catch (err => console.log(err));
         
-        console.log(jwt.decode(token))
+        console.log(jwt.decode(token));
         const message = {
             to: user.email,
             from: `SGMart <${process.env.SENDGRID_SENDER_EMAIL}>`,
@@ -168,7 +172,6 @@ router.post('/login', async (req, res, next) => {
         sendEmail(message)
             .then(response => {
                 flashMessage(res, 'success','OTP successfully sent to ' +  user.email);
-                // res.redirect(`/user/${id}/2fa/verifyotp/${token}`);
             })
             .catch(err => {
                 console.log(err);
@@ -450,22 +453,44 @@ router.post('/:id/2fa/:action', async (req, res) => {
     
 });
 
-router.get('/:id/2fa/verifyotp/:token', (req, res) => {
-    res.render('user/otp');
+router.get('/:id/2fa/verifyotp/:token', async (req, res) => {
+    // must store token in db to verify
+    token = jwt.decode(req.params.token);
+    console.log(token)
+    // console.log(token['payload'])
+    if (token == null) {
+        flashMessage(res, 'error', 'Error. Access denied');
+        // res.redirect('/user/logout');
+    } else {
+        user = await User.findByPk(token['payload']['id'])
+        if (token['payload']['id'] == req.params.id && user.otptoken == req.params.token) {
+            res.render('user/otp');
+        } else {
+            flashMessage(res, 'error', 'Error. Access denied');
+            res.redirect('/user/logout');
+        }
+    }
+    
+
 });
 router.post('/:id/2fa/verifyotp/:token', async (req, res) => {
     let {otp} = req.body;
     token = jwt.decode(req.params.token);
-    console.log(token);
+    // console.log(token);
     user = User.findByPk(req.params.id);
     email = user.email;
-    if (token['otp'] == otp) {
-        flashMessage(res, 'success', 'Successfully logged in');
-        res.redirect('/');
-
+    if (token == null || token.length == 0) {
+        flashMessage(res, 'error', 'Error. Access denied');
+        // res.redirect('/user/logout');
     } else {
-        flashMessage(res, 'error', 'Wrong OTP, please log in again');
-        res.redirect('/user/logout');
+        if (token['payload']['otp'] == otp) {
+            flashMessage(res, 'success', 'Successfully logged in');
+            res.redirect('/');
+
+        } else {
+            flashMessage(res, 'error', 'Wrong OTP, please log in again');
+            res.redirect('/user/logout');
+        }
     }
 
 })
