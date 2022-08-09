@@ -457,17 +457,23 @@ router.get('/:id/2fa/verifyotp/:token', async (req, res) => {
     // must store token in db to verify
     token = jwt.decode(req.params.token);
     console.log(token)
+    user = await User.findByPk(req.params.id)
     // console.log(token['payload'])
-    if (token == null) {
+    if (user.otptoken != req.params.token) {
         flashMessage(res, 'error', 'Error. Access denied');
-        // res.redirect('/user/logout');
+        res.redirect('/user/logout');
     } else {
-        user = await User.findByPk(token['payload']['id'])
-        if (token['payload']['id'] == req.params.id && user.otptoken == req.params.token) {
-            res.render('user/otp');
-        } else {
+        if (token == null) {
             flashMessage(res, 'error', 'Error. Access denied');
-            res.redirect('/user/logout');
+            // res.redirect('/user/logout');
+        } else {
+            user = await User.findByPk(token['payload']['id'])
+            if (token['payload']['id'] == req.params.id && user.otptoken == req.params.token) {
+                res.render('user/otp');
+            } else {
+                flashMessage(res, 'error', 'Error. Access denied');
+                res.redirect('/user/logout');
+            }
         }
     }
     
@@ -475,21 +481,30 @@ router.get('/:id/2fa/verifyotp/:token', async (req, res) => {
 });
 router.post('/:id/2fa/verifyotp/:token', async (req, res) => {
     let {otp} = req.body;
-    token = jwt.decode(req.params.token);
-    // console.log(token);
     user = User.findByPk(req.params.id);
-    email = user.email;
-    if (token == null || token.length == 0) {
+    if (user.otptoken != req.params.token) {
         flashMessage(res, 'error', 'Error. Access denied');
-        // res.redirect('/user/logout');
+        res.redirect('/user/logout');
     } else {
-        if (token['payload']['otp'] == otp) {
-            flashMessage(res, 'success', 'Successfully logged in');
-            res.redirect('/');
-
+        token = jwt.decode(req.params.token);
+        // console.log(token);
+        email = user.email;
+        if (token == null || token.length == 0) {
+            flashMessage(res, 'error', 'Error. Access denied');
+            // res.redirect('/user/logout');
         } else {
-            flashMessage(res, 'error', 'Wrong OTP, please log in again');
-            res.redirect('/user/logout');
+            if (token['payload']['otp'] == otp) {
+                flashMessage(res, 'success', 'Successfully logged in');
+                User.update(
+                    {otptoken: null,},
+                    {where: {id : req.params.id}})
+                .catch(err => console.log(err));
+                res.redirect('/');
+
+            } else {
+                flashMessage(res, 'error', 'Wrong OTP, please log in again');
+                res.redirect('/user/logout');
+            }
         }
     }
 
