@@ -16,11 +16,11 @@ const Product = require('../models/Product');
 // Required for file upload
 const fs = require('fs');
 const upload = require('../helpers/imageUpload');
-
+const googlelogin = require('../helpers/googlelogin');
 const isStaff = function(userType) {
 	return (userType == 'staff' || userType == 'admin' || userType == 'madmin')
 };
-
+googlelogin()
 function sendEmail(message) {
     key = rot13(process.env.SENDGRID_API_KEY)
     sgMail.setApiKey(key);
@@ -530,6 +530,16 @@ router.post('/uploadsubmit', ensureAuthenticated, async (req, res) => {
     }).catch(err => console.log(err))
 });
 
+router.get('/login/google', 
+  passport.authenticate('google', { scope : ['profile', 'email'] }));
+ 
+router.get('/login/google/callback', 
+  passport.authenticate('google', { failureRedirect: '/' }),
+  function(req, res) {
+    // Successful authentication, redirect success.
+    // console.log(res.message)
+    res.redirect('/');
+  });
 // router.get('/check_delivery', (req, res) => {
 //     res.render('user/check_delivery');
 // });
