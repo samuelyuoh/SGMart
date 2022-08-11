@@ -1,5 +1,6 @@
 const Handlebars = require('handlebars');
 const moment = require('moment');
+const { DATEONLY } = require('sequelize');
 const formatDate = function (date, targetFormat) {
     return moment(date).format(targetFormat);
 };
@@ -65,4 +66,8 @@ const isAdmin = function(userType) {
 const isMAdmin = function(userType) {
 	return (userType == 'madmin')
 };
-module.exports = {formatDate, replaceCommas, checkboxCheck, radioCheck, ifEquals, checkdiscount, checkstock,checkurl, ifmoney, ifstatus, isStaff, isAdmin, isMAdmin};
+
+const getDateOnly = function(date){
+    return require('moment')(date).format('DD-MM-YYYY');
+}
+module.exports = {formatDate, replaceCommas, checkboxCheck, radioCheck, ifEquals, checkdiscount, checkstock,checkurl, ifmoney, ifstatus, isStaff, isAdmin, isMAdmin, getDateOnly};

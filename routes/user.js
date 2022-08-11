@@ -14,6 +14,11 @@ const Swal = require('sweetalert2');
 const Order = require('../models/order');
 const Product = require('../models/Product');
 const Cart = require('../models/cart');
+const Invoice = require('../models/Invoice');
+const Item = require('../models/item');
+const sequelize = require('sequelize');
+const { DATEONLY } = require('sequelize');
+const nodemailer = require('nodemailer')
 
 
 function sendEmail(message) {
@@ -487,7 +492,8 @@ router.post('/editDelivery/:id', ensureAuthenticated, (req, res) => {
 });
 
 
-router.get('/orders/:id', ensureAuthenticated, (req, res) => {
+router.get('/orders/:id', ensureAuthenticated, async  (req, res) => {
+    let totalAmount = 0
     User.findByPk(req.params.id)
         .then((user) => {
             if (!user) {
@@ -502,20 +508,86 @@ router.get('/orders/:id', ensureAuthenticated, (req, res) => {
             }
         })
 
-    Order.findAll({
+    var orders = await Order.findAndCountAll({
         raw: true,
-        user: req.params.id,
-        include:{
-            model: Cart,
-            required:false
-        }
+        where:{userId: req.user.id},
     })
-        .then((orders) => {
-            console.log(orders)
-            res.render('user/orders', {orders})
-        })        
-        .catch(err => console.log(err));
+    var cart = await Cart.findAll({
+        raw: true,
+        where:{userId: req.user.id},
+    })
+    var items = await Item.findAndCountAll({
+        where: {cartId: cart[0]['id']}
+    })
+            // var invoice = Invoice.findAll({where: {orderId: orders[0]['id']}})
+    res.render('user/orders', {orders:orders.rows, order_count:orders.count, cart: items.count})
+    
 });
 
+router.get('/orderDetail/:id', ensureAuthenticated, async(req, res) => {
+    let totalAmount = 0
+    var orders = await Order.findByPk(req.params.id)
+    var cost_of_each_item = await Invoice.findAll({
+        where: {orderId: orders['id']},
+        attributes: [
+            'totalCost',
+        ],
+        raw: true
+    })
+    var items = await Invoice.findAll({where: {orderId: orders['id']},raw:true})
 
+    for(var a in cost_of_each_item){
+        totalAmount += parseFloat(cost_of_each_item[a]['totalCost'])
+    }
+    res.render('user/orderdetail', {orders: orders, item: items, totalAmount: totalAmount})
+})
+
+
+router.get('/contact', (req, res) => {
+    res.render('user/contact');
+});
+
+router.post('/contact', (req, res) => {
+    const output = `
+      <p>You have a new contact request</p>
+      <h3>Contact Details</h3>
+      <ul>  
+        <li>Name: ${req.body.name}</li>
+        <li>Email: ${req.body.email}</li>
+        <li>Phone: ${req.body.phone}</li>
+        <li>Subject: ${req.body.subject}</li>
+      </ul>
+      <h3>Message</h3>
+      <p>${req.body.message}</p>
+    `;
+      // create reusable transporter object using the default SMTP transport
+  let transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: 'sgmart2107@gmail.com',
+      pass: 'cwaavbrqplassgid'
+    },
+    tls:{
+        rejectUnauthorized:false
+    }
+  });
+
+  var mailOptions = {
+    from: 'sgmart2107@gmail.com',
+    to: 'sgmartreceiver@gmail.com',
+    subject: 'Node Contact Request',
+    text: 'Hello World',
+    html: output
+  };
+  
+  transporter.sendMail(mailOptions, function(error, info){
+    if (error) {
+      console.log(error);
+    } else {
+      console.log('Email sent: ' + info.response);
+    }
+    res.render('user/contact', {msg: 'Email has been sent'})
+  });
+
+});
 module.exports = router;

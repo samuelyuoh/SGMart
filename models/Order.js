@@ -18,6 +18,7 @@ const Order = db.define('order',
         address: {type: Sequelize.STRING},
         phone: {type: Sequelize.INTEGER},
         delivery_date: {type: Sequelize.DATE},
-        delivery_time: {type: Sequelize.STRING}
+        delivery_time: {type: Sequelize.STRING},
+        total_price: { type: Sequelize.DECIMAL(7,2) },
     });
 module.exports = Order;

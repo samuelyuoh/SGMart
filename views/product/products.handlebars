@@ -99,10 +99,50 @@
                         </a>
                     </div>
                     <div class = "product-btns">
-
-                        <a href="/product/details/{{id}}" class = "btn-buy" style="text-decoration: none; color:black; text-align:center;">
-                          details<span><i class = "fas fa-shopping-cart"></i></span>
-                        </a>
+                      <button type = "button" class = "btn-buy" data-bs-toggle="modal" data-bs-target="#details_{{id}}"> details
+                              <span><i class = "fas fa-shopping-cart"></i></span>
+                      </button>
+                    {{!-- modal --}}
+                    <div class="modal" tabindex="-1" id="details_{{id}}" data-backdrop="static" data-bs-focus="false" >
+                      <div class="modal-dialog modal-lg modal-dialog-centered">
+                        <div class="modal-content">
+                          <div class="product-card" style="text-decoration: none;">
+                            <div class="image-container" style="text-decoration: none;">
+                              <div class="cover-image product-image">
+                                <img src="/images/{{image}}" alt="{{product_name}}">
+                              </div>
+                            </div>
+                            <div class="product-info">
+                              <p class="free-shipping" style="text-decoration: none;">Free Delivery</p>
+                              <h3 class="product-name">{{product_name}}</h3>
+                              <p class="regular-price">{{discount}} % OFF </p>
+                              <p class="discount-price">${{product_price}}</p>
+                              <p class="offer-info">{{desc}}</p>
+                              <form action="/cart/add/{{id}}" method="post">
+                              <input type="hidden" name="" value="">
+                              <button type = "submit" class="add-to-cart" style="text-decoration: none;">
+                                <ion-icon name="add-outline"></ion-icon> Add to cart
+                              </button>
+                              <div class="stock">
+                                <div class="stock-status"></div>
+                                <p class="stock-info">Stock: {{stock}}</p>
+                              </div>
+                              <div class="buttons">
+                                  <button type = "submit" class = "button" value="{{id}}"> 
+                                      <ion-icon name="bag-add-outline"></ion-icon> Add to cart
+                                  </button>
+                                  <input type="hidden" name="quantity" value="1">
+                                <a href="#" class="button" style="text-decoration: none;">
+                                  <ion-icon name="heart-outline"></ion-icon> Add to wishlist
+                                </a>
+                              </form>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                {{!-- end of modal --}}
                       {{!-- {{#if product.stock > 0 }} --}}
                       <form action="/cart/add/{{id}}" method="post">
                           <input type="hidden" name="" value="">
@@ -167,6 +207,7 @@
 </div>
 
 <script>
+
 document.addEventListener("DOMContentLoaded", function () {
   var inputLeft = document.getElementById("input-left");
   var inputRight = document.getElementById("input-right");
@@ -243,5 +284,231 @@ document.addEventListener("DOMContentLoaded", function () {
     thumbRight.classList.remove("active");
   });
 });
+    function submitForm(element){
+        var id = element.value;
+        $.ajax({
+            url : '/product/wishlist',
+            method: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({id: id}),
+            success: function(res){
+                if (res.status == "add"){
+                    // element.classList.remove("bx-bookmarks")
+                    element.classList.add('bxs-bookmark')
+                    element.classList.add('bx-tada')
+                    setTimeout(function(){element.classList.remove('bx-tada')}, 1000)
+                } else if (res.status == "remove") {
+                    // element.classList.add("bi-bookmarks")
+                    element.classList.remove('bxs-bookmark')
+                    element.classList.add('bx-tada')
+                    setTimeout(function(){element.classList.remove('bx-tada')}, 1000)
+                }else{
+                    fireLogin(element)
+                }
+            },
+        })
+    }
+
+function fireLogin(element){
+    Swal.fire({
+        title: 'Login Form',
+        html: `<input type="text" id="login" class="swal2-input" placeholder="Username">
+        <input type="password" id="password" class="swal2-input" placeholder="Password">`,
+        confirmButtonText: 'Sign in',
+        focusConfirm: true,
+        preConfirm: () => {
+            const login = Swal.getPopup().querySelector('#login').value
+            const password = Swal.getPopup().querySelector('#password').value
+            if (!login || !password) {
+            Swal.showValidationMessage(`Please enter login and password`)
+            }
+            return { login: login, password: password }
+        }
+        }).then((result) => {
+            $.ajax({
+                type: 'POST',
+                data:{
+                    email: result.value.login,
+                    password: result.value.password
+                },
+                url: '/user/login',
+            }).then((result) => {checkStatus(result, element)})
+        })
+    }
+
+function checkStatus(result, element){
+    $.ajax({
+        type: 'POST',
+        url: '/user/checkStatus',
+        success: function(res){
+            if(res.status == 'logged in'){
+                swal.fire({
+                    title: "logging in ",
+                    timer: 1000,
+                    didOpen: () => {
+                    Swal.showLoading()
+                    const b = Swal.getHtmlContainer().querySelector('b')
+                    timerInterval = setInterval(() => {
+                    b.textContent = Swal.getTimerLeft()
+                    }, 100)
+                }
+                })
+                setTimeout(function(){swal.fire("logged in"), submitForm(element) }, 1500)
+            }else if(res.status == "not logged in"){
+                swal.fire("invalid login")
+            }
+        }
+    })
+}
+/*$(window).scroll(function() {
+    if($(window).scrollTop() == $(document).height() - $(window).height()) {
+        const params = new URLSearchParams(window.location.search)
+        page = parseInt(params.get('page'))
+        if(isNaN(page)){
+            page = 0
+        }
+        page +=1
+        new_url ='/product/nextpage?page='+String(page)
+           $.ajax({
+            type: 'GET',
+            url: new_url,
+            success: function(data){
+                $(".product-items").append(JSON.stringify(data))
+                    image = '<img src="/images/'+ data['product'][0]['image'] + '">'
+                    id = data['product'][0]['id']
+                    modal = "#details_" + id
+                    image_id = "<div class='product-img'><a href='"+modal+"' data-bs-toggle='modal'>"+image+"</a>"
+                    $(".product-items").append("<div class='product'>"+image_id+"</div>")
+                
+            }
+           })
+    }
+});*/
+function getParameterByName(name, url = window.location.href) {
+    name = name.replace(/[\[\]]/g, '\\$&');
+    var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
+        results = regex.exec(url);
+    if (!results) return null;
+    if (!results[2]) return '';
+    return decodeURIComponent(results[2].replace(/\+/g, ' '));
+}
+var page = 1;
+var working = false;
+var search = getParameterByName('search');
+if(search == null){
+    search =""
+}
+$(window).scroll(function() {
+    if(working == false){
+        working = true;
+
+        $.ajax({
+            type: "GET",
+            url: "/product/nextpage?search="+search+"&page="+page,
+            processData: false,
+            contentType: "application/json",
+            data: '',
+            success: function(data){
+                for(var a in data['product']){
+                    image = '<img src="/images/'+ data['product'][a]['image'] + '">'
+                    id = data['product'][a]['id']
+                    price = data['product'][a]['product_price']
+                    discount = parseFloat(data['product'][a]['discount'])
+                    stock = data['product'][a]['stock']
+                    if(discount > 0){
+                        price_info = `<p class = "product-price">$`+price+`</p>
+                                      <p class = "product-price">$`+parseFloat(parseFloat(price) * ((100-parseFloat(discount))/100)).toFixed(2)+`</p>
+                                      </div>
+                                      <div>
+                                        <div class="off-info">
+                                            <h2 class = "sm-title">`+discount+`% off</h2>
+                                      </div>`
+                        modal_discount = `<p style="font-size: 21px; color: #f05229; font-weight: 600; line-height: 37.8px; vertical-align:top; text-align: left;">`+data['product'][a]['discount']+`% OFF </p>`
+                    }else{
+                        price_info = `<p class = "product-price"></p>
+                                      <p class = "product-price">$`+parseFloat(parseFloat(price) * ((100-parseFloat(discount))/100)).toFixed(2)+`</p>
+                                      </div>`
+                        modal_discount = ""
+                    }
+                    if(stock>0){
+                        modal_stock = `<input type="hidden" name="product_id" value="{{id}}">
+                                                <div class="form-group">
+                                                    <button type="submit" class="btn btn-sm btn-warning">Add to Cart</button>
+                                                    <label for="quantity">Quantity: </label>
+                                                    <input type="number" id="quantity" name="quantity" value="1" min="1" max="{{stock}}" />
+                                                </div>`
+                    }else{
+                        modal_stock = `<button type="submit" disabled class="btn btn-sm btn-danger">Out of Stock</button>`
+                    }
+                    modal_id = "#details_" + id
+                    btns = `<div class = "product-btns">
+                        <button class="btn-buy" style=style="text-decoration: none; color:black; text-align:center;" data-bs-toggle="modal" data-bs-target="`+modal_id+`">
+                            details<span><i class = "fa fa-shopping-cart"></i></span></button>`
+                    form = `<form action=/cart/add/{{id}}" method="post">
+                            <input type="hidden" name="" value="">
+                            <button type="submit" class="btn-cart" value="`+id+`"> add to cart</button>
+                            <input type="hidden" name=quantity value="1"
+                            </form></div>`
+
+                    productInfo = `<div class="product-info">
+                                        <div class="product-info-top">
+                                            <h2 class = "sm-title">`+data['product'][a]["brand.brand_name"]+`</h2>
+                                            <div class="rating" style="">
+                                                <span><i class= "fas fa-star"></i></span>
+                                                <span><i class= "fas fa-star"></i></span>
+                                                <span><i class= "fas fa-star"></i></span>
+                                                <span><i class= "fas fa-star"></i></span>
+                                                <span><i class= "fas fa-star"></i></span>
+                                            </div>
+                                        </div>
+                                        <a href= "/product/details/`+id+`" class="product-name">`+data['product'][a]['product_name']+`</a>
+                                        `+price_info
+                    modal = `<div class="modal" tabindex="-1" id="details_`+id+`" data-backdrop="static" data-bs-focus="false">
+                            <div class="modal-dialog modal-lg modal-dialog-centered">
+                            <div class="modal-content">
+                            <div class="modal-header"style="background-color:white"><h4>Item Detail</h4>
+                            <button type="submit" class="close fa-2x" data-bs-dismiss="modal" aria-label="Close" style="background-color:white"><span aria-hidden="true">&times;</span></button>
+                            </div>
+                            <div class="modal-footer" style="background-color:white">
+                                <div class="row">
+                                    <div class="col-md-6" id="b_image">
+                                        <img src="/images/`+data['product'][a]['image']+`" alt="`+data['product'][a]['product_name']+`">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div style="float:right!important">
+                                            <button value=`+id+` class="btn btn-sm bx bx-bookmark" onclick="submitForm(this)" style="font-size:2rem"></button>
+                                        </div>
+                                        <p style="font-size: 32px; color: #319e40; font-weight: 500; line-height: 32px; vertical-align:top; text-align: left;">`+data['product'][a]['product_price']+`</p>
+                                        `+modal_discount+`
+                                        <p style="font-size: 24px; color: #4a4a4a; font-weight: 400; line-height: 24px; vertical-align: top; text-align: left; padding: 0px;">`+data['product'][a]['product_name']+`</p>
+                                        <hr>
+                                        <p style="font-size: 16px; color: #4a4a4a; font-weight: 400; line-height: 24px; vertical-align: top; text-align: left; margin: 0px 0px 30px;">`+data['product'][a]['desc']+`</p>
+                                        <div style="float: left">
+                                        <form action="/cart/add/`+id+`" method="post">
+                                            `+modal_stock+`
+                                        </form>
+                                            <h4 style="float: right">Stock: `+data['product'][a]['stock']+`</h4>
+                                    </div>
+                                </div>
+                            </div>
+                            </div>
+                            </div>
+                            </div>`
+                    image_id = "<div class='product-img'><a href='"+ modal_id+"' data-bs-toggle='modal'>"+image+"</a>"                                                                                                                                                                                                     
+                    $(".product-items").append(`<div class='product'><div class="product"><div class="product-content">`+image_id+"</div>"+btns+form+`</div></div>`+productInfo)
+                    $('body').append(modal)
+                }
+                page += 1
+                setTimeout(function(){
+                    working = false;
+                }, 1000)
+            }
+            })
+    }
+})
 
 </script>
+
+<script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+

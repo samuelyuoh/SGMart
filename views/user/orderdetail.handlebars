@@ -3,7 +3,9 @@
 <div class="container">
   <!-- Title -->
   <div class="d-flex justify-content-between align-items-center py-3">
-    <h2 class="h5 mb-0"><a href="#" class="text-muted"></a> Order #fur10001</h2>
+    {{#orders}}
+      <h2 class="h5 mb-0"><a href="#" class="text-muted"></a> Order #{{id}}</h2>
+    {{/orders}}
   </div>
 
   <!-- Main content -->
@@ -14,8 +16,9 @@
         <div class="card-body">
           <div class="mb-3 d-flex justify-content-between">
             <div>
-              <span class="me-3">22-11-2021</span>
-              <span class="me-3">#fur10001</span>
+      {{#orders}}
+              <span class="me-3">{{getDateOnly createdAt}}</span>
+    {{/orders}}
               <span class="badge rounded-pill bg-info">DELIVERING</span>
             </div>
             <div class="d-flex">
@@ -33,39 +36,27 @@
           </div>
           <table class="table table-borderless">
             <tbody>
+                  {{#each item}}
               <tr>
                 <td>
                   <div class="d-flex mb-2">
                     <div class="flex-shrink-0">
-                      <img src="https://via.placeholder.com/280x280/87CEFA/000000" alt="" width="35" class="img-fluid">
+                      <img src="/images/{{image}}" alt="" width="35" class="img-fluid">
                     </div>
                     <div class="flex-lg-grow-1 ms-3">
                       <h6 class="small mb-0"><a href="#" class="text-reset">Product 1</a></h6>
                     </div>
                   </div>
                 </td>
-                <td>QTY</td>
-                <td class="text-end">$"PRODUCT TOTAL"</td>
+                <td>{{quantity}}</td>
+                <td class="text-end">${{totalCost}}</td>
               </tr>
-              <tr>
-                <td>
-                  <div class="d-flex mb-2">
-                    <div class="flex-shrink-0">
-                      <img src="https://via.placeholder.com/280x280/FF69B4/000000" alt="" width="35" class="img-fluid">
-                    </div>
-                    <div class="flex-lg-grow-1 ms-3">
-                      <h6 class="small mb-0"><a href="#" class="text-reset">Product 2</a></h6>
-                    </div>
-                  </div>
-                </td>
-                <td>QTY</td>
-                <td class="text-end">$"PRODUCT TOTAL"</td>
-              </tr>
+                  {{/each}}
             </tbody>
             <tfoot>
               <tr>
                 <td colspan="2">Subtotal</td>
-                <td class="text-end">$"SUBTOTAL"</td>
+                <td class="text-end">${{totalAmount}}</td>
               </tr>
               <tr>
                 <td colspan="2">Delivery</td>
@@ -73,7 +64,7 @@
               </tr>
               <tr class="fw-bold">
                 <td colspan="2">TOTAL</td>
-                <td class="text-end">$"TOTAL"</td>
+                <td class="text-end">${{totalAmount}}</td>
               </tr>
             </tfoot>
           </table>
@@ -85,16 +76,17 @@
           <div class="row">
             <div class="col-lg-6">
               <h3 class="h6">Payment Method</h3>
-              Total: $"TOTAL PRICE" <span class="badge bg-success rounded-pill">PAID</span></p>
+              Total: ${{totalAmount}} <span class="badge bg-success rounded-pill">PAID</span></p>
             </div>
             <div class="col-lg-6">
               <h3 class="h6">Billing address</h3>
-              <address>
-                <strong>John Doe</strong><br>
-                1355 Market St, Suite 900<br>
-                San Francisco, CA 94103<br>
-                <abbr title="Phone">P:</abbr> (123) 456-7890
-              </address>
+              {{#orders}}
+                <strong>{{name}}</strong><br>
+                {{address}}
+                <address>
+                  <abbr title="Phone">P:</abbr> {{phone}}
+                </address>
+              {{/orders}}
             </div>
           </div>
         </div>
