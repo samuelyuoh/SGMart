@@ -30,6 +30,8 @@ router.get('/products', async (req, res) => {
 			})
 		
 		var product = await Product.findAndCountAll({
+			limit:4,
+			offset: page*4,
 			include: [{
 				model: Brand,
 				required: true,
@@ -50,8 +52,8 @@ router.get('/products', async (req, res) => {
 			});
 	}else{
 		Product.findAndCountAll({
-			limit:4,
-			offset: page*4,
+			limit:8,
+			offset: page*8,
 			include: [{
 				model: Brand,
 				required: true,
@@ -72,7 +74,7 @@ router.get('/products', async (req, res) => {
 			res.render('product/products', 
 			{
 				product: product.rows,
-				totalPages: Math.ceil(product.count/4),
+				totalPages: Math.ceil(product.count/8),
 				currentPage: page,
 				brands: brands,
 
@@ -111,6 +113,11 @@ router.post('/removewishlist', async (req, res) => {
 
 router.get('/nextpage', async (req, res) => {
 	var brands = await Brand.findAll({raw:true});
+	var search = req.query.search
+	if(search == undefined){
+		search = ""
+	}
+	var brands = await Brand.findAll({raw:true});
 	const pageAsNumber = Number.parseInt(req.query.page)
 	let page = 0
 	if(!Number.isNaN(pageAsNumber) && pageAsNumber >= 0) {
@@ -128,6 +135,11 @@ router.get('/nextpage', async (req, res) => {
 			required: true
 		}
 	],
+	where: {
+		product_name: {
+			[op.like]: '%'+	search +'%'
+		}
+	},
 		raw: true
 	})
 		.then((product) => {

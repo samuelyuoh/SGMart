@@ -30,7 +30,7 @@ const ifmoney = function(amountSpent) {
 // });
 
 const checkdiscount = function(discount){
-    if (discount > 0) {
+    if ((discount) > 0) {
         return true;
     }else{
         return false;

@@ -266,7 +266,14 @@ router.get('/admincouponcreate', (req, res) => {
 	});
 
 router.get('/inventory', async (req, res) => {
-	Product.findAll({
+	const pageAsNumber = Number.parseInt(req.query.page)
+	let page = 0
+	if(!Number.isNaN(pageAsNumber) && pageAsNumber >= 0) {
+		page = pageAsNumber;
+	}
+	Product.findAndCountAll({
+		limit:20,
+		offset: page*20,
 		include: [{
 			model: Brand,
 			required: true,
@@ -279,7 +286,13 @@ router.get('/inventory', async (req, res) => {
 		raw: true
 	})
 		.then((product) => {
-			res.render('admin/inventory', {product: product, layout: 'admin', nav: { sidebarActive: 'product' }})
+			res.render('admin/inventory', {
+				product: product.rows,
+				totalPages: Math.ceil(product.count/8),
+				currentPage: page,
+				layout: 'admin', 
+				nav: { sidebarActive: 'product' }
+			})
 	})
 	.catch(err => console.log(err));
 })

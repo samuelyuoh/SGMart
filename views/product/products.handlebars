@@ -96,11 +96,11 @@
                     </div>
                     <a href = "/product/details/{{id}}" class = "product-name">{{product_name}}</a>
                     {{#if (checkdiscount discount)}}
-                    <p class = "product-price">$ {{product_price}}</p>
-                    <p class = "product-price">$ {{calculatePrice product_price discount}}</p>
+                    <p class = "product-price">${{product_price}}</p>
+                    <p class = "product-price">${{calculatePrice product_price discount}}</p>
                     {{else}}
                     <p class = "product-price"></p>
-                    <p class = "product-price-no">$ {{calculatePrice product_price discount}}</p>
+                    <p class = "product-price">${{calculatePrice product_price discount}}</p>
                     {{/if}}
                 </div>
                 {{#if (checkdiscount discount)}}
@@ -494,15 +494,27 @@ function checkStatus(result, element){
            })
     }
 });*/
-var page = 1
+function getParameterByName(name, url = window.location.href) {
+    name = name.replace(/[\[\]]/g, '\\$&');
+    var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
+        results = regex.exec(url);
+    if (!results) return null;
+    if (!results[2]) return '';
+    return decodeURIComponent(results[2].replace(/\+/g, ' '));
+}
+var page = 1;
 var working = false;
+var search = getParameterByName('search');
+if(search == null){
+    search =""
+}
 $(window).scroll(function() {
     if(working == false){
         working = true;
 
         $.ajax({
             type: "GET",
-            url: "/product/nextpage?page="+page,
+            url: "/product/nextpage?search="+search+"&page="+page,
             processData: false,
             contentType: "application/json",
             data: '',
@@ -510,7 +522,57 @@ $(window).scroll(function() {
                 for(var a in data['product']){
                     image = '<img src="/images/'+ data['product'][a]['image'] + '">'
                     id = data['product'][a]['id']
+                    price = data['product'][a]['product_price']
+                    discount = parseFloat(data['product'][a]['discount'])
+                    stock = data['product'][a]['stock']
+                    if(discount > 0){
+                        price_info = `<p class = "product-price">$`+price+`</p>
+                                      <p class = "product-price">$`+parseFloat(parseFloat(price) * ((100-parseFloat(discount))/100)).toFixed(2)+`</p>
+                                      </div>
+                                      <div>
+                                        <div class="off-info">
+                                            <h2 class = "sm-title">`+discount+`% off</h2>
+                                      </div>`
+                        modal_discount = `<p style="font-size: 21px; color: #f05229; font-weight: 600; line-height: 37.8px; vertical-align:top; text-align: left;">`+data['product'][a]['discount']+`% OFF </p>`
+                    }else{
+                        price_info = `<p class = "product-price"></p>
+                                      <p class = "product-price">$`+parseFloat(parseFloat(price) * ((100-parseFloat(discount))/100)).toFixed(2)+`</p>
+                                      </div>`
+                        modal_discount = ""
+                    }
+                    if(stock>0){
+                        modal_stock = `<input type="hidden" name="product_id" value="{{id}}">
+                                                <div class="form-group">
+                                                    <button type="submit" class="btn btn-sm btn-warning">Add to Cart</button>
+                                                    <label for="quantity">Quantity: </label>
+                                                    <input type="number" id="quantity" name="quantity" value="1" min="1" max="{{stock}}" />
+                                                </div>`
+                    }else{
+                        modal_stock = `<button type="submit" disabled class="btn btn-sm btn-danger">Out of Stock</button>`
+                    }
                     modal_id = "#details_" + id
+                    btns = `<div class = "product-btns">
+                        <button class="btn-buy" style=style="text-decoration: none; color:black; text-align:center;" data-bs-toggle="modal" data-bs-target="`+modal_id+`">
+                            details<span><i class = "fa fa-shopping-cart"></i></span></button>`
+                    form = `<form action=/cart/add/{{id}}" method="post">
+                            <input type="hidden" name="" value="">
+                            <button type="submit" class="btn-cart" value="`+id+`"> add to cart</button>
+                            <input type="hidden" name=quantity value="1"
+                            </form></div>`
+
+                    productInfo = `<div class="product-info">
+                                        <div class="product-info-top">
+                                            <h2 class = "sm-title">`+data['product'][a]["brand.brand_name"]+`</h2>
+                                            <div class="rating" style="">
+                                                <span><i class= "fas fa-star"></i></span>
+                                                <span><i class= "fas fa-star"></i></span>
+                                                <span><i class= "fas fa-star"></i></span>
+                                                <span><i class= "fas fa-star"></i></span>
+                                                <span><i class= "fas fa-star"></i></span>
+                                            </div>
+                                        </div>
+                                        <a href= "/product/details/`+id+`" class="product-name">`+data['product'][a]['product_name']+`</a>
+                                        `+price_info
                     modal = `<div class="modal" tabindex="-1" id="details_`+id+`" data-backdrop="static" data-bs-focus="false">
                             <div class="modal-dialog modal-lg modal-dialog-centered">
                             <div class="modal-content">
@@ -527,19 +589,13 @@ $(window).scroll(function() {
                                             <button value=`+id+` class="btn btn-sm bx bx-bookmark" onclick="submitForm(this)" style="font-size:2rem"></button>
                                         </div>
                                         <p style="font-size: 32px; color: #319e40; font-weight: 500; line-height: 32px; vertical-align:top; text-align: left;">`+data['product'][a]['product_price']+`</p>
-                                        <p style="font-size: 21px; color: #f05229; font-weight: 600; line-height: 37.8px; vertical-align:top; text-align: left;">`+data['product'][a]['discount']+`% OFF </p>
+                                        `+modal_discount+`
                                         <p style="font-size: 24px; color: #4a4a4a; font-weight: 400; line-height: 24px; vertical-align: top; text-align: left; padding: 0px;">`+data['product'][a]['product_name']+`</p>
                                         <hr>
                                         <p style="font-size: 16px; color: #4a4a4a; font-weight: 400; line-height: 24px; vertical-align: top; text-align: left; margin: 0px 0px 30px;">`+data['product'][a]['desc']+`</p>
                                         <div style="float: left">
                                         <form action="/cart/add/`+id+`" method="post">
-                                            <input type="hidden" name="product_id" value="{{id}}">
-                                            <div class="form-group">
-                                                <button type="submit" class="btn btn-sm btn-warning">Add to Cart</button>
-                                                <label for="quantity">Quantity: </label>
-                                                <input type="number" id="quantity" name="quantity" value="1" min="1" max="`+data['product'][a]['product_name']+`" />
-                                            </div>
-                                        </div>
+                                            `+modal_stock+`
                                         </form>
                                             <h4 style="float: right">Stock: `+data['product'][a]['stock']+`</h4>
                                     </div>
@@ -549,13 +605,13 @@ $(window).scroll(function() {
                             </div>
                             </div>`
                     image_id = "<div class='product-img'><a href='"+ modal_id+"' data-bs-toggle='modal'>"+image+"</a>"                                                                                                                                                                                                     
-                    $(".product-items").append("<div class='product'>"+image_id+"</div>")
+                    $(".product-items").append(`<div class='product'><div class="product"><div class="product-content">`+image_id+"</div>"+btns+form+`</div></div>`+productInfo)
                     $('body').append(modal)
                 }
                 page += 1
                 setTimeout(function(){
                     working = false;
-                }, 4000)
+                }, 1000)
             }
             })
     }
