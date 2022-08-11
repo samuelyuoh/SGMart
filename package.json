@@ -32,6 +32,7 @@
     "passport-google-oauth": "^2.0.0",
     "passport-local": "^1.0.0",
     "sequelize": "^6.21.0",
+    "speakeasy": "^2.0.0",
     "sqlite3": "^5.0.8",
     "sweetalert2": "^11.4.24",
     "uuid": "^8.3.2"

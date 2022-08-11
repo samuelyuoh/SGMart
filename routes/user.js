@@ -17,6 +17,7 @@ const Product = require('../models/Product');
 const fs = require('fs');
 const upload = require('../helpers/imageUpload');
 const googlelogin = require('../helpers/googlelogin');
+const speakeasy = require('speakeasy');
 const isStaff = function(userType) {
 	return (userType == 'staff' || userType == 'admin' || userType == 'madmin')
 };
@@ -82,7 +83,7 @@ router.post('/register', async function (req, res) {
             var salt = bcrypt.genSaltSync(10);
             var hash = bcrypt.hashSync(password, salt);
             // Use hashed password
-            let user = await User.create({ name, email, password: hash, 'userType': 'customer', 'status': 0, 'tfa': 0  });
+            let user = await User.create({ name, email, password: hash, 'userType': 'customer', 'status': 0, 'tfa': 0, 'gtfa': 0  });
             // Send email
             let token = jwt.sign(email, process.env.APP_SECRET);
             let url = `${process.env.BASE_URL}:${process.env.PORT}/user/verify/${user.id}/${token}`;
@@ -204,6 +205,12 @@ router.post('/login', async (req, res, next) => {
 });
 
 router.get('/logout', (req, res) => {
+    req.logout();
+    flashMessage(res, 'success', 'Logged Out.')
+    res.redirect('/');
+});
+
+router.get('/logout1', (req, res) => {
     req.logout();
     res.redirect('/');
 });
@@ -404,6 +411,7 @@ router.get('/:id/2fa/:action', async (req, res) => {
     a = req.params.action == 'enable' ? 1 : 0;
     user = await User.findByPk(id);
     if (isStaff(user.userType)) {
+        //need to allow staff to be able to change 2fa type
         flashMessage(res, 'error', '2FA of staffs cannot be disabled')
         res.redirect(`/user/profile/${id}`)
     } else {
@@ -429,10 +437,7 @@ router.post('/:id/2fa/:action', async (req, res) => {
     user = await User.findByPk(id);
     a = req.params.action == 'enable' ? 1 : 0;
 
-    var salt = bcrypt.genSaltSync(10);
-    var hash = bcrypt.hashSync(pwd, salt);
-    const validPassword = await bcrypt.compare(pwd, user.password);
-    if (validPassword) {
+    if (user.password == null) {
         await User.update(
             {tfa: a},
             {where: {id: id}}
@@ -447,10 +452,26 @@ router.post('/:id/2fa/:action', async (req, res) => {
         })
         .catch(err => console.log(err));
     } else {
-        flashMessage(res, 'error', 'Wrong Password. Please try again.');
-        res.redirect(`/user/profile/${id}`)
+        const validPassword = await bcrypt.compare(pwd, user.password);
+        if (validPassword) {
+            await User.update(
+                {tfa: a},
+                {where: {id: id}}
+            )
+            .then((user) => {
+                if (!a) {
+                    flashMessage(res, 'success', '2FA Disabled');
+                } else {
+                    flashMessage(res, 'success', '2FA Enabled');
+                }
+                res.redirect(`/user/profile/${id}`)
+            })
+            .catch(err => console.log(err));
+        } else {
+            flashMessage(res, 'error', 'Wrong Password. Please try again.');
+            res.redirect(`/user/profile/${id}`)
+        }
     }
-    
 });
 
 router.get('/:id/2fa/verifyotp/:token', async (req, res) => {
@@ -461,7 +482,7 @@ router.get('/:id/2fa/verifyotp/:token', async (req, res) => {
     // console.log(token['payload'])
     if (user.otptoken != req.params.token) {
         flashMessage(res, 'error', 'Error. Access denied');
-        res.redirect('/user/logout');
+        res.redirect('/user/logout1');
     } else {
         if (token == null) {
             flashMessage(res, 'error', 'Error. Access denied');
@@ -472,7 +493,7 @@ router.get('/:id/2fa/verifyotp/:token', async (req, res) => {
                 res.render('user/otp');
             } else {
                 flashMessage(res, 'error', 'Error. Access denied');
-                res.redirect('/user/logout');
+                res.redirect('/user/logout1');
             }
         }
     }
@@ -484,7 +505,7 @@ router.post('/:id/2fa/verifyotp/:token', async (req, res) => {
     user = User.findByPk(req.params.id);
     if (user.otptoken != req.params.token) {
         flashMessage(res, 'error', 'Error. Access denied');
-        res.redirect('/user/logout');
+        res.redirect('/user/logout1');
     } else {
         token = jwt.decode(req.params.token);
         // console.log(token);
@@ -503,7 +524,7 @@ router.post('/:id/2fa/verifyotp/:token', async (req, res) => {
 
             } else {
                 flashMessage(res, 'error', 'Wrong OTP, please log in again');
-                res.redirect('/user/logout');
+                res.redirect('/user/logout1');
             }
         }
     }
@@ -553,12 +574,136 @@ router.get('/login/google/callback',
   function(req, res) {
     // Successful authentication, redirect success.
     // console.log(res.message)
+    flashMessage(res, 'success', req.authInfo.message)
     res.redirect('/');
   });
 // router.get('/check_delivery', (req, res) => {
 //     res.render('user/check_delivery');
 // });
 
+router.post('/login/gotp/:id/:action', async (req, res) => {
+    id = req.params.id;
+    if (id != req.user.id) {
+        flashMessage(res, 'error', 'Error. Access denied')
+        res.redirect('/')
+    } else if (req.params.action == 'enable') {
+        
+        user = await User.findByPk(id)
+        if (user) {
+            await User.update(
+                {gtfa: 1},
+                {secret: speakeasy.generateSecret().base32},
+                {where: {id: id}}
+            ).then((user) => {
+                flashMessage(res, 'success', 'Google Authenticator 2FA enabled');
+                res.redirect(`/user/profile/${id}`);
+            }).catch(err => console.log(err));
+        } else {
+            flashMessage(res, 'error', 'User not found');
+            res.redirect(`/`);
+        }
+    } else {
+        user = await User.findByPk(id)
+        if (user) {
+            if (user.password == null) {
+                await User.update(
+                    {gtfa: 0},
+                    {where: {id: id}}
+                ).then((user) => {
+                    flashMessage(res, 'success', 'Google Authenticator 2FA disabled');
+                    res.redirect(`/user/profile/${id}`);
+                }).catch(err => console.log(err));
+            } else {
+                const {pwd} = req.body;
+                const validPassword = await bcrypt.compare(pwd, user.password);
+                if (validPassword) {
+                    await User.update(
+                        {gtfa: 0},
+                        {where: {id: id}}
+                    ).then((user) => {
+                        flashMessage(res, 'success', 'Google Authenticator 2FA disabled');
+                        res.redirect(`/user/profile/${id}`);
+                    }).catch(err => console.log(err));
+                } else {
+                    flashMessage(res, 'error', 'Wrong Password. Please try again.');
+                    res.redirect(`/user/profile/${id}`)
+                }
+            }
+        } else {
+            flashMessage(res, 'error', 'User not found');
+            res.redirect(`/`);
+        }
+    } 
+})
+
+router.get('/login/gotp/:id/:action', (req, res) => {
+    id = req.params.id;
+    if (id != req.user.id) {
+        flashMessage(res, 'error', 'Error. Access denied')
+        res.redirect('/')
+    } else if (req.params.action == 'enable') {
+        
+        user = User.findByPk(id)
+        if (user) {
+            User.update(
+                {gtfa: 1},
+                {secret: speakeasy.generateSecret().base32},
+                {where: {id: id}}
+            ).then((user) => {
+                flashMessage(res, 'success', 'Google Authenticator 2FA enabled');
+                res.redirect(`/user/profile/${id}`);
+            }).catch(err => console.log(err));
+        } else {
+            flashMessage(res, 'error', 'User not found');
+            res.redirect(`/`);
+        }
+    } else {
+        user = User.findByPk(id)
+        if (user) {
+            User.update(
+                {gtfa: 0},
+                {where: {id: id}}
+            ).then((user) => {
+                flashMessage(res, 'success', 'Google Authenticator 2FA disabled');
+                res.redirect(`/user/profile/${id}`);
+            }).catch(err => console.log(err));
+        } else {
+            flashMessage(res, 'error', 'User not found');
+            res.redirect(`/`);
+        }
+    } 
+})
+
+router.get('/login/:id/gotp/verify', (req, res) => {
+    if (req.params.id == req.user.id) {
+        res.render('user/gotp');
+    } else {
+        flashMessage(res, 'error', 'Access denied.')
+        res.redirect('/')
+    }
+    
+})
+router.post('/login/:id/gotp/verify', async (req, res) => {
+    const {gotp} = req.body;
+    id = req.params.id;
+    try {
+        user = await User.findByPk(id);
+        const s = user.secret;
+        const verified = speakeasy.totp.verify({secret: s,
+        encoding: 'base32',
+        token: gotp});
+
+        if (verified) {
+            flashMessage(res, 'success', 'You have logged in.')
+            res.redirect('/')
+        } else {
+            flashMessage(res, 'error', 'Wrong OTP.')
+            res.redirect('/user/logout1')
+        }
+    } catch (error) {
+        console.log(error)
+    }
+})
 router.get('/check_delivery', (req, res) => {
     const metadata = {
         // layout: 'user',

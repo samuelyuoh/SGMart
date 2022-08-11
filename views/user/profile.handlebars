@@ -167,7 +167,7 @@
                                     {{#if (isStaff user.userType)}}
                                         <input type="checkbox" id="myButton" name="myButton" value="{{user.id}}" checked> 2 Factor Authentication
                                     {{else}}
-                                        {{#if user.tfa}}
+                                        {{#if (iftfa user.tfa user.gtfa)}}
                                             <a href="" style="float: left !important" type="button" class="btn" data-bs-toggle="modal" data-bs-target="#exampleModal2"><input type="checkbox" id="myButton1" name="myButton1" value="{{user.id}}" checked> 2 Factor Authentication</a>
                                             {{!-- <input type="checkbox" id="myButton" name="myButton" value="{{user.id}}" checked> 2 Factor Authentication --}}
                                             {{!-- modal here --}}
@@ -181,23 +181,65 @@
                                                             </h5> 
                                                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                         </div>
-                                                        <form action="/user/{{user.id}}/2fa/disable" method="POST">
-                                                            <div class="modal-body">
-                                                                Note: Disabling two factor authentication will decrease your account's security
-                                                                <br><br>
-                                                                Please input your password to disable 2FA
-                                                                <input type="password" id="pwd" name="pwd" class="form-control" placeholder="Confirm Password" required>
-                                                            </div>
-                                                            <div class="modal-footer">
-                                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                                                                <button type="submit" class="btn btn-danger" >Confirm</button>
-                                                            </div>
-                                                        </form>
+                                                        {{#if user.tfa}}
+                                                            <form action="/user/{{user.id}}/2fa/disable" method="POST">
+                                                                <div class="modal-body">
+                                                                    Note: Disabling two factor authentication will decrease your account's security
+                                                                    <br><br>
+                                                                    {{#if user.password}}
+                                                                        Please input your password to disable 2FA
+                                                                        <input class="form-control" type="password" id="pwd" name="pwd" placeholder="Confirm your password">
+                                                                    {{/if}}
+                                                                </div>
+                                                                <div class="modal-footer">
+                                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                                                    <button type="submit" class="btn btn-danger" >Confirm</button>
+                                                                </div>
+                                                            </form>
+                                                        {{else}}
+                                                            <form action="/user/login/gotp/{{user.id}}/disable" method="POST">
+                                                                <div class="modal-body">
+                                                                    Note: Disabling two factor authentication will decrease your account's security
+                                                                    <br><br>
+                                                                    {{#if user.password}}
+                                                                        Please input your password to disable 2FA
+                                                                        <input class="form-control" type="password" id="pwd" name="pwd" placeholder="Confirm your password">
+                                                                    {{/if}}
+                                                                </div>
+                                                                <div class="modal-footer">
+                                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                                                    <button type="submit" class="btn btn-danger" >Confirm</button>
+                                                                </div>
+                                                            </form>
+                                                        {{/if}}
                                                     </div>
                                                 </div>
                                             </div>
+                                            
                                         {{else}}
-                                            <input type="checkbox" id="myButton" name="myButton" value="{{user.id}}"> 2 Factor Authentication
+                                            <a href="" style="float: left !important" type="button" class="btn" data-bs-toggle="modal" data-bs-target="#exampleModal3"><input type="checkbox" id="myButton1" name="myButton1" value="{{user.id}}"> 2 Factor Authentication</a>
+                                            <div class="modal fade" id="exampleModal3" tabindex="-1" aria-labelledby="exampleModalLabel3" aria-hidden="true">
+                                                <div class="modal-dialog">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title" id="exampleModalLabel">
+                                                                Enable Two Factor Authentication
+                                                            </h5> 
+                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                        </div>
+                                                            <div class="modal-body">
+                                                                Enabling two factor authentication is a good practice to improve your account's security
+                                                                <br><br>
+                                                                Please choose between email 2FA or gooogle authenticator 2FA
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                                                <a type="button" class="btn btn-danger" href="/user/{{user.id}}/2fa/enable">Email 2FA</a>
+											                    <a type="button" class="btn btn-danger" href="">Google 2FA</a>
+                                                            </div>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         {{/if}}
                                     {{/if}}
                                 </a>

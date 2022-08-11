@@ -12,7 +12,6 @@ function googlelogin() {
         callbackURL: "http://localhost:5000/user/login/google/callback"
       },
         async function(accessToken, refreshToken, profile, done) {
-            console.log(profile.photos[0].value)
             const [user, created] = await User.findOrCreate({
                 where: {email: profile.emails[0].value},
                 defaults: {
@@ -22,6 +21,7 @@ function googlelogin() {
                     'userType': 'customer', 
                     'status': 0, 
                     'tfa': 0,
+                    'gtfa': 0,
                     'verified': 1,
                 },
             })
