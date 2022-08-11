@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const flashMessage = require('../helpers/messenger');
 const User = require('../models/User');
+const Coupon = require('../models/Coupon');
 const bcrypt = require('bcryptjs');
 const passport = require('passport');
 const ensureAuthenticated = require('../helpers/auth');
@@ -38,7 +39,7 @@ router.post('/register', async function (req, res) {
         let user = await User.findOne({ where: { email: email } });
         if (user) {
             // If user is found, that means email has already been registered
-            flashMessage(res, 'error', email + ' already registered');
+            flashMessage(res, 'error', email + ' alreay registered');
             res.render('user/register', {
                 name, email
             });
@@ -48,7 +49,8 @@ router.post('/register', async function (req, res) {
             var salt = bcrypt.genSaltSync(10);
             var hash = bcrypt.hashSync(password, salt);
             // Use hashed password
-            let user = await User.create({ name, email, password: hash });
+            Points = 0
+            let user = await User.create({ name, email, password: hash, Points });
             flashMessage(res, 'success', email + ' registered successfully');
             res.redirect('/user/login');
         }
@@ -103,9 +105,9 @@ router.post('/editprofile/:id', ensureAuthenticated, (req, res) => {
     let address2 = req.body.address2 ? req.body.address2 : null;
     let postalCode = req.body.postalCode ? req.body.postalCode : null;
     let password = req.body.password ? req.body.password : null;
-    let amountSpent = req.body.amountSpent ? req.body.amountSpent : null;
+
     User.update(
-        { name, email, password, phoneNumber, address, address2, postalCode, amountSpent }, 
+        { name, email, password, phoneNumber, address, address2, postalCode, }, 
         { where: { id: req.params.id } }
     )
         .catch(err => console.log(err));
@@ -134,6 +136,26 @@ router.get('/editprofile/:id', ensureAuthenticated, (req, res) => {
             
         })
         .catch(err => console.log(err));
+});
+
+router.get('/viewrewards/:id', ensureAuthenticated, (req, res) => {
+    User.findByPk(req.params.id)
+        .then((user) => {
+            if (!user) {
+                flashMessage(res, 'error', 'User not found');
+                res.redirect('/user/login');
+                return;
+            }
+            if (req.user.id != req.params.id) {
+                flashMessage(res, 'error', 'Unauthorised access');
+                res.redirect('/');
+                return;
+            }
+            res.render('user/viewrewards', { user });
+            
+        })
+        .catch(err => console.log(err));
+
 });
 
 router.get('/deleteAccount/:id', ensureAuthenticated, async function (req, res) {

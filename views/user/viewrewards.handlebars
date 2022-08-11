@@ -1,4 +1,3 @@
-
 <div class="container">
     <div class="main-body">
         <div class="row gutters-sm"  style="margin-top: 2.5%">
@@ -19,8 +18,8 @@
                         <div class="panel">
                             <ul class="nav nav-pills nav-stacked">
                                 <li><a href="/user/profile/{{user.id}}"> <i class="fa fa-user"></i> Account Overview</a></li>
-                                <li class="active"><a href="/user/editprofile/{{user.id}}"><i class="fa fa-edit"></i> Edit information</a></li>
-                                <li><a href="/user/viewrewards/{{user.id}}"><i class="fas fa-award"></i></i> View Rewards</a></li>
+                                <li><a href="/user/editprofile/{{user.id}}"><i class="fa fa-edit"></i> Edit information</a></li>
+                                <li class="active"><a href="/user/viewrewards/{{user.id}}"><i class="fas fa-award"></i> View Rewards</a></li>
                             </ul>
                         </div>
                     </div>
@@ -33,42 +32,52 @@
                             <div class=" border-right">
                                 <div class="p-3 py-5">
                                     <div class="d-flex justify-content-between align-items-center mb-3">
-                                        <h4 class="text-right">Edit Profile</h4>
+                                        <h4 class="text-right">Points Owned: {{user.Points}}</h4>
                                     </div>
-                                    <form method="POST">
-                                        <div class="row mt-2">
-                                            <div class="col-md-12">
-                                                <label class="labels">Name</label>
-                                                <input name="name" type="text" class="form-control" placeholder="name" value="{{user.name}}">
-                                            </div>
-                                            <div class="col-md-12">
-                                                <label class="labels">Email</label>
-                                                <input name="email" type="text" class="form-control" placeholder="email" value="{{user.email}}">
-                                            </div>
-                                            <div class="col-md-12">
-                                                <label class="labels">Mobile Number</label>
-                                                <input name="phoneNumber" type="number" class="form-control" placeholder="phone number" value="{{user.phoneNumber}}">
-                                            </div>
-                                            <div class="col-md-12">
-                                                <label class="labels">Address Line 1</label>
-                                                <input name="address" type="text" class="form-control" placeholder="address line 1" value="{{user.address}}">
-                                            </div>
-                                            <div class="col-md-12">
-                                                <label class="labels">Address Line 2</label>
-                                                <input name="address2" type="text" class="form-control" placeholder="address line 2" value="{{user.address2}}">
-                                            </div>
-                                            <div class="col-md-12">
-                                                <label class="labels">Postal code</label>
-                                                <input name="postalCode" type="number" class="form-control" placeholder="postal code" value="{{user.postalCode}}">
-                                            </div>
-
-                                            <input type="hidden" name="password" value="{{user.password}}">
-                                        </div>
-                                        <div class="mt-5 text-center" style="float: right !important">
-                                            <a style="text-decoration: none !important; color: black;" href="/user/profile/{{user.id}}">Cancel</a>
-                                            <button class="btn btn-primary profile-button" type="submit">Save Profile</button>
-                                        </div>
-                                    </form>
+                                    <div class="container">
+                                        {{#if user.couponInventory}}
+                                            <p>Coupons Owned: {{user.couponInventory}}</p>
+                                            {{!-- {{#each user.couponInventory}}
+                                            <div class="card border-primary mb-2 w-100 mx-auto heado">
+                                                <div class="card-header ">
+                                                    <h5 class="card-title">{{couponName}}</h5>
+                                                </div>
+                                                <div class="card-body">
+                                                    <div class="row">
+                                                        <div class="col-sm-12 col-md-12 col-lg-2">
+                                                            <p class="font-italic">Coupon Name</p>
+                                                            <p class="text-info">
+                                                                {{couponName}}
+                                                            </p>
+                                                        </div>
+                                                        <div class="col-sm-12 col-md-12 col-lg-3">
+                                                            <p class="font-italic">Percentage Discount</p>
+                                                            <p class="text-info">
+                                                                {{percentageDiscount}}%
+                                                            </p>
+                                                        </div>
+                                                        <div class="col-sm-12 col-md-12 col-lg-2">
+                                                            <p class="font-italic">Expiry Date</p>
+                                                            <p class="text-info">{{formatDate expiryDate 'YYYY-MM-DD'}}</p>
+                                                        </div>
+                                                        <div class="col-sm-12 col-md-12 col-lg-2">
+                                                            <p class="font-italic">Coupon Quantity</p>
+                                                            <p class="text-info">
+                                                                {{couponQuantity}}
+                                                            </p>
+                                                        </div>
+                                                        <div class="col-sm-12 col-md-12 col-lg-2">
+                                                            <p class="font-italic">Points to Redeem</p>
+                                                            <p class="text-info">
+                                                                {{pointstoattain}}
+                                                            </p>
+                                                        </div>
+                                            </div> --}}
+                                        {{else}}
+                                            -
+                                        {{/if}}
+                                    </div>
+                                        
                                 </div>
                             </div>
                         </div>

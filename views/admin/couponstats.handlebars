@@ -1,0 +1,44 @@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
+<body>
+
+<canvas id="myChart" style="width:100%;max-width:600px"></canvas>
+
+<script>
+  
+var today = new Date();
+today = today.toISOString().slice(0,10)
+
+
+var xValues = [today, 5];
+var yValues = [{{count}}, 6];
+
+new Chart("myChart", {
+  type: "line",
+  data: {
+    labels: xValues,
+    datasets: [{
+      fill: false,
+      lineTension: 0,
+      backgroundColor: "rgba(0,0,255,1.0)",
+      borderColor: "rgba(0,0,255,0.1)",
+      data: yValues
+    }]
+  },
+  options: {
+    legend: {display: false},
+    scales: {
+      yAxes: [{ticks: {min: 1, max:10}}],
+    }
+  }
+});
+
+	
+</script>
+
+
+
+<style>
+  canvas{
+    padding-left: 50px;
+  }
+</style>

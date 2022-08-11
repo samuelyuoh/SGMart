@@ -9,59 +9,92 @@
 			</div>
 			<div class="card-body">
 				<div class="row">
-					<div class="col-sm-12 col-md-12 col-lg-3">
-						<p class="font-italic">couponName</p>
+					<div class="col-sm-12 col-md-12 col-lg-2">
+						<p class="font-italic">Coupon Name</p>
 						<p class="text-info">
 							{{couponName}}
 						</p>
 					</div>
 					<div class="col-sm-12 col-md-12 col-lg-3">
-						<p class="font-italic">percentageDiscount</p>
+						<p class="font-italic">Percentage Discount</p>
 						<p class="text-info">
 							{{percentageDiscount}}%
 						</p>
 					</div>
 					<div class="col-sm-12 col-md-12 col-lg-2">
-						<p class="font-italic">expiryDate</p>
-						<p class="text-info">{{formatDate expiryDate 'YYYY-MM-DD HH:MI:SS'}}</p>
+						<p class="font-italic">Expiry Date</p>
+						<p class="text-info">{{formatDate expiryDate 'YYYY-MM-DD'}}</p>
 					</div>
-					{{!-- <!-- Button trigger modal -->
-					<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
-					Launch demo modal
-					</button>
+					<div class="col-sm-12 col-md-12 col-lg-2">
+						<p class="font-italic">Coupon Quantity</p>
+						<p class="text-info">
+							{{couponQuantity}}
+						</p>
+					</div>
+					<div class="col-sm-12 col-md-12 col-lg-2">
+						<p class="font-italic">Points to Redeem</p>
+						<p class="text-info">
+							{{pointstoattain}}
+						</p>
+					</div>
 
-					<!-- Modal -->
-					<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-					<div class="modal-dialog">
-						<div class="modal-content">
-						<div class="modal-header">
-							<h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
-							<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-						</div>
-						<div class="modal-body">
-							Are you sure you want to delete?
-						</div>
-						<div class="modal-footer">
-							<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
-							<button type="button" class="btn btn-primary" >Yes</button>
-						</div>
-						</div>
-					</div>
-					</div> --}}
 					<div class="col-sm-12 col-md-12 col-lg-2">
 						<p>
-							<a href="/admin/admincouponedit/{{id}}" class="card-link mb-2">
+							{{!-- <a href="/admin/admincouponedit/{{id}}" class="card-link mb-2">
 								<i class="fas fa-pencil-alt"></i>
 								Edit
+							</a> --}}
+							<a href="/admin/admincouponedit/{{id}}">
+								<button type="button" class="btn btn-primary" >
+								Edit <i class="fas fa-pencil-alt"></i>
+								</button>
 							</a>
+							
 						</p>
 						<p>
-							<a href="/admin/admincoupondelete/{{id}}" class="card-link" data-toggle="confirmation"
+							{{!-- <a href="/admin/admincoupondelete/{{id}}" class="card-link" data-toggle="confirmation"
 								data-title="Confirm delete?">
 								<i class="far fa-trash-alt"></i>
 								Delete
-							</a>
+							</a> --}}
+							<form action="/admin/admincoupondelete/{{id}}" method="POST">
+							<input type="hidden" value="{{this.id}}" name="cidelete" id="cidelete">
+             				 <!-- Button to Open the Modal -->
+							<button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#myModal_{{this.id}}">
+							Delete <i class="far fa-trash-alt"></i>
+							</button>
+
+							<!-- The Modal -->
+							<div class="modal" id="myModal_{{this.id}}">
+							<div class="modal-dialog">
+								<div class="modal-content">
+
+								<!-- Modal Header -->
+								<div class="modal-header">
+									<h4 class="modal-title">Delete Confirmation</h4>
+									<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+								</div>
+
+								<!-- Modal body -->
+								<div class="modal-body">
+									Are you sure you want to delete {{couponName}}?
+								</div>
+
+								<!-- Modal footer -->
+								<div class="modal-footer">
+									<input type="submit" value="Delete" class="btn btn-danger">
+										<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+									</a>
+								</div>
+
+								</div>
+							</div>
+							</div>
+						</form>
 						</p>
+						{{!-- <p>
+							<button class="btn btn-primary" onclick="myFunction()">Copy text<i class="fa-solid fa-copy"></i></button>
+						</p> --}}
 					</div>
 				</div>
 			</div>
@@ -94,5 +127,36 @@
 	myModal.addEventListener('shown.bs.modal', function () {
 	myInput.focus()
 	})
-</script>
 
+	function myFunction() {
+	/* Get the text field */
+	var copyText = document.getElementById("myInput");
+
+	/* Select the text field */
+	copyText.select();
+	copyText.setSelectionRange(0, 99999); /* For mobile devices */
+
+	/* Copy the text inside the text field */
+	navigator.clipboard.writeText(copyText.value);
+	
+	/* Alert the copied text */
+	alert("Copied the text: " + copyText.value);
+	}
+
+	var today = new Date();
+	var dd = today.getDate();
+	var mm = today.getMonth() + 1;
+	var yyyy = today.getFullYear();
+
+	if (dd < 10){
+		dd = "0" + dd;
+	}
+
+	if (mm < 10){
+		mm = "0" + mm
+	}
+
+	today = yyyy + "-" + mm + "-" + dd;
+	document.getElementById("expiryDate").setAttribute("min", today);
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>

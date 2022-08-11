@@ -10,6 +10,8 @@ const User = db.define('user',
         address: { type: Sequelize.STRING },
         address2: { type: Sequelize.STRING },
         postalCode: { type: Sequelize.INTEGER },
-        amountSpent: { type: Sequelize.INTEGER }
+        // amountSpent:{ type: Sequelize.INTEGER },
+        Points:{ type: Sequelize.INTEGER },
+        couponInventory: { type: Sequelize.STRING}
     });
 module.exports = User;

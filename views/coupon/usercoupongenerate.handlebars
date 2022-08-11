@@ -1,11 +1,306 @@
-<div class="container">
-	{{#if (ifmoney amountSpent)}}
-        {{!-- <p>{{user.amountSpent}}</p> --}}
-	{{else}}
-        <h3>Not Enough Money Spent</h3>
-        <p>${{user.amountSpent}}(spent) out of $50(needed)</p>
-	{{/if}}
+{{!-- <h1>Press the button to check if you are eligible for a coupon!!</h1> --}}
+{{!-- <div class="container">
+        <form action="/admin/admincoupondelete/{{id}}" method="POST">
+        <!-- Button to Open the Modal -->
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#myModal_{{this.id}}">
+                Check!! <i class="far fa-trash-alt"></i>
+                </button>
 
+                <!-- The Modal -->
+                <div class="modal" id="myModal_{{this.id}}">
+                <div class="modal-dialog">
+                        <div class="modal-content">
 
+                        <!-- Modal Header -->
+                        <div class="modal-header">
+                                <h4 class="modal-title">Delete Confirmation</h4>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+
+                        <!-- Modal body -->
+                        <div class="modal-body">
+                                Are you sure you want to delete {{couponName}}?
+                        </div>
+
+                        <!-- Modal footer -->
+                        <div class="modal-footer">
+                                <input type="submit" value="Delete" class="btn btn-danger">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                </a>
+                        </div>
+
+                        </div>
+                </div>
+                </div>
+        </form> --}}
+
+        {{#if (ifpoints50 Points)}}
+          <div class="js-container container" style="top:0px !important;"></div>
+            <div style="text-align:center;margin-top:30px;width:100%;left:0px;">
+            <div class="checkmark-circle">
+            <div class="background"></div>
+            <div class="checkmark draw"></div>
+            </div>
+            <h1>🎉🥳Congratulations!🥳🎉</h1>       
+            <p>You have spent enough to claim a coupon!!</p>
+            {{!-- <button class="submit-btn" type="submit" onclick="alert('{{couponName}}');">Claim!!</button> --}}
+            <div class="container ">
+              {{#if coupons}}
+              <div class="card card-body ">
+                <h3 class="text-primary heado">You can choose a coupon to claim!!</h3>
+                {{#each coupons}}
+                <div class="card border-primary mb-2 w-100 mx-auto heado">
+                  <div class="card-header ">
+                    <h5 class="card-title">{{couponName}}</h5>
+                  </div>
+                  <div class="card-body">
+                    <div class="row">
+                      <div class="col-sm-12 col-md-12 col-lg-2">
+                        <p class="font-italic">Coupon Name</p>
+                        <p class="text-info">
+                          {{couponName}}
+                        </p>
+                      </div>
+                      <div class="col-sm-12 col-md-12 col-lg-2">
+                        <p class="font-italic">Percentage Discount</p>
+                        <p class="text-info">
+                          {{percentageDiscount}}%
+                        </p>
+                      </div>
+                      <div class="col-sm-12 col-md-12 col-lg-2">
+                        <p class="font-italic">Expiry Date</p>
+                        <p class="text-info">{{formatDate expiryDate 'YYYY-MM-DD'}}</p>
+                      </div>
+                      <div class="col-sm-12 col-md-12 col-lg-2">
+                        <p class="font-italic">Coupon Quantity</p>
+                        <p class="text-info">
+                          {{couponQuantity}}
+                        </p>
+                      </div>
+                      <div class="col-sm-12 col-md-12 col-lg-2">
+                        <p class="font-italic">Points to redeem</p>
+                        <p class="text-info">
+                          {{pointstoattain}}
+                        </p>
+                      </div>
+                      <div class="col-sm-12 col-md-12 col-lg-2">
+                        <form method="POST">
+                          <input type="hidden" value="{{this.id}}" name="cid" id="cid">
+                        <!-- Button to Open the Modal -->
+                        <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#myModal_{{this.id}}">
+                        Claim <i class="fa fa-gift"></i></i>
+                        </button>
+
+                        <!-- The Modal -->
+                        <div class="modal" id="myModal_{{this.id}}">
+                        <div class="modal-dialog">
+                          <div class="modal-content">
+
+                          <!-- Modal Header -->
+                          <div class="modal-header">
+                            <h4 class="modal-title">Claim Confirmation</h4>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                          </div>
+
+                          <!-- Modal body -->
+                          <div class="modal-body">
+                            Are you sure you want to claim Coupon: {{couponName}}? It will deduct {{pointstoattain}} points
+                          </div>
+
+                          <!-- Modal footer -->
+                          <div class="modal-footer">
+                            <input type="submit" value="Claim" class="btn btn-success">
+                              <button type="submit" class="btn btn-sucess" data-bs-dismiss="modal">Cancel</button>
+                              {{!-- <button class="btn btn-primary profile-button" type="submit">Save Profile</button> --}}
+                            </a>
+                          </div>
+
+                          </div>
+                        </div>
+                        </div>
+                      </form>
+                      </div>
+                      
+                    </div>
+                  </div>
+
+                  
+                </div>
+                {{/each}}
+              </div>
+              {{else}}
+              <h3>No Coupon Created</h3>
+              {{/if}}
+            </div>
+
+        {{else}}
+            <h3>Not Enough Points to Redeem coupon</h3>
+           <p>Minimum 50 Points to redeem Coupon</p>
+           <p>You currently have {{Points}} points</p>
+           <p>Spend more money for more points(Every $1 spent is 1 point earn)</p>
+        {{/if}}
 </div>
-{{!-- <p>hi</p> --}}
+
+<style>
+  h4{
+    text-align: center;
+  }
+
+  body {
+  font-family: 'Roboto';
+  margin: 0;
+  padding: 0;
+}
+
+
+
+
+
+/* Checkmark */
+.checkmark-circle {
+  width: 150px;
+  height: 150px;
+  position: relative;
+  display: inline-block;
+  vertical-align: top;
+  margin-left: auto;
+  margin-right: auto;
+}
+.checkmark-circle .background {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  background: #00C09D;
+
+}
+.checkmark-circle .checkmark {
+  border-radius: 5px;
+}
+.checkmark-circle .checkmark.draw:after {
+  -webkit-animation-delay: 100ms;
+  -moz-animation-delay: 100ms;
+  animation-delay: 100ms;
+  -webkit-animation-duration: 3s;
+  -moz-animation-duration: 3s;
+  animation-duration: 3s;
+  -webkit-animation-timing-function: ease;
+  -moz-animation-timing-function: ease;
+  animation-timing-function: ease;
+  -webkit-animation-name: checkmark;
+  -moz-animation-name: checkmark;
+  animation-name: checkmark;
+  -webkit-transform: scaleX(-1) rotate(135deg);
+  -moz-transform: scaleX(-1) rotate(135deg);
+  -ms-transform: scaleX(-1) rotate(135deg);
+  -o-transform: scaleX(-1) rotate(135deg);
+  transform: scaleX(-1) rotate(135deg);
+  -webkit-animation-fill-mode: forwards;
+  -moz-animation-fill-mode: forwards;
+  animation-fill-mode: forwards;
+}
+.checkmark-circle .checkmark:after {
+  opacity: 1;
+  height: 75px;
+  width: 37.5px;
+  -webkit-transform-origin: left top;
+  -moz-transform-origin: left top;
+  -ms-transform-origin: left top;
+  -o-transform-origin: left top;
+  transform-origin: left top;
+  border-right: 15px solid white;
+  border-top: 15px solid white;
+  border-radius: 2.5px !important;
+  content: '';
+  left: 25px;
+  top: 75px;
+  position: absolute;
+}
+
+@-webkit-keyframes checkmark {
+  0% {
+    height: 0;
+    width: 0;
+    opacity: 1;
+  }
+  20% {
+    height: 0;
+    width: 37.5px;
+    opacity: 1;
+  }
+  40% {
+    height: 75px;
+    width: 37.5px;
+    opacity: 1;
+  }
+  100% {
+    height: 75px;
+    width: 37.5px;
+    opacity: 1;
+  }
+}
+@-moz-keyframes checkmark {
+  0% {
+    height: 0;
+    width: 0;
+    opacity: 1;
+  }
+  20% {
+    height: 0;
+    width: 37.5px;
+    opacity: 1;
+  }
+  40% {
+    height: 75px;
+    width: 37.5px;
+    opacity: 1;
+  }
+  100% {
+    height: 75px;
+    width: 37.5px;
+    opacity: 1;
+  }
+}
+@keyframes checkmark {
+  0% {
+    height: 0;
+    width: 0;
+    opacity: 1;
+  }
+  20% {
+    height: 0;
+    width: 37.5px;
+    opacity: 1;
+  }
+  40% {
+    height: 75px;
+    width: 37.5px;
+    opacity: 1;
+  }
+  100% {
+    height: 75px;
+    width: 37.5px;
+    opacity: 1;
+  }
+}
+
+
+
+.submit-btn {
+    height: 45px;
+    width: 200px;
+    font-size: 15px;
+    background-color: #00c09d;
+    border: 1px solid #00ab8c;
+    color: #fff;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px 0 rgba(87,71,81,.2);
+    cursor: pointer;
+    transition: all 2s ease-out;
+    transition: all .2s ease-out;
+}
+
+.submit-btn:hover {
+    background-color: #2ca893;
+    transition: all .2s ease-out;
+}
+</style>

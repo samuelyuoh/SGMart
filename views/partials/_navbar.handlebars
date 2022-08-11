@@ -1,3 +1,4 @@
+{{#if user}}
 <nav>
     <div class="header-1">
 
@@ -17,7 +18,7 @@
         <nav class="navbar">
             <a href="">Home</a>
 
-            <a href="/product/inventory">Products</a>
+            <a href="/product/products">Products</a>
             
             <div class="nav-item dropdown">
               <a class="nav-link dropdown-toggle" href="#" type="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">Brands</a>
@@ -38,13 +39,57 @@
             </div>
 
             <a href="">Contact</a>
+            <a href="">Blogs</a>
+            <a href="/usercoupongenerate/{{user.id}}">Coupon(User)</a>
+        </nav>
+{{else}}
+<nav>
+    <div class="header-1">
 
-            {{!-- <a href="/usercoupongenerate">Coupon(User)</a> --}}
+        <a class="logo" href=""><i class="fas fa-shopping-basket"></i>SGMart</a>
+
+        <form action="" class="search-box-container">
+            <input type="search" type="search" placeholder="Search" aria-label="Search" name="q" id="search-box">
+            <label for="search-box" class="fas fa-search" type="submit"></label>
+        </form>
+
+    </div>
+
+    <div class="header-2">
+
+        <div id="menu-bar" class="fas fa-bars"></div>
+
+        <nav class="navbar">
+            <a href="">Home</a>
+
+            <a href="/product/products">Products</a>
+            
+            <div class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" type="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">Brands</a>
+                <div class="dropdown-menu">
+                  {{!-- {% for brand in brands %} --}}
+                  <a class="dropdown-item" href="" >brand name</a>
+                  {{!-- {% endfor %} --}}
+                </div>
+            </div>
+
+            <div class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" type="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">Categories</a>
+                <div class="dropdown-menu">
+                  {{!-- {% for category in categories %} --}}
+                  <a class="dropdown-item" href="" >category name</a>
+                  {{!-- {% endfor %} --}}
+                </div>
+            </div>
+
+            <a href="">Contact</a>
+            <a href="">Blogs</a>
+            
             
         </nav>
-        
+        {{/if}}
         <div class="icons">
-          <a class="fas fa-user-circle nav-link" data-toggle="dropdown" id="dropdownMenuLink" aria-expanded="false" href="#" style="font-size: 25px !important; width: 25px !important; display: inline-block !important;"></a>
+          <a class="fas fa-user-circle nav-link" type="button" data-bs-toggle="dropdown" id="dropdownMenuLink" aria-expanded="false" href="#" style="font-size: 25px !important; width: 25px !important; display: inline-block !important;"></a>
           {{#if user}}
             <div class="dropdown-menu">
                   <a class="dropdown-item" href="/user/profile/{{user.id}}">Account</a>
@@ -57,8 +102,9 @@
             </div>
           {{/if}}
 
-          <a class="fas fa-shopping-cart" href="" tabindex="-1" style="font-size: 25px !important;"> session cart</a>
+          <a class="fas fa-shopping-cart" href="/cart/checkout" tabindex="-1" style="font-size: 25px !important;"></a>
         </div>
+
 
     </div>
 </nav>
