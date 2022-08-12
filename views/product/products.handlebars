@@ -1,398 +1,91 @@
+<link rel="stylesheet" href="/css/product.css">
+
+<div class="container" style="padding-top: 50px;">
+  <div class="bg-white rounded d-flex align-items-center justify-content-between" id="header"> <button class="btn btn-hide text-uppercase" type="button" data-bs-toggle="collapse" data-bs-target="#filterbar" aria-expanded="false" aria-controls="filterbar" id="filter-btn" onclick="changeBtnTxt()"> <span class="fas fa-angle-left" id="filter-angle"></span> <span id="btn-txt">Hide filters</span> </button>
+    <nav class="navbar navbar-expand-lg navbar-light ps-lg-0 ps-auto"> <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mynav" aria-controls="mynav" aria-expanded="false" aria-label="Toggle navigation" onclick="chnageIcon()" id="icon"> <span class="navbar-toggler-icon"></span> </button>
+      <div class="collapse navbar-collapse" id="mynav">
+        <ul class="navbar-nav d-lg-flex align-items-lg-center">
+          <li class="nav-item active"> 
+            <select name="sort" id="sort">
+              <option value="" hidden selected>Sort by</option>
+                <option value="price">Highest Price</option>
+              <option value="price">Highest Price</option>
+              <option value="popularity">Lowest Price</option>
+              <option value="rating">Rating</option>
+            </select> </li>
+          <li class="nav-item d-lg-none d-inline-flex"> </li>
+        </ul>
+      </div>
+    </nav>
+  </div>
+  <div id="content" class="my-5">
+    <div id="filterbar" class="collapse">
+     <div class="box border-bottom">
+        <div class="form-group text-center">
+          <div class="btn-group" data-toggle="buttons"> <label class="btn btn-success form-check-label"> <input class="form-check-input" type="radio"> Reset </label> <label class="btn btn-success form-check-label active"> <input class="form-check-input" type="radio" checked> Apply </label> </div>
+        </div>
+      </div>
+      <div class="box border-bottom">
+        <div class="box-label text-uppercase d-flex align-items-center">Categories <button class="btn ms-auto" type="button" data-bs-toggle="collapse" data-bs-target="#inner-box" aria-expanded="false" aria-controls="inner-box" id="out" onclick="outerFilter()"> <span class="fas fa-plus"></span> </button> </div>
+        <div id="inner-box" class="collapse mt-2 me-1">
+          <div class="my-1"> <label class="tick">Food & Pantry<input type="checkbox"> <span class="check"></span> </label> </div>
+          <div class="my-1"> <label class="tick">Bakery, Cereal & Spreads <input type="checkbox"> <span class="check"></span> </label> </div>
+          <div class="my-1"> <label class="tick">Dairy, Chilled & Frozen <input type="checkbox"> <span class="check"></span> </label> </div>
+          <div class="my-1"> <label class="tick">Snacks & Drinks <input type="checkbox"> <span class="check"></span> </label> </div>
+          <div class="my-1"> <label class="tick">Health & Beauty <input type="checkbox"> <span class="check"></span> </label> </div>
+          <div class="my-1"> <label class="tick">Mum & Baby <input type="checkbox" > <span class="check"></span> </label> </div>
+          <div class="my-1"> <label class="tick">Fruits & Vegetables<input type="checkbox"> <span class="check"></span> </label> </div>
+          <div class="my-1"> <label class="tick">Household & Pets <input type="checkbox" > <span class="check"></span> </label> </div>
+        </div>
+      </div>
+
+      <div class="box border-bottom">
+        <div class="box-label text-uppercase d-flex align-items-center">Brands <button class="btn ms-auto" type="button" data-bs-toggle="collapse" data-bs-target="#inner-box2" aria-expanded="false" aria-controls="inner-box2"><span class="fas fa-plus"></span></button> </div>
+        <div id="inner-box2" class="collapse mt-2 me-1">
+          <div class="my-1"> <label class="tick">Meiji<input type="checkbox"> <span class="check"></span> </label> </div>
+          <div class="my-1"> <label class="tick">Sunshine <input type="checkbox"> <span class="check"></span> </label> </div>
+          <div class="my-1"> <label class="tick">Kleenex <input type="checkbox" > <span class="check"></span> </label> </div>
+          <div class="my-1"> <label class="tick">Lay's <input type="checkbox"> <span class="check"></span> </label> </div>
+          <div class="my-1"> <label class="tick">Heinz <input type="checkbox"> <span class="check"></span> </label> </div>
+          <div class="my-1"> <label class="tick">Dettol <input type="checkbox"> <span class="check"></span> </label> </div>
+          <div class="my-1"> <label class="tick">Huggies <input type="checkbox"> <span class="check"></span> </label> </div>
+          <div class="my-1"> <label class="tick">Cold Storage<input type="checkbox"> <span class="check"></span> </label> </div>
+        </div>
+      </div>
+
+      <div class="box border-bottom">
+        <div class="box-label text-uppercase d-flex align-items-center">price <button class="btn ms-auto" type="button" data-bs-toggle="collapse" data-bs-target="#price" aria-expanded="false" aria-controls="price"><span class="fas fa-plus"></span></button> </div>
+        <div class="collapse" id="price">
+          <div class="middle">
+            <div class="multi-range-slider"> <input type="range" id="input-left" min="0" max="100" value="10"> <input type="range" id="input-right" min="0" max="100" value="50">
+              <div class="slider">
+                <div class="track"></div>
+                <div class="range"></div>
+                <div class="thumb left"></div>
+                <div class="thumb right"></div>
+              </div>
+            </div>
+          </div>
+          <div class="d-flex align-items-center justify-content-between mt-2">
+            <div> <span id="amount-left" class="fw-bold"></span> SGD </div>
+            <div> <span id="amount-right" class="fw-bold"></span> SGD </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 <div class = "products">
     <div class = "container">
         <div class = "product-items">
-            {{#product }}
-            <div class = "product">
-                <div class = "product-content">
-                    <div class = "product-img">
-                        <a href="#details_{{id}}" data-bs-toggle="modal">
-                            <img src = "/images/{{image}}" alt="{{product_name}}" alt = "product image">
-                        </a>
-                    </div>
-                    <div class = "product-btns">
-
-                        <button class = "btn-buy" style="text-decoration: none; color:black; text-align:center;" data-bs-toggle="modal" data-bs-target="#details_{{id}}">
-                          details<span><i class = "fas fa-shopping-cart"></i></span>
-                        </button>
-                    {{!-- modal --}}
-                    <div class="modal" tabindex="-1" id="details_{{id}}" data-backdrop="static" data-bs-focus="false">
-                        <div class="modal-dialog modal-lg modal-dialog-centered">
-                            <div class="modal-content">
-                                <div class="modal-header"style="background-color:white">
-                                    <h4>Item Detail</h4>
-                                    <button type="submit" class="close fa-2x" data-bs-dismiss="modal" aria-label="Close" style="background-color:white">
-                                        <span aria-hidden="true">&times;</span>
-                                    </button>
-                                </div>
-                                <div class="modal-footer" style="background-color:white">
-                                    <div class="row">
-                                        <div class="col-md-6" id="b_image">
-                                            <img src="/images/{{image}}" alt="{{product_name}}">
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div style="float:right!important">
-                                                {{#if (checkWishlist id wishlist.productId)}}
-                                                <button value={{id}} class="btn btn-sm bx bx-bookmark bxs-bookmark" onclick="submitForm(this)" style="font-size:2rem"></button>
-                                                {{else}}
-                                                <button value={{id}} class="btn btn-sm bx bx-bookmark" onclick="submitForm(this)" style="font-size:2rem"></button>
-                                                {{/if}}
-                                            </div>
-                                            <p style="font-size: 32px; color: #319e40; font-weight: 500; line-height: 32px; vertical-align:top; text-align: left;">${{product_price}}</p>
-                                            {{#if (checkdiscount discount) }}
-                                            <p style="font-size: 21px; color: #f05229; font-weight: 600; line-height: 37.8px; vertical-align:top; text-align: left;">{{discount}}% OFF </p>
-                                            {{/if}}
-                                            <p style="font-size: 24px; color: #4a4a4a; font-weight: 400; line-height: 24px; vertical-align: top; text-align: left; padding: 0px;">{{product_name}}</p>
-                                            <hr>
-                                            <p style="font-size: 16px; color: #4a4a4a; font-weight: 400; line-height: 24px; vertical-align: top; text-align: left; margin: 0px 0px 30px;">{{desc}}</p>
-                                            <div style="float: left">
-                                            <form action="/cart/add/{{id}}" method="post">
-                                                {{#if (checkstock stock)}}
-                                                <input type="hidden" name="product_id" value="{{id}}">
-                                                <div class="form-group">
-                                                    <button type="submit" class="btn btn-sm btn-warning">Add to Cart</button>
-                                                    <label for="quantity">Quantity: </label>
-                                                    <input type="number" id="quantity" name="quantity" value="1" min="1" max="{{stock}}" />
-                                                </div>
-                                                {{else}}
-                                                <button type="submit" disabled class="btn btn-sm btn-danger">Out of Stock</button>
-                                                {{/if}}
-                                            </div>
-                                            </form>
-                                                <h4 style="float: right">Stock: {{stock}}</h4>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                {{!-- end of modal --}}
-
-                      {{!-- {{#if product.stock > 0 }} --}}
-                      <form action="/cart/add/{{id}}" method="post">
-                          <input type="hidden" name="" value="">
-                          <button type = "submit" class = "btn-cart" value="{{id}}"> add to cart
-                              <span><i class = "fas fa-plus"></i></span>
-                          </button>
-                          <input type="hidden" name="quantity" value="1">
-                      </form>
-                      {{!-- {{# product.stock == 0 or product.stock < 0 }}
-                          <button type="submit" disabled class="btn btn-danger float-end">Out of Stock</button>
-                      {{/if }} --}}
-
-
-                    </div>
-                </div>
-
-                <div class = "product-info">
-                    <div class = "product-info-top">
-                        <h2 class = "sm-title">{{"brand.brand_name"}}</h2>
-                        <div class = "rating" style="">
-                            <span><i class = "fas fa-star"></i></span>
-                            <span><i class = "fas fa-star"></i></span>
-                            <span><i class = "fas fa-star"></i></span>
-                            <span><i class = "fas fa-star"></i></span>
-                            <span><i class = "far fa-star"></i></span>
-                        </div>
-                    </div>
-                    <a href = "/product/details/{{id}}" class = "product-name">{{product_name}}</a>
-                    {{#if (checkdiscount discount)}}
-                    <p class = "product-price">${{product_price}}</p>
-                    <p class = "product-price">${{calculatePrice product_price discount}}</p>
-                    {{else}}
-                    <p class = "product-price"></p>
-                    <p class = "product-price">${{calculatePrice product_price discount}}</p>
-                    {{/if}}
-                </div>
-                {{#if (checkdiscount discount)}}
-                <div class = "off-info">
-                    <h2 class = "sm-title">{{discount}}% off</h2>
-                </div>
-                {{/if}}
-            </div>
-            {{/product}}
+          {{!-- products --}}
         </div>
-
         </div>
     </div>
 </div>
 <div class="row" style="padding: 30px;">
 <div class="col text-center">
 </div>
-
-
-<style>
-@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&family=Roboto:wght@300;400;500;700;900&display=swap');
-
-:root{
---white-light: rgba(255, 255, 255, 0.5);
---carribean-green: #27ae60;
---gray: #ededed;
---black:#2c2c54;
-}
-*{
-padding: 0;
-margin: 0;
-box-sizing: border-box;
-}
-body{
-font-family: 'Quicksand', sans-serif;
-}
-
-/* Utility stylings */
-img{
-width: 100%;
-display: block;
-}
-.container{
-width: 88vw;
-margin: 0 auto;
-}
-.lg-title,
-.md-title,
-.sm-title{
-font-family: 'Roboto', sans-serif;
-padding: 0.6rem 0;
-text-transform: capitalize;
-}
-.lg-title{
-font-size: 2.5rem;
-font-weight: 500;
-text-align: center;
-padding: 1.3rem 0;
-opacity: 0.9;
-}
-.md-title{
-font-size: 2rem;
-font-family: 'Roboto', sans-serif;
-}
-.sm-title{
-font-weight: 300;
-font-size: 1rem;
-text-transform: uppercase;
-}
-.text-light{
-font-size: 1rem;
-font-weight: 600;
-line-height: 1.5;
-opacity: 0.5;
-margin: 0.4rem 0;
-}
-
-/* product section */
-.products{
-padding: 3.2rem 0;
-}
-.products .text-light{
-text-align: center;
-width: 70%;
-margin: 0.9rem auto;
-}
-.product{
-margin: 2rem;
-position: relative;
-}
-.product-content{
-background: var(--gray);
-padding: 3rem 0.5rem 2rem 0.5rem;
-cursor: pointer;
-}
-.product-img{
-background: var(--white-light);
-box-shadow: 0 0 20px 10px var(--white-light);
-width: 200px;
-height: 200px;
-margin: 0 auto;
-border-radius: 50%;
-transition: background 0.2s ease;
-}
-.product-btns{
-display: flex;
-justify-content: center;
-margin-top: 1.4rem;
-opacity: 0;
-transition: opacity 0.2s ease;
-}
-.btn-cart, .btn-buy{
-background: transparent;
-border: 1px solid black;
-padding: 0.8rem 0;
-width: 125px;
-font-family: inherit;
-text-transform: uppercase;
-cursor: pointer;
-border: none;
-transition: all 0.2s ease;
-}
-.btn-cart{
-background: black;
-color: white;
-}
-.btn-cart:hover{
-background: var(--carribean-green);
-}
-.btn-buy{
-background: white;
-}
-.btn-buy:hover{
-background: var(--carribean-green);
-color: #fff !important;
-}
-.product-info{
-background: white;
-padding: 1rem;
-}
-.product-info-top{
-display: flex;
-justify-content: space-between;
-align-items: center;
-}
-.rating span{
-color: var(--carribean-green);
-}
-.product-name{
-color: black;
-display: block;
-text-decoration: none;
-font-size: 1rem;
-text-transform: uppercase;
-font-weight: bold;
-}
-.product-price{
-padding-top: 0.6rem;
-padding-right: 0.6rem;
-display: inline-block;
-}
-.product-price:first-of-type{
-text-decoration: line-through;
-color: var(--carribean-green);
-}
-.product-img img{
-transition: transform 0.2s ease;
-}
-.product:hover .product-img img{
-transform: scale(1.1);
-}
-.product:hover .product-img{
-background: var(--carribean-green);
-}
-.product:hover .product-btns{
-opacity: 1;
-}
-.off-info .sm-title{
-background: var(--carribean-green);
-color: white;
-display: inline-block;
-padding: 0.5rem;
-position: absolute;
-top: 0;
-left: 0;
-writing-mode: vertical-lr;
-transform: rotate(180deg);
-z-index: 1;
-letter-spacing: 3px;
-cursor: pointer;
-}
-
-/* product collection */
-.product-collection{
-padding: 3.2rem 0;
-}
-.product-collection-wrapper{
-padding: 3.2rem 0;
-}
-.product-col-left{
-background: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.3)), url("images/fashion-img-1.jpg") center/cover no-repeat;
-}
-.product-col-r-top{
-background: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.3)), url("images/fashion-img-2.png") center/cover no-repeat;
-}
-.flex{
-display: flex;
-justify-content: center;
-align-items: flex-end;
-height: 50vh;
-padding: 2rem 1.5rem 3.2rem;
-margin: 5px;
-}
-.product-col-r-bottom > div:first-child{
-background: #eaa001;
-}
-.product-col-r-bottom > div:last-child{
-background: #0090ff;
-}
-.product-col-content{
-text-align: center;
-color: white;
-}
-.product-collection .text-light{
-opacity: 1;
-font-size: 0.8;
-font-weight: 400;
-line-height: 1.7;
-}
-.btn-dark{
-background: black;
-color: white;
-outline: 0;
-border-radius: 25px;
-padding: 0.7rem 1rem;
-border: 0;
-margin-top: 1rem;
-cursor: pointer;
-transition: all 0.2s ease;
-font-size: 1rem;
-font-family: inherit;
-}
-.btn-dark:hover{
-background: var(--carribean-green);
-}
-
-
-
-
-
-
-
-/* Media Queries */
-@media screen and (min-width: 992px){
-.product-items{
-display: grid;
-grid-template-columns: repeat(2, 1fr);
-}
-.product-col-r-bottom{
-display: grid;
-grid-template-columns: repeat(2, 1fr);
-}
-}
-@media screen and (min-width: 1200px){
-.product-items{
-grid-template-columns: repeat(3, 1fr);
-}
-.product{
-margin-right: 1rem;
-margin-left: 1rem;
-}
-.products .text-light{
-width: 50%;
-}
-}
-
-@media screen and (min-width: 1336px){
-.product-items{
-grid-template-columns: repeat(4, 1fr);
-}
-.product-collection-wrapper{
-display: grid;
-grid-template-columns: repeat(2, 1fr);
-}
-.flex{
-height: 60vh;
-}
-.product-col-left{
-height: 121.5vh;
-}
-}
-</style>
 <script>
     function submitForm(element){
         var id = element.value;
@@ -470,30 +163,6 @@ function checkStatus(result, element){
         }
     })
 }
-/*$(window).scroll(function() {
-    if($(window).scrollTop() == $(document).height() - $(window).height()) {
-        const params = new URLSearchParams(window.location.search)
-        page = parseInt(params.get('page'))
-        if(isNaN(page)){
-            page = 0
-        }
-        page +=1
-        new_url ='/product/nextpage?page='+String(page)
-           $.ajax({
-            type: 'GET',
-            url: new_url,
-            success: function(data){
-                $(".product-items").append(JSON.stringify(data))
-                    image = '<img src="/images/'+ data['product'][0]['image'] + '">'
-                    id = data['product'][0]['id']
-                    modal = "#details_" + id
-                    image_id = "<div class='product-img'><a href='"+modal+"' data-bs-toggle='modal'>"+image+"</a>"
-                    $(".product-items").append("<div class='product'>"+image_id+"</div>")
-                
-            }
-           })
-    }
-});*/
 function getParameterByName(name, url = window.location.href) {
     name = name.replace(/[\[\]]/g, '\\$&');
     var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
@@ -502,13 +171,103 @@ function getParameterByName(name, url = window.location.href) {
     if (!results[2]) return '';
     return decodeURIComponent(results[2].replace(/\+/g, ' '));
 }
-var page = 1;
+
+document.addEventListener("DOMContentLoaded", function () {
+  var inputLeft = document.getElementById("input-left");
+  var inputRight = document.getElementById("input-right");
+
+  var thumbLeft = document.querySelector(".slider > .thumb.left");
+  var thumbRight = document.querySelector(".slider > .thumb.right");
+  var range = document.querySelector(".slider > .range");
+
+  var amountLeft = document.getElementById("amount-left");
+  var amountRight = document.getElementById("amount-right");
+
+  function setLeftValue() {
+    var _this = inputLeft,
+      min = parseInt(_this.min),
+      max = parseInt(_this.max);
+
+    _this.value = Math.min(
+      parseInt(_this.value),
+      parseInt(inputRight.value) - 1
+    );
+
+    var percent = ((_this.value - min) / (max - min)) * 100;
+
+    thumbLeft.style.left = percent + "%";
+    range.style.left = percent + "%";
+    amountLeft.innerText = parseInt(percent * 1);
+  }
+  setLeftValue();
+
+  function setRightValue() {
+    var _this = inputRight,
+      min = parseInt(_this.min),
+      max = parseInt(_this.max);
+
+    _this.value = Math.max(
+      parseInt(_this.value),
+      parseInt(inputLeft.value) + 1
+    );
+
+    var percent = ((_this.value - min) / (max - min)) * 100;
+
+    amountRight.innerText = parseInt(percent * 1);
+    thumbRight.style.right = 100 - percent + "%";
+    range.style.right = 100 - percent + "%";
+  }
+  setRightValue();
+
+  inputLeft.addEventListener("input", setLeftValue);
+  inputRight.addEventListener("input", setRightValue);
+
+  inputLeft.addEventListener("mouseover", function () {
+    thumbLeft.classList.add("hover");
+  });
+  inputLeft.addEventListener("mouseout", function () {
+    thumbLeft.classList.remove("hover");
+  });
+  inputLeft.addEventListener("mousedown", function () {
+    thumbLeft.classList.add("active");
+  });
+  inputLeft.addEventListener("mouseup", function () {
+    thumbLeft.classList.remove("active");
+  });
+
+  inputRight.addEventListener("mouseover", function () {
+    thumbRight.classList.add("hover");
+  });
+  inputRight.addEventListener("mouseout", function () {
+    thumbRight.classList.remove("hover");
+  });
+  inputRight.addEventListener("mousedown", function () {
+    thumbRight.classList.add("active");
+  });
+  inputRight.addEventListener("mouseup", function () {
+    thumbRight.classList.remove("active");
+  });
+});
+var page = 0;
 var working = false;
 var search = getParameterByName('search');
 if(search == null){
     search =""
 }
-$(window).scroll(function() {
+checkWishlist = function(id, wishlist){
+    if(id == wishlist){
+        return true;
+    }else{
+        return false
+    }
+}
+
+window.addEventListener("load", loadProducts);
+window.addEventListener("scroll",loadProducts);
+function hi(){
+  console.log("hi");
+}
+function loadProducts() {
     if(working == false){
         working = true;
 
@@ -520,45 +279,62 @@ $(window).scroll(function() {
             data: '',
             success: function(data){
                 for(var a in data['product']){
-                    image = '<img src="/images/'+ data['product'][a]['image'] + '">'
                     id = data['product'][a]['id']
                     price = data['product'][a]['product_price']
                     discount = parseFloat(data['product'][a]['discount'])
                     stock = data['product'][a]['stock']
+                    desc = data['product'][a]['desc']
+                    desc = desc.replace(/(\r\n|\n|\r)/gm, '<br>')
                     if(discount > 0){
                         price_info = `<p class = "product-price">$`+price+`</p>
                                       <p class = "product-price">$`+parseFloat(parseFloat(price) * ((100-parseFloat(discount))/100)).toFixed(2)+`</p>
                                       </div>
-                                      <div>
-                                        <div class="off-info">
+                                    <div class="off-info">
                                             <h2 class = "sm-title">`+discount+`% off</h2>
                                       </div>`
-                        modal_discount = `<p style="font-size: 21px; color: #f05229; font-weight: 600; line-height: 37.8px; vertical-align:top; text-align: left;">`+data['product'][a]['discount']+`% OFF </p>`
+                        modal_discount = `<p class="regular-price">`+discount+`% OFF </p>`
                     }else{
                         price_info = `<p class = "product-price"></p>
                                       <p class = "product-price">$`+parseFloat(parseFloat(price) * ((100-parseFloat(discount))/100)).toFixed(2)+`</p>
                                       </div>`
                         modal_discount = ""
                     }
-                    if(stock>0){
-                        modal_stock = `<input type="hidden" name="product_id" value="{{id}}">
-                                                <div class="form-group">
-                                                    <button type="submit" class="btn btn-sm btn-warning">Add to Cart</button>
-                                                    <label for="quantity">Quantity: </label>
-                                                    <input type="number" id="quantity" name="quantity" value="1" min="1" max="{{stock}}" />
-                                                </div>`
+                    for(var check in data['wishlist']){}
+                    if(checkWishlist(id, data['wishlist'][check]['productId'])== true){
+                      wishlist = `<button value=`+id+` class="btn btn-sm bx bx-bookmark bxs-bookmark" onclick="submitForm(this)" style="font-size:2rem; float:right!important"></button>`
                     }else{
-                        modal_stock = `<button type="submit" disabled class="btn btn-sm btn-danger">Out of Stock</button>`
+                      wishlist = `<button value=`+id+` class="btn btn-sm bx bx-bookmark" onclick="submitForm(this)" style="font-size:2rem; float:right!important"></button>`
+                    }
+                    if(stock>0){
+                        modal_stock = `<div class="stock-status"></div>
+                                  <p class="stock-info">Stock:`+ stock+`</p>
+                                  </div>
+                                  <div class="buttons">
+                                      <button type = "submit" class = "button" value="`+id+`"> 
+                                          <ion-icon name="bag-add-outline"></ion-icon> Add to cart
+                                      </button>
+                                      <input type="hidden" name="quantity" value="1">
+                                  </div>`
+                    }else{
+                        modal_stock = `<div class="stock-status"></div>
+                                  <p class="stock-info">Out of stock</p>
+                                  </div>
+                                  <div class="buttons">
+                                  <button type="submit" disabled class="btn btn-sm btn-danger">Out of Stock</button>
+                                  </div>`
                     }
                     modal_id = "#details_" + id
-                    btns = `<div class = "product-btns">
-                        <button class="btn-buy" style=style="text-decoration: none; color:black; text-align:center;" data-bs-toggle="modal" data-bs-target="`+modal_id+`">
-                            details<span><i class = "fa fa-shopping-cart"></i></span></button>`
-                    form = `<form action=/cart/add/{{id}}" method="post">
+                    image = `<img src="/images/`+ data['product'][a]['image'] + `">`
+                    btns = `
+                            <button class="btn-buy" style=style="text-decoration: none; color:black; text-align:center;" data-bs-toggle="modal" data-bs-target="`+modal_id+`">
+                            details<span><i class = "fa fa-shopping-cart"></i></span></button>
+                            `
+                    form = `<form action=/cart/add/`+id+`" method="post">
                             <input type="hidden" name="" value="">
                             <button type="submit" class="btn-cart" value="`+id+`"> add to cart</button>
                             <input type="hidden" name=quantity value="1"
-                            </form></div>`
+                            </form>
+                            `
 
                     productInfo = `<div class="product-info">
                                         <div class="product-info-top">
@@ -571,49 +347,46 @@ $(window).scroll(function() {
                                                 <span><i class= "fas fa-star"></i></span>
                                             </div>
                                         </div>
-                                        <a href= "/product/details/`+id+`" class="product-name">`+data['product'][a]['product_name']+`</a>
+                                        <a data-bs-toggle="modal" data-bs-target="`+modal_id+`" class="product-name">`+data['product'][a]['product_name']+`</a>
                                         `+price_info
                     modal = `<div class="modal" tabindex="-1" id="details_`+id+`" data-backdrop="static" data-bs-focus="false">
                             <div class="modal-dialog modal-lg modal-dialog-centered">
                             <div class="modal-content">
-                            <div class="modal-header"style="background-color:white"><h4>Item Detail</h4>
-                            <button type="submit" class="close fa-2x" data-bs-dismiss="modal" aria-label="Close" style="background-color:white"><span aria-hidden="true">&times;</span></button>
+                            <div class="product-card" style="text-decoration: none;">
+                            <div class="image-container" style="text-decoration: none;">
+                              <div class="cover-image product-image">
+                                <img src="/images/`+data['product'][a]['image']+`" alt="`+data['product'][a]['product_name']+`">
+                              </div>
                             </div>
-                            <div class="modal-footer" style="background-color:white">
-                                <div class="row">
-                                    <div class="col-md-6" id="b_image">
-                                        <img src="/images/`+data['product'][a]['image']+`" alt="`+data['product'][a]['product_name']+`">
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div style="float:right!important">
-                                            <button value=`+id+` class="btn btn-sm bx bx-bookmark" onclick="submitForm(this)" style="font-size:2rem"></button>
-                                        </div>
-                                        <p style="font-size: 32px; color: #319e40; font-weight: 500; line-height: 32px; vertical-align:top; text-align: left;">`+data['product'][a]['product_price']+`</p>
+                            <div class="product-info">
+                            <button type="submit" class="close fa-2x" data-bs-dismiss="modal" aria-label="Close" style="background-color:white; float: right!important">
+                                        <span aria-hidden="true">&times;</span>
+                            </button>
+                              <p class="free-shipping" style="text-decoration: none;">Free Delivery</p>
+                              <h3 class="product-name">`+data['product'][a]['product_name']+`</h3>
                                         `+modal_discount+`
-                                        <p style="font-size: 24px; color: #4a4a4a; font-weight: 400; line-height: 24px; vertical-align: top; text-align: left; padding: 0px;">`+data['product'][a]['product_name']+`</p>
-                                        <hr>
-                                        <p style="font-size: 16px; color: #4a4a4a; font-weight: 400; line-height: 24px; vertical-align: top; text-align: left; margin: 0px 0px 30px;">`+data['product'][a]['desc']+`</p>
-                                        <div style="float: left">
-                                        <form action="/cart/add/`+id+`" method="post">
-                                            `+modal_stock+`
+                                        <p class="discount-price">$`+(parseFloat(parseFloat(price) * ((100-parseFloat(discount))/100)).toFixed(2))+`</p>
+                                        <p class="offer-info">`+desc+`</p>
+                                        <form action="/cart/add/{{id}}" method="post">
+                                        <div class="stock">`+modal_stock+`
                                         </form>
-                                            <h4 style="float: right">Stock: `+data['product'][a]['stock']+`</h4>
-                                    </div>
-                                </div>
+                                        `+wishlist+`
                             </div>
-                            </div>
-                            </div>
-                            </div>`
-                    image_id = "<div class='product-img'><a href='"+ modal_id+"' data-bs-toggle='modal'>"+image+"</a>"                                                                                                                                                                                                     
-                    $(".product-items").append(`<div class='product'><div class="product"><div class="product-content">`+image_id+"</div>"+btns+form+`</div></div>`+productInfo)
-                    $('body').append(modal)
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                                        `
+                    image_id = "<div class='product-img'><a href='"+ modal_id+"' data-bs-toggle='modal'>"+image+"</a></div>"                                                                                                                                                                                                     
+                    $(".product-items").append(`<div class='product'><div class="product-content">`+image_id+`<div class = "product-btns">`+btns+modal+form+`</div></div>`+productInfo+`</div>`)
+                    /*$('body').append(modal)*/
                 }
                 page += 1
                 setTimeout(function(){
                     working = false;
-                }, 1000)
+                }, 500)
             }
             })
     }
-})
+}
 </script>

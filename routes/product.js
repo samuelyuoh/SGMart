@@ -30,8 +30,8 @@ router.get('/products', async (req, res) => {
 			})
 		
 		var product = await Product.findAndCountAll({
-			limit:4,
-			offset: page*4,
+			limit:2,
+			offset: page*2,
 			include: [{
 				model: Brand,
 				required: true,
@@ -43,26 +43,26 @@ router.get('/products', async (req, res) => {
 			],
 				raw: true
 			})
-		res.render('product/products', {
-			product: product.rows,
-			totalPages: Math.ceil(product.count/8),
-			currentPage: page,
-			brands: brands, 
-			wishlist: wishlist,
+			res.render('product/products', {
+				product: product.rows,
+				totalPages: Math.ceil(product.count/2),
+				currentPage: page,
+				brands: brands, 
+				wishlist: wishlist,
 			});
-	}else{
-		Product.findAndCountAll({
-			limit:8,
-			offset: page*8,
-			include: [{
-				model: Brand,
-				required: true,
-			},
-			{
-				model: Category,
-				required: true
-			},
-		],
+		}else{
+			Product.findAndCountAll({
+				limit:2,
+				offset: page*2,
+				include: [{
+					model: Brand,
+					required: true,
+				},
+				{
+					model: Category,
+					required: true
+				},
+			],
 			where: {
 				product_name: {
 					[op.like]: '%'+	search +'%'
@@ -70,11 +70,11 @@ router.get('/products', async (req, res) => {
 			},
 			raw: true
 		})
-			.then((product) => {
+		.then((product) => {
 			res.render('product/products', 
 			{
 				product: product.rows,
-				totalPages: Math.ceil(product.count/8),
+				totalPages: Math.ceil(product.count/2),
 				currentPage: page,
 				brands: brands,
 
@@ -123,33 +123,67 @@ router.get('/nextpage', async (req, res) => {
 	if(!Number.isNaN(pageAsNumber) && pageAsNumber >= 0) {
 		page = pageAsNumber;
 	}
-	Product.findAndCountAll({
-		limit:4,
-		offset: page*4,
-		include: [{
-			model: Brand,
-			required: true,
+	if (req.isAuthenticated()){
+		var wishlist = await Wishlist.findAll({
+			where: {userId: req.user.id},
+			raw: true
+			})
+		
+		var product = await Product.findAndCountAll({
+			limit:2,
+			offset: page*2,
+			include: [{
+				model: Brand,
+				required: true,
+			},
+			{
+				model: Category,
+				required: true
+			}
+			],
+			where: {
+				product_name: {
+					[op.like]: '%'+	search +'%'
+				}
+			},
+				raw: true
+			})
+			res.send({
+				product: product.rows,
+				totalPages: Math.ceil(product.count/2),
+				currentPage: page,
+				brands: brands, 
+				wishlist: wishlist,
+			});
+		}else{
+			Product.findAndCountAll({
+			limit:2,
+			offset: page*2,
+			include: [{
+				model: Brand,
+				required: true,
+			},
+			{
+				model: Category,
+				required: true
+			}
+		],
+		where: {
+			product_name: {
+				[op.like]: '%'+	search +'%'
+			}
 		},
-		{
-			model: Category,
-			required: true
-		}
-	],
-	where: {
-		product_name: {
-			[op.like]: '%'+	search +'%'
-		}
-	},
-		raw: true
-	})
-		.then((product) => {
-		res.send( 
-		{
-			product: product.rows,
-			totalPages: Math.ceil(product.count/4),
-			currentPage: page,
-		});
-	})
+			raw: true
+		})
+			.then((product) => {
+			res.send( 
+			{
+				product: product.rows,
+				totalPages: Math.ceil(product.count/2),
+				currentPage: page,
+			});
+		})
+	}
 })
 
 module.exports = router;

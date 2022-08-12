@@ -272,8 +272,8 @@ router.get('/inventory', async (req, res) => {
 		page = pageAsNumber;
 	}
 	Product.findAndCountAll({
-		limit:20,
-		offset: page*20,
+		limit:2,
+		offset: page*2,
 		include: [{
 			model: Brand,
 			required: true,
@@ -288,7 +288,38 @@ router.get('/inventory', async (req, res) => {
 		.then((product) => {
 			res.render('admin/inventory', {
 				product: product.rows,
-				totalPages: Math.ceil(product.count/8),
+				totalPages: Math.ceil(product.count/2),
+				currentPage: page,
+				layout: 'admin', 
+				nav: { sidebarActive: 'product' }
+			})
+	})
+	.catch(err => console.log(err));
+})
+router.get('/getPage', async (req, res) => {
+	const pageAsNumber = Number.parseInt(req.query.page)
+	let page = 0
+	if(!Number.isNaN(pageAsNumber) && pageAsNumber >= 0) {
+		page = pageAsNumber;
+	}
+	Product.findAndCountAll({
+		limit:2,
+		offset: page*2,
+		include: [{
+			model: Brand,
+			required: true,
+		},
+		{
+			model: Category,
+			required: true
+		}
+	],
+		raw: true
+	})
+		.then((product) => {
+			res.send({
+				product: product.rows,
+				totalPages: Math.ceil(product.count/2),
 				currentPage: page,
 				layout: 'admin', 
 				nav: { sidebarActive: 'product' }
@@ -297,6 +328,7 @@ router.get('/inventory', async (req, res) => {
 	.catch(err => console.log(err));
 })
 
+
 router.get('/addproduct',async (req, res) => {
 	var brand = await Brand.findAll({raw: true})
 	var category = await Category.findAll({raw: true})
@@ -304,11 +336,11 @@ router.get('/addproduct',async (req, res) => {
 	res.render('admin/addproducts', { brands: brand , category: category , layout: 'admin', nav: { sidebarActive: 'addproduct' },path })
 });
 router.post('/addproduct',async function (req, res) {	
-	let { product_name, product_price, discount, stock, desc, image, brandId, categoryId } = req.body;
+	let { product_name, product_price, discount, stock, desc, image, brandId, categoryId, cost } = req.body;
 	try{
-		let product = await Product.create({product_name, product_price, discount, stock, desc, image, brandId, categoryId});
+		let product = await Product.create({product_name, product_price, discount, stock, desc, image, brandId, categoryId, cost});
 		flashMessage(res, 'success', 'Product created successfully.');
-		res.redirect('/')
+		res.redirect('/admin/inventory')
 	}
 	catch(err){
 		console.log(err)
