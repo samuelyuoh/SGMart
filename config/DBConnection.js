@@ -9,6 +9,7 @@ const Category = require('../models/Category');
 const Blog = require('../models/Category');
 const Cart = require('../models/cart');
 const Wishlist = require('../models/Wishlist');
+const Rating = require('../models/Rating');
 
 
 
@@ -32,6 +33,10 @@ const setUpDB = (drop) => {
            Wishlist.belongsTo(User);
            User.hasMany(Wishlist);
            Wishlist.belongsTo(Product);
+           User.hasMany(Rating)
+           Rating.belongsTo(User);
+           Product.hasMany(Rating);
+           Rating.belongsTo(Product);
             mySQLDB.sync({
                 force: drop
             });
