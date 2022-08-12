@@ -739,6 +739,55 @@ router.post('/login/:id/gotp/verify', async (req, res) => {
         console.log(error)
     }
 })
+
+router.get('/changepassword/:id', async (req,res) => {
+    id = req.params.id;
+    if (id != req.user.id) {
+        flashMessage(res, 'error', 'Error. Access denied')
+        res.redirect('/')
+    }else {
+        user = await User.findByPk(req.params.id);
+        res.render('user/changepwd', {user});
+    }
+});
+
+router.post('/changepassword/:id', async (req,res) => {
+    id = req.params.id;
+    let {password1, password2, password3} = req.body;
+    if (id != req.user.id) {
+        flashMessage(res, 'error', 'Error. Access denied')
+        res.redirect('/')
+    } else if (password2 != password3){
+        flashMessage(res, 'error', 'New passwords do not match')
+        res.redirect('/user/changepassword/' + id)
+    } else if (password1 == password2){
+        flashMessage(res, 'error', 'New Password cannot be the same as your old password')
+        res.redirect('/user/changepassword/' + id)
+    } else if (password2.length < 6){
+        flashMessage(res, 'error', 'Password must be 6 or more characters')
+        res.redirect('/user/changepassword/' + id)
+    }
+    else {
+        user = await User.findByPk(req.params.id);
+
+        const validPassword = await bcrypt.compare(password1, user.password);
+        if (!validPassword) {
+            flashMessage(res, 'error', 'Incorrect Password. Please try again.')
+            res.redirect('/user/changepassword/' + id)
+        } else {
+            var salt = bcrypt.genSaltSync(10);
+            var hash = bcrypt.hashSync(password2, salt);
+            await User.update(
+                {password: hash},
+                {where :{id: id}}
+            ).then((user) => {
+                flashMessage(res, 'success', 'Password has been changed');
+                res.redirect(`/user/profile/${id}`);
+            }).catch(err =>  console.log(err));
+        }
+    }
+});
+
 router.get('/check_delivery', (req, res) => {
     const metadata = {
         // layout: 'user',
