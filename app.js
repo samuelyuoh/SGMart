@@ -97,6 +97,10 @@ app.use(function (req, res, next) {
 	res.locals.user = req.user || null;
 	next();
 });
+const bodyParser = require('body-parser');
+app.use(bodyParser.urlencoded({extended: false}));
+app.use(bodyParser.json())
+
 
 // mainRoute is declared to point to routes/main.js
 const mainRoute = require('./routes/main');
