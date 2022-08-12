@@ -149,7 +149,8 @@ router.get('/verify/:userId/:token', async function (req, res) {
 router.post('/login', async (req, res, next) => {
     let {email, password} = req.body;
     user = await User.findOne({where :{email: email}});
-    valid = user.tfa ? user.tfa : false;
+    valid = user.tfa ? user.tfa : false; 
+    valid1 = user.gtfa ? user.gtfa : false;
     if (valid) {
         otp = otpGenerator.generate(8, { upperCaseAlphabets: false, specialChars: false });
         let token = jwt.sign({payload: {otp, id: user.id}}, process.env.APP_SECRET, {expiresIn: 5 * 60});
@@ -189,7 +190,20 @@ router.post('/login', async (req, res, next) => {
             When a failure occur passport passes the message object as error */
             failureFlash: true
         })(req, res, next);
-    } else {
+    } else if (valid1) {
+        a = `/user/login/${user.id}/gotp/verify`;
+        passport.authenticate('local', {
+            // Success redirect URL
+            successRedirect: a,
+            // Failure redirect URL 
+            failureRedirect: '/user/login',
+            /* Setting the failureFlash option to true instructs Passport to flash 
+            an error message using the message given by the strategy's verify callback.
+            When a failure occur passport passes the message object as error */
+            failureFlash: true
+        })(req, res, next);
+    }
+    else {
         passport.authenticate('local', {
             // Success redirect URL
             successRedirect: '/',
@@ -477,7 +491,6 @@ router.post('/:id/2fa/:action', async (req, res) => {
 router.get('/:id/2fa/verifyotp/:token', async (req, res) => {
     // must store token in db to verify
     token = jwt.decode(req.params.token);
-    console.log(token)
     user = await User.findByPk(req.params.id)
     // console.log(token['payload'])
     if (user.otptoken != req.params.token) {
@@ -502,7 +515,7 @@ router.get('/:id/2fa/verifyotp/:token', async (req, res) => {
 });
 router.post('/:id/2fa/verifyotp/:token', async (req, res) => {
     let {otp} = req.body;
-    user = User.findByPk(req.params.id);
+    user = await User.findByPk(req.params.id);
     if (user.otptoken != req.params.token) {
         flashMessage(res, 'error', 'Error. Access denied');
         res.redirect('/user/logout1');
