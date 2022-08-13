@@ -45,6 +45,7 @@ const setUpDB = (drop) => {
            Rating.belongsTo(User);
            Product.hasMany(Rating);
            Rating.belongsTo(Product);
+           User.hasMany(Delivery);
             mySQLDB.sync({
                 force: drop
             });

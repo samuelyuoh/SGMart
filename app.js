@@ -9,6 +9,7 @@ const Handlebars = require('handlebars');
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
 const path = require('path');
+const bodyParser = require('body-parser');
 require('dotenv').config();
 
 /*
@@ -106,14 +107,13 @@ app.use(bodyParser.json())
 const mainRoute = require('./routes/main');
 const userRoute = require('./routes/user');
 const adminRoute = require('./routes/admin');
-
 const deliveryRoute = require('./routes/delivery')
 const productRoute = require('./routes/product');
 const cartRoute = require('./routes/cart');
 const blogRoute = require('./routes/blog');
+const couponRoute = require('./routes/coupon');
 
 const { application } = require('express');
-const couponRoute = require('./routes/coupon');
 
 // Any URL with the pattern ‘/*’ is directed to routes/main.js
 app.use('/', mainRoute);
@@ -130,8 +130,44 @@ app.use('/coupon', couponRoute);
 * */
 const port = process.env.PORT;
 
+// Stripe Setup
+const stripe = require("stripe")(process.env.STRIPE_PRIVATE_KEY)
+
+// Stripe items
+const storeItems = new Map([
+	[1, {priceInCents: 10000, name: "10 Dolla"}],
+	[2, {priceInCents: 20000, name: "20 Dolla"}],
+])
+
+// // Stripe
+// app.post("/create-checkout-session", async (req, res) => {
+// 	try {
+// 		const session = await stripe.checkout.sessions.create({
+// 			payment_method_types: ['card'],
+// 			mode: 'payment',
+// 			line_items:req.body.items.map(items => {
+// 				const storeItem = storeItems.get(item.id)
+// 				return {
+// 					price_data: {
+// 						currency: 'sgd',
+// 						product_data: {
+// 							name: storeItem.name
+// 						},
+// 						unit_amount: storeItem.priceInCents
+// 					},
+// 					quantity: item.quantity
+// 				}
+// 			}),
+// 			success_url: `${process.env.SERVER_URL}/success.html`,
+// 			cancel_url: `${process.env.SERVER_URL}/cancel.html`
+// 		})
+// 		res.json({ url:"Hi" })
+// 	}catch (e) {
+// 		res.status(500).json({ error:e.message })
+// 	}
+// })
+
 // Starts the server and listen to port
 app.listen(port, () => {
 	console.log(`Server started on port ${port}`);
 });
-

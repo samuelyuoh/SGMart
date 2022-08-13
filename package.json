@@ -13,6 +13,7 @@
     "axios": "^0.27.2",
     "bcryptjs": "^2.4.3",
     "biskviit": "^2.0.0",
+    "body-parser": "^1.20.0",
     "bootstrap-show-modal": "^3.0.4",
     "chrome": "^0.1.0",
     "connect-flash": "^0.1.1",
@@ -45,6 +46,7 @@
     "sqlite3": "^5.0.8",
     "sweetalert2": "^11.4.24",
     "uuid": "^8.3.2",
-    "xlsx": "^0.18.5"
+    "xlsx": "^0.18.5",
+    "stripe": "^9.16.0"
   }
 }
