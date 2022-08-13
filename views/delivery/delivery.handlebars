@@ -1,199 +1,150 @@
-{{!-- <h1>Select Delivery Date and Time</h1><br>
-<h2>Select Date:</h2>
-<input type="date" name="fromDate" id="fromDate"><br>
-
-<label for="time"><h2>Select Time Slot:</h2></label>
-
-<select name="time" id="time">
-  <option value="morning">9AM - 12PM</option>
-  <option value="afternoon">1PM - 4PM</option>
-  <option value="evening">5PM - 8PM</option>
-</select> --}}
-<div class="row">
-  <div class="col-75">
-    <div class="container">
-      <form method="post" action="">
-        <div class="row">
-          <div class="col-50">
-            <h3>Delivery Time Slot</h3>
-            <label for="date"><i class="fa fa-user"></i> Delivery Date</label>
-            <input type="date" name="fromDate" id="datefield" min="" required>
-            <label for="email"><i class="fa fa-envelope"></i> Delivery Time</label>
-            <select name="time" id="time" placeholder="Select Time Slot" required>
-                <option value="" disabled selected>Select Time Slot</option>
-                <option value="9AM - 12PM">9AM - 12PM</option>
-                <option value="1PM - 4PM">1PM - 4PM</option>
-                <option value="5PM - 8PM">5PM - 8PM</option>
-            </select>
-            <label for="adr"><i class="fa fa-address-card-o"></i> Address</label>
-            <input type="text" id="adr" name="address" placeholder="542 W. 15th Street" >
-            <label for="city"><i class="fa fa-institution"></i> City</label>
-            <input type="text" id="city" name="city" placeholder="New York" >
-
-            <div class="row">
-              <div class="col-50">
-                <label for="state">State</label>
-                <input type="text" id="state" name="state" placeholder="NY" >
-              </div>
-              <div class="col-50">
-                <label for="zip">Zip</label>
-                <input type="text" id="zip" name="zip" placeholder="10001" >
-              </div>
-            </div>
+<div class="container my-5 py-5">
+  <section>
+    <div class="row">
+      <div class="col-md-8 mb-4">
+        <div class="card mb-4">
+          <div class="card-header py-3">
+            <h5 class="mb-0 text-font text-uppercase">Delivery</h5>
           </div>
+          <div class="card-body">
+            <form method="post" action="">
+                <div class="row mb-4">
+                  <div class="col">
+                    <div class="form-outline mb -4">
+                      <input type="text" id="name" class="form-control" for="name" name="name">
+                      <label class="form-label" for="name"> Name</label>
+                    </div>
+                  </div>
+                </div>
 
-          <div class="col-50">
-            <h3>Payment</h3>
-            <label for="fname">Accepted Cards</label>
-            <div class="icon-container">
-              <i class="fa fa-cc-visa" style="color:navy;"></i>
-              <i class="fa fa-cc-amex" style="color:blue;"></i>
-              <i class="fa fa-cc-mastercard" style="color:red;"></i>
-              <i class="fa fa-cc-discover" style="color:orange;"></i>
-            </div>
-            <label for="cname">Name on Card</label>
-            <input type="text" id="cname" name="cardname" placeholder="Name" >
-            <label for="ccnum">Credit card number</label>
-            <input type="text" id="ccnum" name="cardnumber" placeholder="1111-2222-3333-4444" >
-            <label for="expmonth">Exp Month</label>
-            <input type="text" id="expmonth" name="expmonth" placeholder="September" >
+                <div class="form-outline mb-4">
+                  <input type="email" id="email" class="form-control" name="email"/>
+                  <label class="form-label" for="email">Email</label>
+                </div>
 
-            <div class="row">
-              <div class="col-50">
-                <label for="expyear">Exp Year</label>
-                <input type="text" id="expyear" name="expyear" placeholder="20XX" >
-              </div>
-              <div class="col-50">
-                <label for="cvv">CVV</label>
-                <input type="text" id="cvv" name="cvv" placeholder="XXX" >
-              </div>
-            </div>
+                <div class="form-outline mb-4">
+                  <input type="text" id="address" class="form-control" name="address">
+                  <label class="form-label" for="address">Address</label>
+                </div>
+                <div class="form-outline mb-4">
+                  <input type="number" id="phone" class="form-control" name="phone">
+                  <label class="form-label" for="phone">Phone</label>
+                </div>
+
+                <input type="date" name="fromDate" id="datefield" min="" required>
+                <label for="date"><i class="fa fa-user"></i> Delivery Date</label>
+              
+                <select name="time" id="time" placeholder="Select Time Slot" required>
+                    <option value="" disabled selected>Select Time Slot</option>
+                    <option value="9AM - 12PM">9AM - 12PM</option>
+                    <option value="1PM - 4PM">1PM - 4PM</option>
+                    <option value="5PM - 8PM">5PM - 8PM</option>
+                </select>
+                <label for="email"><i class="fa fa-envelope"></i> Delivery Time</label>
           </div>
+              </div>
+                <div class="text-center">
+                    <input type="submit" value="Continue to payment" class="btn button-order col-md-12">
+                </div>
+        </form>
+      </div>
+        <div class="col-md-4 mb-4 position-static">
+        <div class="card mb-4">
+          <div class="card-header py-3">
+            <h5 class="mb-0 text-font">Order Summary 
+              <a class="float-end mt-1" style="font-size: 13px;" href="/cart/cart">Edit</a></h5>
+          </div>
+          {{#if carts}}
+          {{#each carts}}
+          <div class="card-body">
+            <div class="row">
+              <div class="col-md-4">
+                <img src="/images/{{"product.image"}}" alt="{{product.image}}" class="rounded-3" style="width: 100px;">
+              </div>
+              <div class="col-md-6 ms-3">
+                <p class="mb-0 text-descriptions">Product: {{product_name}} </p>
+                <p class="mb-0 text-descriptions">Price: {{product_price}}</p>
+                <p class="text-descriptions mt-0">Qty:<span class="text-descriptions fw-bold">1</span>
+                </p>
+              </div>
+            </div>
+            <hr>
+            {{/each}}
 
+            {{else}}
+            <h2>Hi</h2>
+
+          </div>
         </div>
-        <label>
-          <input type="checkbox" checked="checked" name="sameadr"> Shipping address same as billing
-        </label>
-        <input type="submit" value="Continue to checkout" class="btn">
-      </form>
+      </div>
     </div>
-  </div>
+  </section>
+ {{/if}}
+
 </div>
 
 <style>
-    .row {
-    display: -ms-flexbox; /* IE10 */
-    display: flex;
-    -ms-flex-wrap: wrap; /* IE10 */
-    flex-wrap: wrap;
-    margin: 0 -16px;
-  }
-  
-  .col-25 {
-    -ms-flex: 25%; /* IE10 */
-    flex: 25%;
-  }
-  
-  .col-50 {
-    -ms-flex: 50%; /* IE10 */
-    flex: 50%;
-  }
-  
-  .col-75 {
-    -ms-flex: 75%; /* IE10 */
-    flex: 75%;
-  }
-  
-  .col-25,
-  .col-50,
-  .col-75 {
-    padding: 0 16px;
-  }
-  
-  .container {
-    background-color: #f2f2f2;
-    padding: 5px 20px 15px 20px;
-    border: 1px solid lightgrey;
-    border-radius: 3px;
-  }
-  
-  input[type=text] {
-    width: 100%;
-    margin-bottom: 20px;
-    padding: 12px;
-    border: 1px solid #ccc;
-    border-radius: 3px;
-  }
+.text-font{
+font-family: futura-pt,Tahoma,Geneva,Verdana,Arial,sans-serif;
+font-weight: 700;
+letter-spacing: .156rem;
+font-size: 1.125rem;
+}
+.text-price{
+padding: 0 .625rem;
+font-style: normal;
+font-size: 1rem;
+font-weight: 700;
+line-height: .813rem;
+letter-spacing: 1.6px;
+}
+.text-descriptions{
+font-style: normal;
+font-size: 1rem !important;
+font-weight: 400;
+line-height: 1.125rem;
+margin: .313rem 0 .938rem;
+padding: 0 .625rem;
+}
 
-  input[type=date] {
-    width: 100%;
-    margin-bottom: 20px;
-    padding: 12px;
-    border: 1px solid #ccc;
-    border-radius: 3px;
-  }
+.button-order{
+font-style: normal;
+font-size: 1rem;
+background-color: #27ae60;
+color: white;
+}
 
-  select{
-    width: 100%;
-    margin-bottom: 20px;
-    padding: 12px;
-    border: 1px solid #ccc;
-    border-radius: 3px;
-  }
-  
-  label {
-    margin-bottom: 10px;
-    display: block;
-  }
-  
-  .icon-container {
-    margin-bottom: 20px;
-    padding: 7px 0;
-    font-size: 24px;
-  }
-  
-  .btn {
-    background-color: #04AA6D;
-    color: white;
-    padding: 12px;
-    margin: 10px 0;
-    border: none;
-    width: 100%;
-    border-radius: 3px;
-    cursor: pointer;
-    font-size: 17px;
-  }
-  
-  .btn:hover {
-    background-color: #45a049;
-  }
-  
-  span.price {
-    float: right;
-    color: grey;
-  }
-  
-  /* Responsive layout - when the screen is less than 800px wide, make the two columns stack on top of each other instead of next to each other (and change the direction - make the "cart" column go on top) */
-  @media (max-width: 800px) {
-    .row {
-      flex-direction: column-reverse;
-    }
-    .col-25 {
-      margin-bottom: 20px;
-    }
-  }
+input[type=text] {
+  width: 100%;
+  margin-bottom: 20px;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+}
+
+input[type=date] {
+  width: 100%;
+  margin-bottom: 20px;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+}
+
+select{
+  width: 100%;
+  margin-bottom: 20px;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+}
+
+label {
+  margin-bottom: 10px;
+  display: block;
+}
 </style>
 
 <script>
-    //n = new Date()
-    //y = n.getFullYear()
-    //m = n.getMonth()+1
-    //d = n.getDate()
-    //todaydate = y + "-" + m + "-" + d
-    //document.getElementById("fromdate").innerHTML = y + "-" + m + "-" + d
-
-    //datePickerId.min = new Date().toISOString().split("T")[0];
-
     var today = new Date();
     var dd = today.getDate();
     var mm = today.getMonth() + 1; //January is 0!
