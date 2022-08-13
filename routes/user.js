@@ -72,8 +72,8 @@ router.post('/login', (req, res, next) => {
     })(req, res, next);
 });
 
-router.get('/logout', (req, res) => {
-    req.logout();
+router.get('/logout', (req, res,next) => {
+    req.logout(next);
     res.redirect('/');
 });
 
@@ -164,7 +164,7 @@ router.get('/deleteAccount/:id', ensureAuthenticated, async function (req, res) 
 //     res.render('user/check_delivery');
 // });
 
-router.get('/check_delivery', (req, res) => {
+router.get('/check_delivery', ensureAuthenticated, (req, res) => {
     const metadata = {
         // layout: 'user',
         // nav: {
@@ -172,11 +172,11 @@ router.get('/check_delivery', (req, res) => {
         // }
     }
     Delivery.findAll({
+        where: {userId : req.user.id},
         order: [['id']],
         raw: true
     })
         .then((delivery) => {
-            // pass object to admincouponlist.handlebars
             metadata.delivery = delivery
             res.render('user/check_delivery', metadata);
         })
@@ -185,7 +185,6 @@ router.get('/check_delivery', (req, res) => {
 
 router.get('/deleteDelivery/:id', ensureAuthenticated, async function(req, res) {
     try {
-        console.log("hi")
         let delivery = await Delivery.findByPk(req.params.id);
         // if (!video) {
         //     flashMessage(res, 'error', 'Delivery Time Slot not found');
@@ -209,7 +208,6 @@ router.get('/deleteDelivery/:id', ensureAuthenticated, async function(req, res) 
 
 router.get('/editDelivery/:id', ensureAuthenticated, async function(req, res) {
     try {
-        console.log("fak u")
         let delivery = await Delivery.findByPk(req.params.id);
         // if (!video) {
         //     flashMessage(res, 'error', 'Delivery Time Slot not found');

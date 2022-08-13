@@ -12,44 +12,52 @@
 <div class="row">
   <div class="col-75">
     <div class="container">
-      <form method="post" action="">
+      <form method="post" action="create-checkout-session">
         <div class="row">
           <div class="col-50">
             <h3>Delivery Time Slot</h3>
             <label for="date"><i class="fa fa-user"></i> Delivery Date</label>
             <input type="date" name="fromDate" id="datefield" min="" required>
-            <label for="email"><i class="fa fa-envelope"></i> Delivery Time</label>
+            <label for="timeslotfrom"><i class="fa fa-envelope"></i> Delivery Time From:</label>
             <select name="time" id="time" placeholder="Select Time Slot" required>
                 <option value="" disabled selected>Select Time Slot</option>
-                <option value="9AM - 12PM">9AM - 12PM</option>
-                <option value="1PM - 4PM">1PM - 4PM</option>
-                <option value="5PM - 8PM">5PM - 8PM</option>
+                <option value="9AM">9AM</option>
+                <option value="10AM">10AM</option>
+                <option value="11AM">11AM</option>
+                <option value="12PM">12PM</option>
+                <option value="1PM">1PM</option>
+                <option value="2PM">2PM</option>
+                <option value="3PM">3PM</option>
+                <option value="4PM">4PM</option>
+                <option value="5PM">5PM</option>
+                <option value="6PM">6PM</option>
+                <option value="7PM">7PM</option>
+                <option value="8PM">8PM</option>
             </select>
-            <label for="adr"><i class="fa fa-address-card-o"></i> Address</label>
-            <input type="text" id="adr" name="address" placeholder="542 W. 15th Street" >
-            <label for="city"><i class="fa fa-institution"></i> City</label>
-            <input type="text" id="city" name="city" placeholder="New York" >
+            <label for="adr"><i class="fa fa-address-card-o" required></i> Address</label>
+            <input type="text" id="adr" name="address" placeholder="542 W. 15th Street" required>
+            <label for="city"><i class="fa fa-institution" required></i> City</label>
+            <input type="text" id="city" name="city" placeholder="New York" required>
 
             <div class="row">
               <div class="col-50">
                 <label for="state">State</label>
-                <input type="text" id="state" name="state" placeholder="NY" >
+                <input type="text" id="state" name="state" placeholder="NY" required >
               </div>
               <div class="col-50">
                 <label for="zip">Zip</label>
-                <input type="text" id="zip" name="zip" placeholder="10001" >
+                <input type="text" pattern="[0-9]+" id="zip" name="zip" placeholder="10001" required>
               </div>
             </div>
           </div>
 
-          <div class="col-50">
+          {{!-- <div class="col-50">
             <h3>Payment</h3>
             <label for="fname">Accepted Cards</label>
             <div class="icon-container">
-              <i class="fa fa-cc-visa" style="color:navy;"></i>
-              <i class="fa fa-cc-amex" style="color:blue;"></i>
-              <i class="fa fa-cc-mastercard" style="color:red;"></i>
-              <i class="fa fa-cc-discover" style="color:orange;"></i>
+              
+            <img alt="Credit Card Logos" src="https://www.shift4shop.com/images/credit-card-logos/cc-sm-4.png"  /></a>
+
             </div>
             <label for="cname">Name on Card</label>
             <input type="text" id="cname" name="cardname" placeholder="Name" >
@@ -68,13 +76,13 @@
                 <input type="text" id="cvv" name="cvv" placeholder="XXX" >
               </div>
             </div>
-          </div>
+          </div> --}}
 
         </div>
         <label>
           <input type="checkbox" checked="checked" name="sameadr"> Shipping address same as billing
         </label>
-        <input type="submit" value="Continue to checkout" class="btn">
+        <input type="submit" value="Continue to checkout" id="checkout-button" class="btn">
       </form>
     </div>
   </div>
@@ -209,4 +217,34 @@
         
     today = yyyy + '-' + mm + '-' + dd;
     document.getElementById("datefield").setAttribute("min", today);
+
+    // Stripe
+    const button = document.querySelector("submit")
+    if (button){
+      button.addEventListener("click", () => {
+        fetch('/create-checkout-session', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            items: [
+              {id:1, quantity:3},
+              {id:2, quantity:1}
+            ]
+          })
+        }).then(res => {
+          if (res.ok) return res.json()
+          return res.json().then(json => Promise.reject(json))
+          console.log('bruh')
+        }).then(({url}) => {
+          console.log(url)
+          window.location = url
+        }).catch(e => {
+          console.error(e.error)
+        })
+      })
+    }
 </script>
+<script src="https://js.stripe.com/v3/"></script>
+<script src="card.js"></script>
