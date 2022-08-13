@@ -10,7 +10,6 @@ const Coupon = db.define('coupon',
         percentageDiscount: { type: Sequelize.INTEGER },
         expiryDate: { type: Sequelize.DATE },
         couponQuantity: { type: Sequelize.INTEGER },
-        userid: { type: Sequelize.INTEGER },
         redeemedquantity: { type: Sequelize.INTEGER },
     });
 

@@ -7,6 +7,7 @@ const Coupon = require('../models/Coupon');
 const ensureAuthenticated = require('../helpers/auth');
 const CouponRedemption = require('../models/CouponRedemption');
 const { DATEONLY } = require('sequelize');
+const UserCouponInfo = require('../models/UserCouponInfo');
 
 router.get('/', (req, res) => {
 	const title = 'Video Jotter';
@@ -49,7 +50,6 @@ router.get('/usercoupongenerate/:id', ensureAuthenticated, (req, res) => {
 
 
 router.post('/usercoupongenerate/:id', ensureAuthenticated, async (req, res) => {
-    let couponInventory = req.body.couponInventory ? req.body.couponInventory : null;
 	// let DateofRedemption = req.body.DateofRedemption ? req.body.DateofRedemption : null;
 	user = await User.findByPk(req.params.id);
 	let {cid} = req.body;
@@ -58,11 +58,9 @@ router.post('/usercoupongenerate/:id', ensureAuthenticated, async (req, res) => 
 	amt = user.Points;
 	amt -= coupon.pointstoattain;
 
-	couponaddo = user.couponInventory;
-	couponaddo += coupon.couponName + '\n';
 
 	User.update(
-        {Points : amt, couponInventory : couponaddo }, 
+        {Points : amt}, 
         { where: { id: req.params.id } }
     )
         .catch(err => console.log(err));
@@ -84,6 +82,11 @@ router.post('/usercoupongenerate/:id', ensureAuthenticated, async (req, res) => 
 	
 	CouponRedemption.create(
 		{DateofRedemption : todays_date, couponId: cid}, 
+		{ where: { id: cid } }
+	)
+	
+	UserCouponInfo.create(
+		{ couponName : coupon.couponName, percentageDiscount: coupon.percentageDiscount, expiryDate: coupon.expiryDate, userId: user.id, couponId: cid }, 
 		{ where: { id: cid } }
 	)
 

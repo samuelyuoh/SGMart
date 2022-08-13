@@ -44,31 +44,11 @@ const ifpoints50 = function(Points) {
     return (Points >= 50 ? true : false)
 };
 
-const ifpoints55 = function(Points){
-    return (Points >= 55 ? true : false)
-}
-
-const ifpoints60 = function(Points) {
-    return (Points >= 60 ? true : false)
-};
-
-const ifpoints65 = function(Points){
-    return (Points >= 65 ? true : false)
-}
-
-const ifpoints70 = function(Points) {
-    return (Points >= 70 ? true : false)
-};
-
-const ifpoints75 = function(Points){
-    return (Points >= 75 ? true : false)
-}
-
-const ifowncoupon = function(couponInventory){
-    return (couponInventory != null ? true : false)
+const ifcouponquantityzero = function(couponQuantity) {
+    return (couponQuantity > 0 ? true : false)
 }
 
 
 
 module.exports = {formatDate, replaceCommas, checkboxCheck, radioCheck, ifEquals, checkdiscount, checkstock,
-     ifpoints50, ifpoints55, ifpoints60, ifpoints65, ifpoints70, ifpoints75, ifowncoupon};
+     ifpoints50, ifcouponquantityzero };

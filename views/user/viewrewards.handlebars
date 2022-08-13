@@ -32,52 +32,38 @@
                             <div class=" border-right">
                                 <div class="p-3 py-5">
                                     <div class="d-flex justify-content-between align-items-center mb-3">
-                                        <h4 class="text-right">Points Owned: {{user.Points}}</h4>
+                                        <h4 class="text-right">Points Owned: {{user.Points}} <br> Owned Coupons: <br></h4>
                                     </div>
                                     <div class="container">
-                                        {{#if user.couponInventory}}
-                                            <p>Coupons Owned: {{user.couponInventory}}</p>
-                                            {{!-- {{#each user.couponInventory}}
-                                            <div class="card border-primary mb-2 w-100 mx-auto heado">
-                                                <div class="card-header ">
-                                                    <h5 class="card-title">{{couponName}}</h5>
-                                                </div>
-                                                <div class="card-body">
-                                                    <div class="row">
-                                                        <div class="col-sm-12 col-md-12 col-lg-2">
-                                                            <p class="font-italic">Coupon Name</p>
-                                                            <p class="text-info">
-                                                                {{couponName}}
-                                                            </p>
+                                        {{#if usercouponinfos}}
+                                            <div class="card card-body ">
+                                                {{#each usercouponinfos}}
+                                                <div class="card border-primary mb-2 w-100 mx-auto heado">
+                                                    <div class="card-body">
+                                                        <div class="row">
+                                                            <div class="col-sm-12 col-md-12 col-lg-4">
+                                                                <p class="font-italic">Coupon Name</p>
+                                                                <p class="text-info">
+                                                                    {{couponName}}
+                                                                </p>
+                                                            </div>
+                                                            <div class="col-sm-12 col-md-12 col-lg-4">
+                                                                <p class="font-italic">Percentage Discount</p>
+                                                                <p class="text-info">
+                                                                    {{percentageDiscount}}%
+                                                                </p>
+                                                            </div>
+                                                            <div class="col-sm-12 col-md-12 col-lg-4">
+                                                                <p class="font-italic">Expiry Date</p>
+                                                                <p class="text-info">{{formatDate expiryDate 'YYYY-MM-DD'}}</p>
+                                                            </div>
                                                         </div>
-                                                        <div class="col-sm-12 col-md-12 col-lg-3">
-                                                            <p class="font-italic">Percentage Discount</p>
-                                                            <p class="text-info">
-                                                                {{percentageDiscount}}%
-                                                            </p>
-                                                        </div>
-                                                        <div class="col-sm-12 col-md-12 col-lg-2">
-                                                            <p class="font-italic">Expiry Date</p>
-                                                            <p class="text-info">{{formatDate expiryDate 'YYYY-MM-DD'}}</p>
-                                                        </div>
-                                                        <div class="col-sm-12 col-md-12 col-lg-2">
-                                                            <p class="font-italic">Coupon Quantity</p>
-                                                            <p class="text-info">
-                                                                {{couponQuantity}}
-                                                            </p>
-                                                        </div>
-                                                        <div class="col-sm-12 col-md-12 col-lg-2">
-                                                            <p class="font-italic">Points to Redeem</p>
-                                                            <p class="text-info">
-                                                                {{pointstoattain}}
-                                                            </p>
-                                                        </div>
-                                            </div> --}}
-                                        {{else}}
-                                            -
+                                                </div>                                     
+                                            </div>
+                                            {{/each}}
+                                        </div>
                                         {{/if}}
                                     </div>
-                                        
                                 </div>
                             </div>
                         </div>

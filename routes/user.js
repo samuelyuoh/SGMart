@@ -6,6 +6,7 @@ const Coupon = require('../models/Coupon');
 const bcrypt = require('bcryptjs');
 const passport = require('passport');
 const ensureAuthenticated = require('../helpers/auth');
+const UserCouponInfo = require('../models/UserCouponInfo');
 
 router.get('/login', (req, res) => {
     res.render('user/login');
@@ -151,9 +152,16 @@ router.get('/viewrewards/:id', ensureAuthenticated, (req, res) => {
                 res.redirect('/');
                 return;
             }
-            res.render('user/viewrewards', { user });
-            
+        UserCouponInfo.findAll({
+            order: [['couponName', 'DESC']],
+            raw: true
         })
+            .then((usercouponinfos) => {
+                // pass object to admincouponlist.handlebars
+                res.render('user/viewrewards', { user, usercouponinfos});
+            })
+            .catch(err => console.log(err));
+            })
         .catch(err => console.log(err));
 
 });

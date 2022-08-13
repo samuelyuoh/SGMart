@@ -198,24 +198,91 @@ router.get('/couponstats', async (req, res) => {
 		}
 	}
 
-	const { count } = await CouponRedemption.findAndCountAll({
+	var date = new Date();
+	today = date.toISOString().slice(0,10) //Today's date
 
+	date.setDate(date.getDate() - 1); 
+	yesterday = date.toISOString().slice(0,10) //Yesterday's date
+
+	date.setDate(date.getDate() - 1);
+	twodaysback = date.toISOString().slice(0,10) // 2 days back date
+
+	date.setDate(date.getDate() - 1);
+	threedaysback = date.toISOString().slice(0,10) // 3 days back date
+
+	date.setDate(date.getDate() - 1);
+	fourdaysback = date.toISOString().slice(0,10) // 4 days back date
+
+	const { count: todaycount } = await CouponRedemption.findAndCountAll({
+		
+		where: { DateofRedemption: today },
 		groupBy: {
-			DateofRedemption: '2022-08-11'
+			DateofRedemption: today
 		},
 		
 	});
 
-	// Coupon.findAll({
-	// 	order: [['redeemedquantity', 'DESC']],
-	// 	raw: true
-	// })
-	metadata.count = count
+	const { count: yesterdaycount } = await CouponRedemption.findAndCountAll({
+		
+		where: { DateofRedemption: yesterday },
+		groupBy: {
+			DateofRedemption: yesterday
+		},
+		
+	});
+
+	const { count: twodaysbackcount } = await CouponRedemption.findAndCountAll({
+		
+		where: { DateofRedemption: twodaysback },
+		groupBy: {
+			DateofRedemption: twodaysback
+		},
+		
+	});
+
+	const { count: threedaysbackcount } = await CouponRedemption.findAndCountAll({
+		
+		where: { DateofRedemption: threedaysback },
+		groupBy: {
+			DateofRedemption: threedaysback
+		},
+		
+	});
+
+	const { count: fourdaysbackcount } = await CouponRedemption.findAndCountAll({
+		
+		where: { DateofRedemption: fourdaysback },
+		groupBy: {
+			DateofRedemption: fourdaysback
+		},
+		
+	});
+
+	const { count: total } = await CouponRedemption.findAndCountAll({
+
+	});
+	
+	console.log(total)
+
+	metadata.todaycount = todaycount
+	metadata.yesterdaycount = yesterdaycount
+	metadata.twodaysbackcount = twodaysbackcount
+	metadata.threedaysbackcount = threedaysbackcount
+	metadata.fourdaysbackcount = fourdaysbackcount
+	metadata.total = total
 	res.render('admin/couponstats', metadata)
 	
-	
-
-
 });
 
+
+router.get('/couponstats', (req, res) => {
+	const metadata = {
+		layout: 'admin',
+		nav: {
+			sidebarActive: 'coupon'
+		}
+	}
+	
+	res.render('admin/couponstats', metadata)
+	});
 module.exports = router;
