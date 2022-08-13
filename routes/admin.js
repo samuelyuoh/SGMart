@@ -438,7 +438,7 @@ router.get('/listorders', async(req, res) => {
     for(var a in cost_of_each_item){
         totalAmount += parseFloat(cost_of_each_item[a]['totalCost'])
     }
-    res.render('admin/listorders', {orders: orders, item: items, totalAmount: totalAmount})
+    res.render('admin/listorders', {orders: orders, item: items, totalAmount: totalAmount, layout: 'admin'})
 })
 
 

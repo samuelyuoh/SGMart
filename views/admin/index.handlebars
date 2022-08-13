@@ -1,93 +1,134 @@
-<main>
-    <h1>Dashboard</h1>
-    <div class="analytics">
-
-      <div class="money">
-        <span class="material-icons-sharp">analytics</span>
-        <div class="center">
-          <div class="lside">
-            <h3>Total Sales</h3>
-            {{!-- <h1>{{"$%.2f"|format(l24_sales)}}</h1> --}}
-            <h1>100</h1>
-          </div>
-          <div class="dvp">
-            <svg>
-              <!-- <circle cx="38" cy="38" r="36"></circle> -->
-            </svg>
-            <div class="score">
-              <!-- <p>67%</p> -->
-            </div>
-          </div>
-        </div>
-        <small class="gray">Last 24 hours</small>
-      </div>
-
-      <div class="spent">
-        <span class="material-icons-sharp">bar_chart</span>
-        <div class="center">
-          <div class="lside">
-            <h3>Total Expenses</h3>
-            {{!-- <h1>{{"$%.2f"|format(total_expenses)}}</h1> --}}
-            <h1>100</h1>
-          </div>
-          <div class="dvp">
-            <svg>
-              <!-- <circle cx="38" cy="38" r="36"></circle> -->
-            </svg>
-            <div class="score">
-              <!-- <p>45%</p> -->
-            </div>
-          </div>
-        </div>
-        <small class="gray">Lifetime</small>
-      </div>
-
-      <div class="flow">
-        <span class="material-icons-sharp">stacked_line_chart</span>
-        <div class="center">
-          <div class="lside">
-            <h3>Total Sales</h3>
-            {{!-- <h1>{{"$%.2f"|format(total_sales)}}</h1> --}}
-            <h1>100</h1>
-          </div>
-          <div class="dvp">
-            <svg>
-              <!-- <circle cx="38" cy="38" r="36"></circle> -->
-            </svg>
-            <div class="score">
-                <!-- <p>89%</p> -->
-            </div>
-          </div>
-        </div>
-        <small class="gray">Lifetime</small>
-      </div>
+<div class="main-content">
+    <header>
+    <div class="search-wrapper">
+        <span class="las la-search"></span>
+        <input type="search" placeholder="Search">
     </div>
+    <div class="social-icons">
+        <span class="las la-bell"></span>
+        <span class="las la-comment"></span>
+        <div></div>
+    </div>
+    </header>
 
+    <main>
+        <section>
+            <h3 class="section-head">Overview</h3>
+            <div class="analytics">
+                <div class="analytic">
+                    <div class="analytic-icon">
+                        <span class="las la-eye"></span>
+                    </div>
+                    <div class="analytic-info">
+                        <h4 style="">Total Views</h4>
+                        <h3>10.3M</h3>
+                    </div>
+                </div>
+                <div class="analytic">
+                    <div class="analytic-icon">
+                        <span class="las la-clock"></span>
+                    </div>
+                    <div class="analytic-info">
+                        <h4>Watch Time</h4>
+                        <h3>20.9K <small class="text-danger">5%</small></h3>
+                    </div>
+                </div>
+                <div class="analytic">
+                    <div class="analytic-icon">
+                        <span class="las la-users"></span>
+                    </div>
+                    <div class="analytic-info">
+                        <h4>Subscribers</h4>
+                        <h3>1.3K <small class="text-success">5%</small></h3>
+                    </div>
+                </div>
+                <div class="analytic">
+                    <div class="analytic-icon">
+                        <span class="las la-heart"></span>
+                    </div>
+                    <div class="analytic-info">
+                        <h4>Total Likes</h4>
+                        <h3>3.4K</h4>
+                    </div>
+                </div>
+            </div>
+        </section>
 
+    <section>
+        <div class="block-grid">
+            <div class="revenue-card">
+                <h3 class="section-head">Total Revenue</h3>
+                <div class="rev-content">
+                    <img src="https://cdn.iconscout.com/icon/free/png-256/avatar-372-456324.png"alt="">
+                    <div class="rev-info">
+                        <h3>{{user.name}}</h3>
+                        <h4>{{user.email}}</h4>
+                    </div>
+                    <div class="rev-sum">
+                        <h4>Joined At</h4>
+                        <h6 style="font-size: 10.72px;">{{user.createdAt}}</h4>
+                    </div>
+                </div>
+            </div>
+            <div class="graph-card">
+                <h3 class="section-head">Graph</h3>
+                <div class="graph-content">
+                    <div class="graph-head">
+                        <div class="icons-wrapper">
+                            <div class="icon">
+                                <span class="las la-eye text-main"></span>
+                            </div>
+                            <div class="icon">
+                                <span class="las la-clock text-success"></span>
+                            </div>
+                        </div>
+                        <div class="graph-select">
+                            <select name="" id="">
+                                <option value="">September</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="graph-board">
+                        <canvas id="revenueChart" width="100%" height="51px"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    </main>
+</div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.bundle.js"></script>
+<script>
+    Chart.defaults.global.defaultFontFamily = "Poppins";
+    let ctx = document.querySelector("#revenueChart");
 
-    <div>
-      <h2 style="margin-top: 2px !important;">Profits of last 7 days</h2>
-      <canvas id="profitChart" width="100%" height="50%">
-
-      </canvas>
-      <script>
-        {{!-- var ctx = document.getElementById ("profitChart").getContext("2d");
-        var lineChart = new Chart(ctx, {
-          type: "line",
-          data: {
-            labels: {{ labels | safe }},
-            datasets: [
-              {
-                label: "Profits",
-                data: {{ values | safe }},
-                fill: false,
-                borderColor: "rgb(75, 192, 192)",
-                lineTension: 0
-              }
+    let revChart=new Chart(ctx, {
+        type:"line",
+        data:{
+            labels:["Sept1","Sept3","Sept6","Sept9","Sept 12","Sept 15", "Sept 18","Sept 21","Sept 24","Sept 27","Sept 30"],
+            datasets:[
+                {
+                    label:"Views",
+                    borderColor:"#2ec3a3",
+                    borderWidth:"3",
+                    backgroundColor:"rgba(235,247,245,0.7)",
+                    data:[0,30,60,25,60,25,50,10,50,90,120]
+                },
+                {
+                    label:"Watch Time",
+                    borderColor:"#396aff",
+                    borderWidth:"3",
+                    backgroundColor:"rgba(233,238,253,0.7)",
+                    data:[0,60,25,100,20,75,30,55,20,60,20]
+                }
             ]
-          }
-        }) --}}
-      </script>
-    </div>
-
-  </main> 
+        },
+        options:{
+            responsive: true,
+            tooltips: {
+                intersect: false,
+                node: "index"
+            }
+        }
+    });
+</script>
