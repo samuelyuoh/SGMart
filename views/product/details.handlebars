@@ -1,51 +1,132 @@
-<div class="container mt-5">
-    <a href="/product/products" class="btn btn-secondary">Back</a>
-    <br>
-    <br>
-    <div class="row">
-        <div class="col-md-6" id="b_image">
-            <img src="/images/{{products.image}}" alt="{{products.product_name}}" width="400" height="400">
-        </div>
-        <div class="col-md-6">
-            <p style="font-size: 32px; color: #319e40; font-weight: 500; line-height: 32px; vertical-align:top; text-align: left;">${{products.product_price}}</p>
-            {{#if (checkdiscount products.discount) }}
-            <p style="font-size: 21px; color: #f05229; font-weight: 600; line-height: 37.8px; vertical-align:top; text-align: left;">{{products.discount}}% OFF </p>
-            {{/if}}
-            <p style="font-size: 24px; color: #4a4a4a; font-weight: 400; line-height: 24px; vertical-align: top; text-align: left; padding: 0px;">{{products.product_name}}</p>
-            <hr>
-            <p style="font-size: 16px; color: #4a4a4a; font-weight: 400; line-height: 24px; vertical-align: top; text-align: left; margin: 0px 0px 30px;">{{products.desc}}</p>
-            <form action="/cart/add/{{id}}" method="post">
-                {{#if (checkstock products.stock)}}
-                <input type="hidden" name="product_id" value="{{products.id}}">
-                <button type="submit" class="btn btn-sm btn-warning">Add to Cart</button>
-                <label for="quantity">Quantity: </label>
-                <input type="number" id="quantity" name="quantity" value="1" min="1" max="{{products.stock}}">
-                {{else}}
-                <button type="submit" disabled class="btn btn-sm btn-danger">Out of Stock</button>
-                {{/if}}
-                <br>
-                <br>
-                <h3>Stock: {{products.stock}}</h1>
-            </form>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-12 mt-3" id="s_image">
-            <img src="/images/{{products.image}}" alt="{{products.product_name}}" width="100" height="100" class="p-3" style="border: 1px solid black;">
-        </div>
-    </div>
-   
-</div>
+                {{!-- modal --}}
+                    <div class="modal fade" id="details_{{id}}" data-backdrop="static" data-bs-focus="false">
+                        <div class="modal-dialog modal-lg modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-header"style="background-color:white">
+                                    <h4>Item Detail</h4>
+                                    <button type="submit" class="close fa-2x" data-bs-dismiss="modal" aria-label="Close" style="background-color:white">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-footer" style="background-color:white">
+                                    <div class="row">
+                                        <div class="col-md-6" id="b_image">
+                                            <img src="/images/{{image}}" alt="{{product_name}}" width="200" height="200">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div style="float:right!important">
+                                                {{#if (checkWishlist id wishlist.productId)}}
+                                                <button value={{id}} class="btn btn-sm bx bx-bookmark bxs-bookmark" onclick="submitForm(this)" style="font-size:2rem"></button>
+                                                {{else}}
+                                                <button value={{id}} class="btn btn-sm bx bx-bookmark" onclick="submitForm(this)" style="font-size:2rem"></button>
+                                                {{/if}}
+                                            </div>
+                                            <p style="font-size: 32px; color: #319e40; font-weight: 500; line-height: 32px; vertical-align:top; text-align: left;">${{product_price}}</p>
+                                            {{#if (checkdiscount discount) }}
+                                            <p style="font-size: 21px; color: #f05229; font-weight: 600; line-height: 37.8px; vertical-align:top; text-align: left;">{{discount}}% OFF </p>
+                                            {{/if}}
+                                            <p style="font-size: 24px; color: #4a4a4a; font-weight: 400; line-height: 24px; vertical-align: top; text-align: left; padding: 0px;">{{product_name}}</p>
+                                            <hr>
+                                            <p style="font-size: 16px; color: #4a4a4a; font-weight: 400; line-height: 24px; vertical-align: top; text-align: left; margin: 0px 0px 30px;">{{desc}}</p>
+                                            <div style="float: left">
+                                            <form action="/cart/add/{{id}}" method="post">
+                                                {{#if (checkstock stock)}}
+                                                <input type="hidden" name="product_id" value="{{id}}">
+                                                <div class="form-group">
+                                                    <button type="submit" class="btn btn-sm btn-warning">Add to Cart</button>
+                                                    <label for="quantity">Quantity: </label>
+                                                    <input type="number" id="quantity" name="quantity" value="1" min="1" max="{{stock}}" />
+                                                </div>
+                                                {{else}}
+                                                <button type="submit" disabled class="btn btn-sm btn-danger">Out of Stock</button>
+                                                {{/if}}
+                                            </div>
+                                            </form>
+                                                <h4 style="float: right">Stock: {{stock}}</h4>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {{!-- end of modal --}}
+
 
 <script>
-   var b_image = document.getElementById('b_image');
-   var s_image = document.getElementById('s_image').getElementsByTagName('img');
-    for(var i = 0; i < s_image.length; i++){
+    function submitForm(element){
+        var id = element.value;
+        $.ajax({
+            url : '/product/wishlist',
+            method: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({id: id}),
+            success: function(res){
+                if (res.status == "add"){
+                    // element.classList.remove("bx-bookmarks")
+                    element.classList.add('bxs-bookmark')
+                    element.classList.add('bx-tada')
+                    setTimeout(function(){element.classList.remove('bx-tada')}, 1000)
+                } else if (res.status == "remove") {
+                    // element.classList.add("bi-bookmarks")
+                    element.classList.remove('bxs-bookmark')
+                    element.classList.add('bx-tada')
+                    setTimeout(function(){element.classList.remove('bx-tada')}, 1000)
+                }else{
+                    fireLogin(element)
+                }
+            },
+        })
+    }
 
-        s_image[i].addEventListener('click', full_image);
+function fireLogin(element){
+    Swal.fire({
+        title: 'Login Form',
+        html: `<input type="text" id="login" class="swal2-input" placeholder="Username">
+        <input type="password" id="password" class="swal2-input" placeholder="Password">`,
+        confirmButtonText: 'Sign in',
+        focusConfirm: true,
+        preConfirm: () => {
+            const login = Swal.getPopup().querySelector('#login').value
+            const password = Swal.getPopup().querySelector('#password').value
+            if (!login || !password) {
+            Swal.showValidationMessage(`Please enter login and password`)
+            }
+            return { login: login, password: password }
+        }
+        }).then((result) => {
+            $.ajax({
+                type: 'POST',
+                data:{
+                    email: result.value.login,
+                    password: result.value.password
+                },
+                url: '/user/login',
+            }).then((result) => {checkStatus(result, element)})
+        })
     }
-    function full_image(){
-        var ImageSRC = this.getAttribute('src');
-        b_image.innerHTML = "<img src=" + ImageSRC + " width='400' height='400'>";
-    }
+
+function checkStatus(result, element){
+    $.ajax({
+        type: 'POST',
+        url: '/user/checkStatus',
+        success: function(res){
+            if(res.status == 'logged in'){
+                swal.fire({
+                    title: "logging in ",
+                    timer: 1000,
+                    didOpen: () => {
+                    Swal.showLoading()
+                    const b = Swal.getHtmlContainer().querySelector('b')
+                    timerInterval = setInterval(() => {
+                    b.textContent = Swal.getTimerLeft()
+                    }, 100)
+                }
+                })
+                setTimeout(function(){swal.fire("logged in"), submitForm(element) }, 1500)
+            }else if(res.status == "not logged in"){
+                swal.fire("invalid login")
+            }
+        }
+    })
+}
 </script>

@@ -9,6 +9,8 @@ const Category = require('../models/Category');
 const Blog = require('../models/Category');
 const Cart = require('../models/cart');
 const Item = require('../models/item');
+const Wishlist = require('../models/Wishlist');
+const Rating = require('../models/Rating');
 
 
 
@@ -31,7 +33,16 @@ const setUpDB = (drop) => {
            Cart.belongsTo(User, {foreignKey:{allowNull: true}});
            Cart.hasMany(Item);
            Item.belongsTo(Cart);
-Item.belongsTo(Product);
+           Item.belongsTo(Product);
+           Cart.belongsTo(Product);
+           User.hasMany(Cart);
+           Wishlist.belongsTo(User);
+           User.hasMany(Wishlist);
+           Wishlist.belongsTo(Product);
+           User.hasMany(Rating)
+           Rating.belongsTo(User);
+           Product.hasMany(Rating);
+           Rating.belongsTo(Product);
             mySQLDB.sync({
                 force: drop
             });

@@ -37,11 +37,12 @@
                     <input type="number" class="form-control" name="discount" step=".01" min ="0.1" value="{{discount}}" placeholder ={{discount}} default="{{discount}}"required>
                   {{/product}}
                   {{/if}}
-                    {{!-- {{ form-label 'expenses' 'Please enter expenses of product'}}
-                    <div class="p-2"></div> --}}
-                    <div class="p-2"></div>
                   {{#if (checkurl path "/addproduct")}}
-
+                    <label for="discount">Cost of product</label>
+                    <input type="number" class="form-control" name="cost" step=".01" min ="0.1" value="{{cost}}" required>
+                    <div class="p-2"></div>
+                  {{/if}}
+                  {{#if (checkurl path "/addproduct")}}
                     <label for='stock'>Enter stock</label>
                     <input type="number" class="form-control" name="stock" placeholder="Enter stock" value="{{stock}}" required>
                     <div class="p-2"></div>

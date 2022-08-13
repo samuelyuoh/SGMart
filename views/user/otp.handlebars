@@ -1,14 +1,13 @@
 <div class="container d-flex flex-column">
   <div class="row align-items-center justify-content-center
-      min-vh-100 g-0">
-    <div class="col-12 col-md-8 col-lg-4 border-top border-3 border-primary">
+      min-vh-75 g-0"  style="padding-top: 7.5rem; top: 0;">
+    <div class="col-12 col-md-8 col-lg-4 border-top border-3 border-primary" style="color:grey;">
       <div class="card shadow-sm">
         <div class="card-body">
           <div class="mb-4">
-            <h5>Verify OTP</h5>
-            <p class="mb-2">Enter your OTP to log in
-            </p>
-            <p>Note: OTP will expire in 5 minutes</p>
+            <p>Verify OTP<p>
+            <h5 class="mb-2">Enter your OTP to log in.</h5>
+            <h5>Note: OTP will expire in 5 minutes</h5>
           </div>
           <form method="POST">
             <div class="mb-3">
@@ -17,7 +16,7 @@
                 required="">
             </div>
             <div class="mb-3 d-grid">
-              <button type="submit" class="btn btn-primary">
+              <button type="submit" class="btn btn-primary" style="background-color: var(--green)">
                 Verify OTP
               </button>
             </div>
@@ -27,3 +26,16 @@
     </div>
   </div>
 </div>
+
+<style>
+  p {
+    margin-bottom: 0 !important;
+  }
+
+  .border-primary {
+    border-color: var(--green) !important;
+}
+h5 {
+  font-size: 15px;
+}
+</style>

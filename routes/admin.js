@@ -44,7 +44,7 @@ const isMAdmin = function(userType) {
 	return (userType == 'madmin')
 };
 
-router.get('/', ensureAuthenticated, (req, res) => {
+router.get('/', ensureAuthenticated, async (req, res) => {
 	if (!isStaff(req.user.userType)) {
 		res.redirect('/');
 	} else {
@@ -55,6 +55,18 @@ router.get('/', ensureAuthenticated, (req, res) => {
 			},
 			user: req.user
 		}
+		const thirtyDaysAgo = new Date(new Date().setDate(new Date().getDate() - 30));
+		// a = new Date().add(-30).days();
+		b = moment().subtract(30, 'days');
+		curdate = moment.now()
+		users = await User.findAll();
+		a = []
+		for (var i = 0;i < users.length;i++) {
+			if ((curdate - moment(users[i].createdAt))< 2592000000 ) { //num of seconds in 30 days
+				a.push(users[i])
+			}
+		}
+		metadata.l30 = a.length;
 		res.render('admin/index', metadata)
 
 	}
@@ -80,28 +92,39 @@ router.get('/createStaffAcc', ensureAuthenticated, (req, res) => {
 	
 });
 
-router.post('/createStaffAcc', ensureAuthenticated, (req, res) => {
+router.post('/createStaffAcc', ensureAuthenticated, async (req, res) => {
 	email = req.body.email;
-	
-	let token = jwt.sign(email, process.env.APP_SECRET);
-	let url = `${process.env.BASE_URL}:${process.env.PORT}/admin/staffRegister/${email}/${token}`;
-	console.log(token)
-	const message = {
-		to: email,
-		from: `SGMart <${process.env.SENDGRID_SENDER_EMAIL}>`,
-		subject: 'Register SGMart Staff Account',
-		html: `Welcome to the SGMart Staff Team.<br><br> Please <a href=\"${url}"><strong>register</strong></a> your account.`
-	};
-	sendEmail(message)
-		.then(response => {
-			console.log(response);
-			flashMessage(res, 'success','registered link sent to '+email+' successfully');
-			res.redirect('/admin');
+	user = await User.findOne({where: {email: email}});
+	if (!user) {
+		let token = jwt.sign(email, process.env.APP_SECRET);
+		let url = `${process.env.BASE_URL}:${process.env.PORT}/admin/staffRegister/${email}/${token}`;
+		console.log(token)
+		const message = {
+			to: email,
+			from: `SGMart <${process.env.SENDGRID_SENDER_EMAIL}>`,
+			subject: 'Register SGMart Staff Account',
+			html: `Welcome to the SGMart Staff Team.<br><br> Please <a href=\"${url}"><strong>register</strong></a> your account.`
+		};
+		sendEmail(message)
+			.then(response => {
+				console.log(response);
+				flashMessage(res, 'success','registered link sent to '+email+' successfully');
+				res.redirect('/admin');
+			})
+			.catch(err => {
+				console.log(err);
+				flashMessage(res, 'error', 'Error when sending email to ' + email);
+			});
+	} else {
+		User.update(
+			{userType: 'staff'},
+			{where: {email: email}}
+		).then((result) => {
+			flashMessage(res, 'success', 'Account updated to staff account');
+			res.redirect('/admin')
 		})
-		.catch(err => {
-			console.log(err);
-			flashMessage(res, 'error', 'Error when sending email to ' + email);
-		});
+	}
+	
 });
 
 router.get('/staffRegister/:email/:token', async function (req, res) {
@@ -139,7 +162,7 @@ router.get('/userList', async (req, res) => {
 	const metadata = {
 		layout: 'admin',
 		nav: {
-			sidebarActive: 'cstaff'
+			sidebarActive: 'users'
 		},
 		user: req.user,
 	}
@@ -150,6 +173,7 @@ router.get('/userList', async (req, res) => {
 			  [Op.eq]: 'customer'
 			}
 		  },
+		order: Sequelize.col('id'),
 		raw: true
 	})
 		.then((users) => {
@@ -216,7 +240,7 @@ router.get('/status/:change/:id', async (req, res) => {
 				flashMessage(res, 'error', 'User is not banned');
 			} else {
 				await User.update(
-					{status: 1},
+					{status: 0},
 					{where: {id: req.params.id}}
 				)
 				.then((result) => {
@@ -242,7 +266,14 @@ router.get('/admincouponcreate', (req, res) => {
 	});
 
 router.get('/inventory', async (req, res) => {
-	Product.findAll({
+	const pageAsNumber = Number.parseInt(req.query.page)
+	let page = 0
+	if(!Number.isNaN(pageAsNumber) && pageAsNumber >= 0) {
+		page = pageAsNumber;
+	}
+	Product.findAndCountAll({
+		limit:2,
+		offset: page*2,
 		include: [{
 			model: Brand,
 			required: true,
@@ -255,10 +286,48 @@ router.get('/inventory', async (req, res) => {
 		raw: true
 	})
 		.then((product) => {
-			res.render('admin/inventory', {product: product, layout: 'admin', nav: { sidebarActive: 'product' }})
+			res.render('admin/inventory', {
+				product: product.rows,
+				totalPages: Math.ceil(product.count/2),
+				currentPage: page,
+				layout: 'admin', 
+				nav: { sidebarActive: 'product' }
+			})
 	})
 	.catch(err => console.log(err));
 })
+router.get('/getPage', async (req, res) => {
+	const pageAsNumber = Number.parseInt(req.query.page)
+	let page = 0
+	if(!Number.isNaN(pageAsNumber) && pageAsNumber >= 0) {
+		page = pageAsNumber;
+	}
+	Product.findAndCountAll({
+		limit:2,
+		offset: page*2,
+		include: [{
+			model: Brand,
+			required: true,
+		},
+		{
+			model: Category,
+			required: true
+		}
+	],
+		raw: true
+	})
+		.then((product) => {
+			res.send({
+				product: product.rows,
+				totalPages: Math.ceil(product.count/2),
+				currentPage: page,
+				layout: 'admin', 
+				nav: { sidebarActive: 'product' }
+			})
+	})
+	.catch(err => console.log(err));
+})
+
 
 router.get('/addproduct',async (req, res) => {
 	var brand = await Brand.findAll({raw: true})
@@ -267,11 +336,11 @@ router.get('/addproduct',async (req, res) => {
 	res.render('admin/addproducts', { brands: brand , category: category , layout: 'admin', nav: { sidebarActive: 'addproduct' },path })
 });
 router.post('/addproduct',async function (req, res) {	
-	let { product_name, product_price, discount, stock, desc, image, brandId, categoryId } = req.body;
+	let { product_name, product_price, discount, stock, desc, image, brandId, categoryId, cost } = req.body;
 	try{
-		let product = await Product.create({product_name, product_price, discount, stock, desc, image, brandId, categoryId});
+		let product = await Product.create({product_name, product_price, discount, stock, desc, image, brandId, categoryId, cost});
 		flashMessage(res, 'success', 'Product created successfully.');
-		res.redirect('/')
+		res.redirect('/admin/inventory')
 	}
 	catch(err){
 		console.log(err)
@@ -304,6 +373,18 @@ router.post('/updateproduct/:id', async function(req, res) {
 	catch(err){
 		console.log(err);
 	}
+})
+
+router.post('/updatestock/:id', async (req, res) =>{
+	let product = await Product.findByPk(req.params.id).then((products)=>
+	current_stock = products.stock)
+	Product.update(
+			{stock: parseInt(req.body.stock) + parseInt(current_stock)},
+			{where: {id: req.params.id}}
+	)
+	.catch(err => console.log(err));
+	flashMessage(res, 'success', 'Stock added successfully.')
+	res.redirect('/admin/inventory')
 })
 
 router.get('/deleteproduct/:id', async function(req, res){

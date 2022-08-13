@@ -9,8 +9,10 @@ const Delivery = require('../models/Delivery');
 require('dotenv').config();
 const jwt = require('jsonwebtoken');
 const sgMail = require('@sendgrid/mail');
+const Wishlist = require('../models/Wishlist')
 const otpGenerator = require('otp-generator');
 const Swal = require('sweetalert2');
+const Product = require('../models/Product');
 
 function sendEmail(message) {
     key = rot13(process.env.SENDGRID_API_KEY)
@@ -73,7 +75,7 @@ router.post('/register', async function (req, res) {
             var salt = bcrypt.genSaltSync(10);
             var hash = bcrypt.hashSync(password, salt);
             // Use hashed password
-            let user = await User.create({ name, email, password: hash, 'userType': 'customer' });
+            let user = await User.create({ name, email, password: hash, 'userType': 'customer', 'status': 0  });
             // Send email
             let token = jwt.sign(email, process.env.APP_SECRET);
             let url = `${process.env.BASE_URL}:${process.env.PORT}/user/verify/${user.id}/${token}`;
@@ -86,7 +88,7 @@ router.post('/register', async function (req, res) {
             sendEmail(message)
                 .then(response => {
                     console.log(response);
-                    flashMessage(res, 'success', user.email + ' registered successfully');
+                    flashMessage(res, 'success', user.email + ' registered successfully. Please check your email to verify your email.');
                     res.redirect('/user/login');
                 })
                 .catch(err => {
@@ -178,20 +180,19 @@ router.post('/login', async (req, res, next) => {
             When a failure occur passport passes the message object as error */
             failureFlash: true
         })(req, res, next);
+    } else {
+        passport.authenticate('local', {
+            // Success redirect URL
+            successRedirect: '/',
+            // Failure redirect URL 
+            failureRedirect: '/user/login',
+            /* Setting the failureFlash option to true instructs Passport to flash 
+            an error message using the message given by the strategy's verify callback.
+            When a failure occur passport passes the message object as error */
+            failureFlash: true
+        })(req, res, next);
     }
 
-    passport.authenticate('local', {
-        // Success redirect URL
-        successRedirect: '/',
-        // Failure redirect URL 
-        failureRedirect: '/user/login',
-        /* Setting the failureFlash option to true instructs Passport to flash 
-        an error message using the message given by the strategy's verify callback.
-        When a failure occur passport passes the message object as error */
-        failureFlash: true
-    })(req, res, next);
-    
-    
 });
 
 router.get('/logout', (req, res) => {
@@ -217,6 +218,15 @@ router.get('/profile/:id', ensureAuthenticated, (req, res) => {
         })
         .catch(err => console.log(err));
 });
+
+router.post('/checkStatus', (req, res) => {
+    if(req.isAuthenticated()){
+        res.send({status: "logged in"})
+    }else{
+        res.send({status: "not logged in"})
+    }
+})
+
 router.post('/editprofile/:id', ensureAuthenticated, (req, res) => {
     let name = req.body.name;
     let email = req.body.email;
@@ -387,9 +397,11 @@ router.post('/:id/2fa/verifyotp/:token', async (req, res) => {
     user = User.findByPk(req.params.id);
     email = user.email;
     if (token['otp'] == otp) {
+        flashMessage(res, 'success', 'Successfully logged in');
         res.redirect('/');
 
     } else {
+        flashMessage(res, 'error', 'Wrong OTP, please log in again');
         res.redirect('/user/logout');
     }
 
@@ -481,5 +493,16 @@ router.post('/editDelivery/:id', ensureAuthenticated, (req, res) => {
         })
         .catch(err => console.log(err));
 });
+
+router.get('/viewWishlist', async(req, res) => {
+    var wishlist = await Wishlist.findAll(
+        {where: { userId: req.user.id},
+        include: {model: Product,
+        required: true}, 
+        raw:true
+    }
+    )
+    res.render('user/viewWishlist', {wishlist})
+})
 
 module.exports = router;
