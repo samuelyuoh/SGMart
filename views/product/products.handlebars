@@ -285,6 +285,8 @@ function loadProducts() {
                     stock = data['product'][a]['stock']
                     desc = data['product'][a]['desc']
                     desc = desc.replace(/(\r\n|\n|\r)/gm, '<br>')
+                    console.log(data['wishlist'].length)
+                    
                     if(discount > 0){
                         price_info = `<p class = "product-price">$`+price+`</p>
                                       <p class = "product-price">$`+parseFloat(parseFloat(price) * ((100-parseFloat(discount))/100)).toFixed(2)+`</p>
@@ -299,11 +301,16 @@ function loadProducts() {
                                       </div>`
                         modal_discount = ""
                     }
-                    for(var check in data['wishlist']){}
-                    if(checkWishlist(id, data['wishlist'][check]['productId'])== true){
-                      wishlist = `<button value=`+id+` class="btn btn-sm bx bx-bookmark bxs-bookmark" onclick="submitForm(this)" style="font-size:2rem; float:right!important"></button>`
-                    }else{
-                      wishlist = `<button value=`+id+` class="btn btn-sm bx bx-bookmark" onclick="submitForm(this)" style="font-size:2rem; float:right!important"></button>`
+                    if(typeof(data['wishlist']) == 'undefined' || data['wishlist'].length == 0){
+                        wishlist = `<button value=`+id+` class="btn btn-sm bx bx-bookmark" onclick="submitForm(this)" style="font-size:2rem; float:right!important"></button>`
+                    }else {
+                      for(var check in data['wishlist']){
+                          if(checkWishlist(id, data['wishlist'][check]['productId'])== true){
+                            wishlist = `<button value=`+id+` class="btn btn-sm bx bx-bookmark bxs-bookmark" onclick="submitForm(this)" style="font-size:2rem; float:right!important"></button>`
+                          }else{
+                            wishlist = `<button value=`+id+` class="btn btn-sm bx bx-bookmark" onclick="submitForm(this)" style="font-size:2rem; float:right!important"></button>`
+                          }
+                        }
                     }
                     if(stock>0){
                         modal_stock = `<div class="stock-status"></div>
@@ -329,10 +336,10 @@ function loadProducts() {
                             <button class="btn-buy" style=style="text-decoration: none; color:black; text-align:center;" data-bs-toggle="modal" data-bs-target="`+modal_id+`">
                             details<span><i class = "fa fa-shopping-cart"></i></span></button>
                             `
-                    form = `<form action=/cart/add/`+id+`" method="post">
+                    form = `<form action=/cart/add/`+id+` method="post">
                             <input type="hidden" name="" value="">
                             <button type="submit" class="btn-cart" value="`+id+`"> add to cart</button>
-                            <input type="hidden" name=quantity value="1"
+                            <input type="hidden" name=quantity value="1">
                             </form>
                             `
 

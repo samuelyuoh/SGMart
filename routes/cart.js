@@ -11,6 +11,7 @@ router.post('/add/:id', async function(req, res, next) {
     let quantity = req.body.quantity
     // let totalCost = req.body.totalCost
     console.log(quantity)
+    console.log(productid)
     // console.log(productid)
     var product = await Product.findByPk(productid)
     if(req.isAuthenticated()){

@@ -3,7 +3,7 @@
         <div class="col-md-1"></div>
             <div class="col-md-10">
             
-                <h1 class="text-center p-2 mt-3">Add a product</h1>
+                <h1 class="text-center p-2 mt-3">{{#if (checkurl path "/addproduct")}}Add a {{else}}Update {{/if}}product</h1>
                 <form method="post">
                 <div>
                   {{#if (checkurl path "/addproduct")}}
@@ -12,7 +12,7 @@
                   {{else}}
                   {{#product}}
                     <label for='product_name'>Edit product name</label>
-                    <input type="text" class="form-control" name="product_name" placeholder="{{product_name}}" value="{{product_name}}" required>
+                    <input type="text" class="form-control" name="product_name" placeholder="{{product_name}}" value="{{product_name}}">
                   {{/product}}
                   {{/if}}
                     <div class="p-2"></div>
@@ -23,7 +23,7 @@
                   {{else}}
                   {{#product}}
                     <label for='product_price'>Edit price</label>
-                    <input type="number" class="form-control" name="product_price" placeholder="{{product_price}}" step = ".01" min ="0.1" value="{{product_price}}" required>
+                    <input type="number" class="form-control" name="product_price" placeholder="{{product_price}}" step = ".01" min ="0.1" value="{{product_price}}">
                   {{/product}}
                   {{/if}}
                     <div class="p-2"></div>
@@ -34,7 +34,7 @@
                   {{else}}
                   {{#product}}
                     <label for="discount">Edit Discount</label>
-                    <input type="number" class="form-control" name="discount" step=".01" min ="0.1" value="{{discount}}" placeholder ={{discount}} default="{{discount}}"required>
+                    <input type="number" class="form-control" name="discount" step=".01" min ="0" value="{{discount}}" placeholder ={{discount}} default="{{discount}}">
                   {{/product}}
                   {{/if}}
                   {{#if (checkurl path "/addproduct")}}
@@ -44,7 +44,7 @@
                   {{/if}}
                   {{#if (checkurl path "/addproduct")}}
                     <label for='stock'>Enter stock</label>
-                    <input type="number" class="form-control" name="stock" placeholder="Enter stock" value="{{stock}}" required>
+                    <input type="number" class="form-control" name="stock" placeholder="Enter stock" value="{{stock}}">
                     <div class="p-2"></div>
                   {{/if}}
                   {{#if (checkurl path "/addproduct")}}
@@ -58,9 +58,9 @@
                     </select>
                   {{else}}
                     <label for="brandId">change brand</label>
-                    <select name="brandId" id="brandId" class="form-control" required>
+                    <select name="brandId" id="brandId" class="form-control">
                   {{#brand_name}}
-                    <option value="{{brandId}}" selected="selected" hidden="hidden">{{brand_name}}</option>
+                    <option value="{{id}}" selected="selected" hidden="hidden">{{brand_name}}</option>
                   {{/brand_name}}
                      {{#each brands}}
                      <option value="{{id}}">{{brand_name}}</option>
@@ -80,7 +80,7 @@
                   {{else}}
                   {{#category_name}}
                   <label for="CategoryId">Change Category</label>
-                  <select name="categoryId" id="categoryId" class="form-control" required>
+                  <select name="categoryId" id="categoryId" class="form-control">
                   <option value="{{id}}" selected="selected" hidden="hidden">{{category_name}}</option>
                   {{/category_name}}
                       {{#each category}}
@@ -100,51 +100,69 @@
                     <textarea name="desc" id="desc" class="form-control" rows=10 value="{{desc}}" placeholder="{{desc}}">{{desc}}</textarea>
                     {{/product}}
                     {{/if}}
-                    <div class="p-2"></div>
-
                 </div>
                 {{#if (checkurl path "/addproduct")}}
 
                 <div class="container">
-                    <div class="row">
                         <div class="col-md-4"> 
-                          <input type="file" name="image" id="image" onchange="imagePreview(event)" accept="image/*" value="{{image}}"required>
-                          <img src="" id="output">
+                          <div id="drop-area">
+                            <input type="file" class="custom-file-input" id="image" name="image" accept="image/png,image/jpeg,image/jpg,image/gif,image/jfif" onchange="imagePreview(event);" required/> 
+                            <img src="" id="output">
+                          </div>
                         </div>
-                    </div>
                 </div>
                 {{else}}
-                  <div class="container">
                     <div class="row">
                         <div class="col-md-4"> 
                     {{#product}}
-                        <input type="file" name="image" id="image" onload="imagePreview(event)" onchange="imagePreview(event)" accept="image/*" value="{{image}}" required>
-                        <img src="/images/{{image}}" id="output">
+                        <div id="drop-area">
+                            <input type="file" class="custom-file-input" value="{{image}}"
+                            id="image" name="image" accept="image/png,image/jpeg,image/jpg,image/gif,image/jfif" onchange="imagePreview(event);"/> 
+                            <img src="/images/{{image}}" id="output" width="200" height="200">
+                          </div>
                     {{/product}}
                         </div>
                     </div>
-                </div>
                 {{/if}}
-                <div class="p-2"></div>
-
                 <p><input type="submit" value="{{#if (checkurl path "/addproduct")}}Add{{else}}Update{{/if}} product" class="btn btn-success"></p>
-
                 </form>
-                <div class="p-2"></div>
-                <div class="p-2"></div>
-                <div class="p-2"></div>
-
             </div>
       <div class="col-md-10"></div>
     </div>
 </div>
-    <script>
-      var imagePreview = function(event) {
-        var reader = new FileReader();
-        reader.onload = function(){
-          var output = document.getElementById('output');
-          output.src = reader.result;
-        };
-        reader.readAsDataURL(event.target.files[0]);
-      };
-    </script>
+<script>
+  var imagePreview = function(event) {
+    var reader = new FileReader();
+    reader.onload = function(){
+      var output = document.getElementById('output');
+      output.src = reader.result;
+    };
+    reader.readAsDataURL(event.target.files[0]);
+  };
+  let dropArea = document.getElementById('drop-area')
+    dropArea.addEventListener('dragenter', handlerFunction, false)
+    dropArea.addEventListener('dragleave', handlerFunction, false)
+    dropArea.addEventListener('dragover', handlerFunction, false)
+    dropArea.addEventListener('drop', handlerFunction, false)
+</script>
+
+<style>
+  #drop-area {
+  border: 2px dashed #ccc;
+  border-radius: 20px;
+  width: 480px;
+  font-family: sans-serif;
+  margin: 100px auto;
+  padding: 20px;
+  margin-top: 30px;
+  margin-bottom: 30px;
+}
+#drop-area.highlight {
+  border-color: purple;
+}
+
+img{
+  width: 200px;
+  height: 200px;
+}
+</style>
