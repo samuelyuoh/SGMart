@@ -425,6 +425,7 @@ router.get('/listorders', async(req, res) => {
 
 	let totalAmount = 0
     var orders = await Order.findAll({
+		order: [['id', 'desc']],
 		raw: true
 	})
     var cost_of_each_item = await Invoice.findAll({

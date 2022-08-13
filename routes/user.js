@@ -509,6 +509,7 @@ router.get('/orders/:id', ensureAuthenticated, async  (req, res) => {
         })
 
     var orders = await Order.findAndCountAll({
+        order: [['id', 'desc']],
         raw: true,
         where:{userId: req.user.id},
     })
@@ -590,4 +591,10 @@ router.post('/contact', (req, res) => {
   });
 
 });
+
+
+router.get('/about', (req, res) => {
+    res.render('user/about');
+});
+
 module.exports = router;

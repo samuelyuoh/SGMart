@@ -116,6 +116,11 @@ section{
   color:var(--green);
 }
 
+.header-2 .icons .dropdown-item:hover{
+  background:var(--green);
+  color:#fff !important;
+}
+
 #menu-bar{
   font-size: 30px;
   border-radius: 5px;

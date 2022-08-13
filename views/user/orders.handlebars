@@ -1,3 +1,5 @@
+<link rel="stylesheet" href="/css/profile.css">
+
     <div class="container mt-4">
         <div class="row">
             <div class="col-lg-3 my-lg-0 my-md-1">
@@ -5,7 +7,7 @@
                     <div class="h4 text-white">Account</div>
                     <ul>
                         <li class="active">
-                            <a href="#" class="text-decoration-none d-flex align-items-start">
+                            <a href="/" class="text-decoration-none d-flex align-items-start">
                                 <div class="fas fa-box pt-2 me-3"></div>
                                 <div class="d-flex flex-column">
                                     <div class="link">My Order</div>
@@ -14,17 +16,17 @@
                             </a>
                         </li>
                         <li>
-                            <a href="#" class="text-decoration-none d-flex align-items-start">
+                            <a href="/user/profile/{{user.id}}" class="text-decoration-none d-flex align-items-start">
                                 <div class="far fa-user pt-2 me-3"></div>
                                 <div class="d-flex flex-column">
                                     {{!-- <div class="link"><a href="/user/profile"> Profile</a></div> --}}
-                                    <div class="link"> Profile</div>
+                                    <div class="link" href="/user/profile"> Profile</div>
                                     <div class="link-desc">Change your profile details & password</div>
                                 </div>
                             </a>
                         </li>
                         <li>
-                            <a href="#" class="text-decoration-none d-flex align-items-start">
+                            <a href="/user/contact" class="text-decoration-none d-flex align-items-start">
                                 <div class="fas fa-headset pt-2 me-3"></div>
                                 <div class="d-flex flex-column">
                                     <div class="link">Help & Support</div>
@@ -74,7 +76,7 @@
                             <div class="col-lg-4">
                                 <div class="d-flex flex-column justify-content-between order-summary">
                                     <div class="d-flex align-items-center">
-                                        <div class="text-uppercase">Order #{{id}}</div>
+                                        <div class="text-uppercase">Order #00000{{id}}</div>
                                         <div class="blue-label ms-auto text-uppercase">paid</div>
                                     </div>
                                     <div class="fs-8">{{getDateOnly createdAt}}</div>

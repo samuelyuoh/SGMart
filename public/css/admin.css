@@ -37,6 +37,7 @@ body{
     z-index: 100;
     padding:1rem 1.2rem;
     transition: width 500ms;
+    margin-right: 0;
 }
 
 .sidebar-container{

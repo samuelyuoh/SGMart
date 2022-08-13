@@ -92,6 +92,7 @@ main {
   overflow: hidden;
   padding: 1rem 0;
   width: auto;
+  padding-bottom: 175px;
 }
 
 aside {
