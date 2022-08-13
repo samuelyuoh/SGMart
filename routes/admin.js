@@ -14,6 +14,9 @@ const Sequelize = require('sequelize');
 const jwt = require('jsonwebtoken');
 const sgMail = require('@sendgrid/mail');
 const User = require('../models/User');
+const createlogs = require('../helpers/logs');
+const {convertJsonToExcel, getUsers, getStaff} = require('../helpers/excel');
+const fs = require('fs');
 
 function rot13(message) {
     // cypher cus cnt upload actual key
@@ -165,12 +168,13 @@ router.get('/userList', async (req, res) => {
 			sidebarActive: 'users'
 		},
 		user: req.user,
+		list: 'user',
 	}
 
-	User.findAll({
+	await User.findAll({
 		where: {
 			userType: {
-			  [Op.eq]: 'customer'
+			  [Op.or]: ['customer','admin', 'staff', 'madmin']
 			}
 		  },
 		order: Sequelize.col('id'),
@@ -192,12 +196,13 @@ router.get('/staffList', async (req, res) => {
 			sidebarActive: 'cstaff'
 		},
 		user: req.user,
+		list: 'staff',
 	}
 
-	User.findAll({
+	await User.findAll({
 		where: {
 			userType: {
-			  [Op.or]: ['admin', 'staff']
+			  [Op.or]: ['admin', 'staff', 'madmin']
 			}
 		  },
 		raw: true
@@ -212,8 +217,6 @@ router.get('/staffList', async (req, res) => {
 })
 
 router.get('/status/:change/:id', async (req, res) => {
-	// if banned status will change to 1 and must reactivate acc
-
 	change = req.params.change;
 	user = await User.findByPk(req.params.id);
 	if (!user) {
@@ -231,6 +234,7 @@ router.get('/status/:change/:id', async (req, res) => {
 				.then((result) => {
 					console.log('user banned');
 					flashMessage(res, 'success', `User ${req.params.id} has been banned`);
+					createlogs(`Banned user ${req.params.id}`, req.user.id)
 				})
 			}
 			
@@ -246,13 +250,56 @@ router.get('/status/:change/:id', async (req, res) => {
 				.then((result) => {
 					console.log('user unbanned');
 					flashMessage(res, 'success', `User ${req.params.id} has been unbanned`);
+					createlogs(`Unbanned user ${req.params.id}`, req.user.id)
 				})
 			}
 		}
 
 	}
-	res.redirect('/admin');
+	res.redirect('/admin/userlist');
 })
+
+
+
+router.get('/generateexcel/:list', async (req, res) => {
+	list = req.params.list;
+	if (list == 'users') {
+		var data = await getUsers();
+		var sheetName = 'users';
+		var fileName = 'users.xlsx';
+	} else if (list == 'staff') {
+		// sth sth
+		var data = await getStaff();
+		var sheetName = 'staff';
+		var fileName = 'staff.xlsx';
+	} else {
+		flashMessage(res, 'error', 'Invalid Parameter');
+		res.redirect('/admin');
+	}
+	if (list == 'users' || list == 'staff') {
+		res.removeHeader('Content-Type')
+		res.removeHeader("Content-Disposition")
+		convertJsonToExcel(data, sheetName , fileName);
+		file = __dirname + '/../public/excel/' + fileName;
+		res.setHeader("Content-Disposition", `attachment;filename=${fileName}`);
+		res.setHeader('Content-Type', 'application/xlsx');
+		
+
+		setTimeout(() => {
+			res.download(file)
+		}, 500)
+		setTimeout(() => {
+			try {
+				fs.unlinkSync(file)
+				//file removed
+				} catch(err) {
+				console.error(err)
+				}
+		}, 3000)
+	}
+	
+	
+});
 
 router.get('/admincouponcreate', (req, res) => {
 	const metadata = {

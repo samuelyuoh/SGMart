@@ -96,6 +96,13 @@
 					</tbody>
 				</table>
 			</div>
+			<div class="pull-left">
+				{{#if (isStaff list)}}
+					<a href="/admin/generateexcel/staff"><button type="btn" class="btn btn-primary">Download Staff List</button></a>
+				{{else}}
+					<a href="/admin/generateexcel/users"><button type="btn" class="btn btn-primary">Download User List</button></a>
+				{{/if}}
+			</div>
 			<ul class="pagination pull-right">
 				<li><a href="#"><i class="fa fa-chevron-left"></i></a></li>
 				<li><a href="#">1</a></li>

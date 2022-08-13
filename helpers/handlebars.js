@@ -56,6 +56,10 @@ const ifstatus = function(value, cvalue) {
     return (value == cvalue ? true : false)
 }
 
+const iftfa = function(value1, value2) {
+    return ((value1 == 1 || value2 == 1) ? true : false)
+}
+
 const isStaff = function(userType) {
 	return (userType == 'staff' || userType == 'admin' || userType == 'madmin')
 };
@@ -119,4 +123,4 @@ const increment = function(page, totalPages){
 module.exports = {formatDate, replaceCommas, checkboxCheck, radioCheck, ifEquals, 
                 checkdiscount, checkstock,checkurl, ifmoney, ifstatus, isStaff, 
                 isAdmin, isMAdmin, checkWishlist, next, previous, haveNext, havePrevious,
-                calculatePrice, breaklines, increment};
+                calculatePrice, breaklines, increment, iftfa};

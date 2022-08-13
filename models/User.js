@@ -15,5 +15,9 @@ const User = db.define('user',
         status: { type: Sequelize.INTEGER }, //0 active, 1 deactivated, 2 banned
         verified: { type: Sequelize.BOOLEAN },
         tfa: { type: Sequelize.BOOLEAN },
+        gtfa: { type: Sequelize.BOOLEAN },
+        pfp: { type: Sequelize.STRING },
+        otptoken: { type: Sequelize.STRING }, //email otp
+        secret: { type: Sequelize.STRING }, //google authenticator otp
     });
 module.exports = User;

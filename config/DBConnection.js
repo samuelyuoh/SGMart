@@ -11,6 +11,7 @@ const Cart = require('../models/cart');
 const Item = require('../models/item');
 const Wishlist = require('../models/Wishlist');
 const Rating = require('../models/Rating');
+const Logs = require('../models/Logs');
 
 
 
@@ -38,6 +39,7 @@ const setUpDB = (drop) => {
            User.hasMany(Cart);
            Wishlist.belongsTo(User);
            User.hasMany(Wishlist);
+           User.hasMany(Logs);
            Wishlist.belongsTo(Product);
            User.hasMany(Rating)
            Rating.belongsTo(User);
