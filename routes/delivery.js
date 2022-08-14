@@ -8,10 +8,14 @@ const Cart = require('../models/cart');
 const Order = require('../models/order');
 const ensureAuthenticated = require('../helpers/auth');
 const stripe = require("stripe")(process.env.STRIPE_PRIVATE_KEY);
-require('../app.js')
+const Item = require('../models/item');
+const Invoice = require('../models/invoice');
 
-router.get('/', ensureAuthenticated,(req, res) => {
+router.get('/', ensureAuthenticated,async(req, res) => {
 	const title = 'Delivery';
+    let item = await Item.findAll({
+        raw: true,
+    })
     Cart.findAll({
         raw: true,
         include:{
@@ -20,7 +24,7 @@ router.get('/', ensureAuthenticated,(req, res) => {
         }
     })
         .then((carts) => {
-            res.render('delivery/delivery', { carts });
+            res.render('delivery/delivery', { carts, item });
             
         })
         .catch(err => console.log(err));
@@ -80,6 +84,10 @@ router.get('/cancel', (req,res) => {
 })
 
 router.post('/',ensureAuthenticated, async function (req, res) {
+    let name = req.body.name;
+    let email = req.body.email;
+    let address = req.body.address;
+    let phone = req.body.phone;
     // let { delivery_date, delivery_time } = req.body;
     let delivery_date = req.body.fromDate;
     let delivery_time = req.body.time;
@@ -93,11 +101,18 @@ router.post('/',ensureAuthenticated, async function (req, res) {
             console.log(delivery.toJSON());
         })
         .catch(err => console.log(err))
-    Order.create({name, email, address, phone, delivery_date, delivery_time})
+    Order.create({name, email, address, phone, delivery_date, delivery_time, userId})
         .then((order)=> {
-            console.log(order.toJSON());
-            flashMessage(res,'success', 'Successfully Purchased Items')
-            res.redirect('/');
+            orderId = order.id
+            Invoice.update(
+                {orderId: orderId,
+                cartId: null},
+                {where: {cartId: id[0]['id']}}
+        );
+        Item.destroy({where: {cartId: id[0]['id']}});
+        // console.log(orderId)
+        flashMessage(res,'success', 'Successfully Purchased Items')
+        res.render('delivery/delivery_completed');
         })
         .catch(err => console.log(err))
 });

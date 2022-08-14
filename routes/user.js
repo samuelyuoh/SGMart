@@ -19,6 +19,10 @@ const upload = require('../helpers/imageUpload');
 const googlelogin = require('../helpers/googlelogin');
 const speakeasy = require('speakeasy');
 const { stringify } = require('querystring');
+const Order = require('../models/Order');
+const Cart = require('../models/Cart');
+const Item = require('../models/Item');
+const Invoice = require('../models/Invoice');
 // const fetch = require('node-fetch');
 
 const isStaff = function(userType) {
@@ -165,10 +169,10 @@ router.post('/login', async (req, res, next) => {
         const verifyUrl = `https://google.com/recaptcha/api/siteverify?${query}`
         // const body = await fetch(verifyUrl).then(res => res.json())
 
-        if (body.success !== undefined && !body.success) {
-                flashMessage(res, 'error', 'Recaptcha verification failed. Please try again');
-                res.redirect('/user/login');
-        } else {  
+        // if (body.success !== undefined && !body.success) {
+        //         flashMessage(res, 'error', 'Recaptcha verification failed. Please try again');
+        //         res.redirect('/user/login');
+        // } else {  
             user = await User.findOne({where :{email: email}});
             valid = user.tfa ? user.tfa : false; 
             valid1 = user.gtfa ? user.gtfa : false;
@@ -236,7 +240,7 @@ router.post('/login', async (req, res, next) => {
                     failureFlash: true
                 })(req, res, next);
             }
-        }
+        // }
     }
 });
 
@@ -872,6 +876,56 @@ router.get('/viewWishlist', async(req, res) => {
     }
     )
     res.render('user/viewWishlist', {wishlist})
+})
+
+router.get('/orders/:id', ensureAuthenticated, async  (req, res) => {
+    let totalAmount = 0
+    User.findByPk(req.params.id)
+        .then((user) => {
+            if (!user) {
+                flashMessage(res, 'error', 'User not found');
+                // res.redirect('/user/login');
+                return;
+            }
+            if (req.user.id != req.params.id) {
+                flashMessage(res, 'error', 'Unauthorised access');
+                // res.redirect('/');
+                return;
+            }
+        })
+
+    var orders = await Order.findAndCountAll({
+        raw: true,
+        where:{userId: req.user.id},
+    })
+    var cart = await Cart.findAll({
+        raw: true,
+        where:{userId: req.user.id},
+    })
+    var items = await Item.findAndCountAll({
+        where: {cartId: cart[0]['id']}
+    })
+            // var invoice = Invoice.findAll({where: {orderId: orders[0]['id']}})
+    res.render('user/orders', {orders:orders.rows, order_count:orders.count, cart: items.count})
+    
+});
+
+router.get('/orderDetail/:id', ensureAuthenticated, async(req, res) => {
+    let totalAmount = 0
+    var orders = await Order.findByPk(req.params.id)
+    var cost_of_each_item = await Invoice.findAll({
+        where: {orderId: orders['id']},
+        attributes: [
+            'totalCost',
+        ],
+        raw: true
+    })
+    var items = await Invoice.findAll({where: {orderId: orders['id']},raw:true})
+
+    for(var a in cost_of_each_item){
+        totalAmount += parseFloat(cost_of_each_item[a]['totalCost'])
+    }
+    res.render('user/orderdetail', {orders: orders, item: items, totalAmount: totalAmount})
 })
 
 module.exports = router;

@@ -119,8 +119,10 @@ const increment = function(page, totalPages){
     }
     return list_of_pages
 }
-
+const getDateOnly = function(date){
+    return require('moment')(date).format('DD-MM-YYYY');
+}
 module.exports = {formatDate, replaceCommas, checkboxCheck, radioCheck, ifEquals, 
                 checkdiscount, checkstock,checkurl, ifmoney, ifstatus, isStaff, 
                 isAdmin, isMAdmin, checkWishlist, next, previous, haveNext, havePrevious,
-                calculatePrice, breaklines, increment, iftfa};
+                calculatePrice, breaklines, increment, iftfa, getDateOnly};

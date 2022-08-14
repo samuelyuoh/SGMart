@@ -12,6 +12,9 @@ const Item = require('../models/item');
 const Wishlist = require('../models/Wishlist');
 const Rating = require('../models/Rating');
 const Logs = require('../models/Logs');
+const Order = require('../models/Order');
+const Invoice = require('../models/Invoice');
+const { OPEN_READWRITE } = require('sqlite3');
 
 
 
@@ -32,11 +35,7 @@ const setUpDB = (drop) => {
            Category.hasMany(Product);
            User.hasMany(Cart)
            Cart.belongsTo(User, {foreignKey:{allowNull: true}});
-           Cart.hasMany(Item);
-           Item.belongsTo(Cart);
-           Item.belongsTo(Product);
            Cart.belongsTo(Product);
-           User.hasMany(Cart);
            Wishlist.belongsTo(User);
            User.hasMany(Wishlist);
            User.hasMany(Logs);
@@ -46,6 +45,15 @@ const setUpDB = (drop) => {
            Product.hasMany(Rating);
            Rating.belongsTo(Product);
            User.hasMany(Delivery);
+           Cart.hasMany(Item);
+           Item.belongsTo(Cart);
+            Item.belongsTo(Product);
+            Invoice.belongsTo(Order);
+            Invoice.belongsTo(Cart);
+            Order.hasMany(Invoice);
+            Order.belongsTo(User);
+            User.hasMany(Order);
+            Invoice.belongsTo(Product)
             mySQLDB.sync({
                 force: drop
             });
