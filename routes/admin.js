@@ -99,6 +99,7 @@ router.post('/createStaffAcc', ensureAuthenticated, async (req, res) => {
 		sendEmail(message)
 			.then(response => {
 				flashMessage(res, 'success','registered link sent to '+email+' successfully');
+				createlogs("registered staff account", req.user.id)
 				res.redirect('/admin/stafflist');
 			})
 			.catch(err => {
@@ -110,6 +111,7 @@ router.post('/createStaffAcc', ensureAuthenticated, async (req, res) => {
 			{userType: 'staff'},
 			{where: {email: email}}
 		).then((result) => {
+			createlogs("Updated to  staff account", req.user.id)
 			flashMessage(res, 'success', 'Account updated to staff account');
 			res.redirect('/admin/stafflist')
 		})
@@ -277,6 +279,7 @@ router.get('/generateexcel/:list', async (req, res) => {
 
 		setTimeout(() => {
 			res.download(file)
+			createlogs(`downloaded ${list} excel file`, req.params.id)
 		}, 500)
 		setTimeout(() => {
 			try {
@@ -425,6 +428,7 @@ router.get('/addproduct',async (req, res) => {
 router.post('/addproduct',async function (req, res) {	
 	let { product_name, product_price, discount, stock, desc, image, brandId, categoryId, cost } = req.body;
 	try{
+		createlogs(`${product_name} created`, req.user.id)
 		let product = await Product.create({product_name, product_price, discount, stock, desc, image, brandId, categoryId, cost});
 		flashMessage(res, 'success', 'Product created successfully.');
 		res.redirect('/admin/inventory')
@@ -485,6 +489,7 @@ router.post('/updateproduct/:id', async function(req, res) {
 			{
 				where: { id: req.params.id}
 			})
+			createlogs(`${product_name}'s information updated`, req.user.id)
 			flashMessage(res, 'success', 'Product updated successfully.')
 			res.redirect('/admin/inventory')
 	}
@@ -501,6 +506,7 @@ router.post('/updatestock/:id', async (req, res) =>{
 			{where: {id: req.params.id}}
 	)
 	.catch(err => console.log(err));
+	createlogs(`${product.product_name}'s stock updated`, req.user.id)
 	flashMessage(res, 'success', 'Stock added successfully.')
 	res.redirect('/admin/inventory')
 })
@@ -509,6 +515,7 @@ router.get('/deleteproduct/:id', async function(req, res){
 	try{
 		let product = await Product.findByPk(req.params.id)
 		let result = await Product.destroy({where: { id: product.id}})
+		createlogs(`Product ${req.params.id} deleted`, req.user.id)
 		console.log(result +' product deleted')
 		res.redirect('/')
 	}catch(err){
@@ -527,6 +534,7 @@ router.post('/admincouponcreate', (req, res) => {
 	}
 	redeemedquantity = 0;
 	Coupon.create({ couponName, percentageDiscount, expiryDate, couponQuantity, userid, pointstoattain, redeemedquantity });
+	createlogs(`Coupon ${couponName} created`, req.user.id)
 	flashMessage(res, 'success', couponName + ' has been created successfully');
 
 	res.render('admin/admincouponcreate', metadata)
@@ -563,6 +571,7 @@ router.post('/admincouponedit/:id', (req, res) => {
         { where: { id: req.params.id } }
     )
         .then((result) => {
+			createlogs(`Coupon ${couponName} edited`, req.user.id)
             console.log(result[0] + ' coupon updated');
             res.redirect('/admin/admincouponlist');
         })
@@ -605,6 +614,7 @@ router.post('/admincoupondelete/:id', async function (req, res) {
 		}
 
 		let result = await Coupon.destroy({ where: { couponName: coupon.couponName } }); //change to delete from id
+		createlogs(`Coupon ${coupon.couponName} deleted`, req.user.id)
 		flashMessage(res, 'success',result + ' coupon deleted');
 		res.redirect('/admin/admincouponlist');
 	}
