@@ -19,7 +19,7 @@ const upload = require('../helpers/imageUpload');
 const googlelogin = require('../helpers/googlelogin');
 const speakeasy = require('speakeasy');
 const { stringify } = require('querystring');
-const fetch = require('node-fetch');
+// const fetch = require('node-fetch');
 
 const isStaff = function(userType) {
 	return (userType == 'staff' || userType == 'admin' || userType == 'madmin')
@@ -163,7 +163,7 @@ router.post('/login', async (req, res, next) => {
             remoteip: req.connection.remoteAddress
         })
         const verifyUrl = `https://google.com/recaptcha/api/siteverify?${query}`
-        const body = await fetch(verifyUrl).then(res => res.json())
+        // const body = await fetch(verifyUrl).then(res => res.json())
 
         if (body.success !== undefined && !body.success) {
                 flashMessage(res, 'error', 'Recaptcha verification failed. Please try again');
