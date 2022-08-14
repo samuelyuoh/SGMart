@@ -1,5 +1,6 @@
 const Handlebars = require('handlebars');
 const moment = require('moment');
+const { DATEONLY } = require('sequelize');
 const formatDate = function (date, targetFormat) {
     return moment(date).format(targetFormat);
 };
