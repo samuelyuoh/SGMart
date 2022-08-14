@@ -18,7 +18,7 @@
                     </div>
                     <div class="analytic-info">
                         <h4>Total Orders</h4>
-                        <h3 id="orderstat"></h3>
+                        <h3 id="order"></h3>
                     </div>
                 </div>
                 <div class="analytic">
@@ -100,6 +100,17 @@
             $('#users').append(' <small class="text-success" id="usersstat"></small>');
           }
           $('#usersstat').text((temp).toString() + '%');
+
+          $('#order').text(data.orders.all.toString())
+          temp = ((data.orders.l30-data.users.l60)/data.orders.l60*100)
+          if (temp < 0) {
+            $('#order').append(' <small class="text-danger" id="orderstat"></small>');
+            temp = temp * (-1)
+          } else {
+            $('#order').append(' <small class="text-success" id="orderstat"></small>');
+          }
+          $('#orderstat').text((temp).toString() + '%');
+
           graphinfo = data.graph
           for(let key in graphinfo) {
             a.push(graphinfo[key])
