@@ -1,7 +1,7 @@
 <link rel="stylesheet" href="/css/product.css">
 
 <div class="container" style="padding-top: 50px;">
-  <div class="bg-white rounded d-flex align-items-center justify-content-between" id="header"> <button class="btn btn-hide text-uppercase" type="button" data-bs-toggle="collapse" data-bs-target="#filterbar" aria-expanded="false" aria-controls="filterbar" id="filter-btn" onclick="changeBtnTxt()"> <span class="fas fa-angle-left" id="filter-angle"></span> <span id="btn-txt">Hide filters</span> </button>
+  <div class="bg-white rounded d-flex align-items-center justify-content-between" id="header"> <button class="btn btn-hide text-uppercase" type="button" data-bs-toggle="collapse" data-bs-target="#filterbar" aria-expanded="false" aria-controls="filterbar" id="filter-btn"> <span class="fas fa-angle-left" id="filter-angle"></span> <span id="btn-txt">Hide filters</span> </button>
     <nav class="navbar navbar-expand-lg navbar-light ps-lg-0 ps-auto"> <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mynav" aria-controls="mynav" aria-expanded="false" aria-label="Toggle navigation" onclick="chnageIcon()" id="icon"> <span class="navbar-toggler-icon"></span> </button>
       <div class="collapse navbar-collapse" id="mynav">
         <ul class="navbar-nav d-lg-flex align-items-lg-center">
@@ -18,18 +18,22 @@
       </div>
     </nav>
   </div>
+  <form>
   <div id="content" class="my-5">
     <div id="filterbar" class="collapse">
      <div class="box border-bottom">
         <div class="form-group text-center">
-          <div class="btn-group" data-toggle="buttons"> <label class="btn btn-success form-check-label"> <input class="form-check-input" type="radio"> Reset </label> <label class="btn btn-success form-check-label active"> <input class="form-check-input" type="radio" checked> Apply </label> </div>
+          <div class="btn-group" data-toggle="buttons"> 
+            <label class="btn btn-success form-check-label"> <input class="form-check-input" type="radio"> Reset </label> 
+            <label class="btn btn-success form-check-label active"> <input class="form-check-input" type="radio" checked onclick="submitFilter(this)" id="apply"> Apply </label> 
+          </div>
         </div>
       </div>
       <div class="box border-bottom">
-        <div class="box-label text-uppercase d-flex align-items-center">Categories <button class="btn ms-auto" type="button" data-bs-toggle="collapse" data-bs-target="#inner-box" aria-expanded="false" aria-controls="inner-box" id="out" onclick="outerFilter()"> <span class="fas fa-plus"></span> </button> </div>
+        <div class="box-label text-uppercase d-flex align-items-center">Categories <button class="btn ms-auto" type="button" data-bs-toggle="collapse" data-bs-target="#inner-box" aria-expanded="false" aria-controls="inner-box" id="out"> <span class="fas fa-plus"></span> </button> </div>
         <div id="inner-box" class="collapse mt-2 me-1">
           {{#each category}}
-          <div class="my-1"> <label class="tick">{{category_name}}<input type="checkbox"> <span class="check"></span> </label> </div>
+          <div class="my-1"> <label class="tick">{{category_name}}<input type="checkbox" id="category" value="{{category_name}}" class="" onclick="settingFilter(this)"> <span class="check"></span> </label> </div>
           {{/each}}
         </div>
       </div>
@@ -38,7 +42,7 @@
         <div class="box-label text-uppercase d-flex align-items-center">Brands <button class="btn ms-auto" type="button" data-bs-toggle="collapse" data-bs-target="#inner-box2" aria-expanded="false" aria-controls="inner-box2"><span class="fas fa-plus"></span></button> </div>
         <div id="inner-box2" class="collapse mt-2 me-1">
           {{#each brands}}
-          <div class="my-1"> <label class="tick">{{brand_name}}<input type="checkbox"> <span class="check"></span> </label> </div>
+          <div class="my-1"> <label class="tick">{{brand_name}}<input type="checkbox"id="brand" value="{{brand_name}}"> <span class="check"></span> </label> </div>
           {{/each}}
         </div>
       </div>
@@ -77,6 +81,33 @@
 <div class="col text-center">
 </div>
 <script>
+var page = 0;
+var working = false;
+var search = getParameterByName('search');
+var category = getParameterByName('category');
+if(search == null){
+    search =""
+}
+    function settingFilter(element){
+     if(element.id == 'brand'){
+      element.classList.add('brand-active')
+     }else if(element.id == 'category'){
+      element.classList.add('category-active')
+     }
+    }
+
+    function submitFilter(element){
+      query_category = ""
+      $(".category-active").each(function(){
+        query_category+=$(this).val() + '|';
+      })
+        loadProducts()
+        location.replace("/product/products?category="+query_category)
+
+        /*var search = document.getElementById("apply")*/
+        /*location.replace("/product/products?category="+query_category)*/
+    }
+
     function submitForm(element){
         var id = element.value;
         $.ajax({
@@ -238,12 +269,6 @@ document.addEventListener("DOMContentLoaded", function () {
     thumbRight.classList.remove("active");
   });
 });
-var page = 0;
-var working = false;
-var search = getParameterByName('search');
-if(search == null){
-    search =""
-}
 checkWishlist = function(id, wishlist){
     if(id == wishlist){
         return true;
@@ -263,7 +288,7 @@ function loadProducts() {
 
         $.ajax({
             type: "GET",
-            url: "/product/nextpage?search="+search+"&page="+page,
+            url: "/product/nextpage?search="+search+"&page="+page+"&category="+category,
             processData: false,
             contentType: "application/json",
             data: '',

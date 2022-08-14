@@ -16,10 +16,17 @@ router.get('/products', async (req, res) => {
 	var brands = await Brand.findAll({raw:true});
 	var category = await Category.findAll({raw:true});
 	const pageAsNumber = Number.parseInt(req.query.page)
+	let categoryAsFilter = req.query.category
 	var search = req.query.search
 	if(search == undefined){
-		search = ""
+		search =""
 	}
+	if(categoryAsFilter == undefined){
+		categoryAsFilter = ""
+	}
+	categoryAsFilter = categoryAsFilter.split('|')
+	categoryAsFilter = await Category.findAll({where: {category_name:{[op.like]: '%'+categoryAsFilter}}, attributes: [['id', 'categoryId']], raw:true})
+	
 	let page = 0
 	if(!Number.isNaN(pageAsNumber) && pageAsNumber >= 0) {
 		page = pageAsNumber;
@@ -68,7 +75,8 @@ router.get('/products', async (req, res) => {
 			where: {
 				product_name: {
 					[op.like]: '%'+	search +'%'
-				}
+				},
+				[op.or]:{categoryId: categoryAsFilter}
 			},
 			raw: true
 		})
@@ -117,7 +125,15 @@ router.post('/removewishlist', async (req, res) => {
 router.get('/nextpage', async (req, res) => {
 	var brands = await Brand.findAll({raw:true});
 	var category = await Category.findAll({raw:true});
+	let categoryAsFilter = req.query.category
 	var search = req.query.search
+	if(categoryAsFilter == undefined){
+		categoryAsFilter = ""
+	}
+	categoryAsFilter = categoryAsFilter.split('|')
+	categoryAsFilter.pop(-1)
+	categoryAsFilter = await Category.findAll({where: {category_name:{[op.like]: '%'+categoryAsFilter}}, attributes: [['id', 'categoryId']], raw:true})
+	// console.log(categoryAsFilter)
 	if(search == undefined){
 		search = ""
 	}
@@ -148,7 +164,7 @@ router.get('/nextpage', async (req, res) => {
 			where: {
 				product_name: {
 					[op.like]: '%'+	search +'%'
-				}
+				},
 			},
 				raw: true
 			})
@@ -176,7 +192,8 @@ router.get('/nextpage', async (req, res) => {
 		where: {
 			product_name: {
 				[op.like]: '%'+	search +'%'
-			}
+			},
+			[op.or]:categoryAsFilter
 		},
 			raw: true
 		})
