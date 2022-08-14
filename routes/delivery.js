@@ -2,79 +2,105 @@ const express = require('express');
 const router = express.Router();
 const flashMessage = require('../helpers/messenger');
 const Delivery = require('../models/Delivery')
+const moment = require('moment');
+const Product = require('../models/Product');
+const Cart = require('../models/cart');
+const Order = require('../models/order');
+const ensureAuthenticated = require('../helpers/auth');
+const stripe = require("stripe")(process.env.STRIPE_PRIVATE_KEY);
+require('../app.js')
 
-// router.get('/', (req, res) => {
-// 	const title = 'Delivery';
-// 	// renders views/index.handlebars, passing title as an object
-
-// 	const metadata = {
-// 		layout: 'admin',
-// 		nav: {
-// 			sidebarActive: 'dashboard'
-// 		}
-// 	}
-// 	res.render('delivery/delivery', metadata)
-// });
-
-// module.exports = router;
-
-router.get('/', (req, res) => {
+router.get('/', ensureAuthenticated,(req, res) => {
 	const title = 'Delivery';
-	// renders views/index.handlebars, passing title as an object
-	res.render('delivery/delivery', { title: title })
+    Cart.findAll({
+        raw: true,
+        include:{
+            model: Product,
+            required:false
+        }
+    })
+        .then((carts) => {
+            res.render('delivery/delivery', { carts });
+            
+        })
+        .catch(err => console.log(err));
 });
 
 
-router.post('/', async function (req, res) {
+
+// Stripe
+
+const items = [
+	{id:1, quantity:3},
+    {id:2, quantity:1}
+];
+
+const storeItems = new Map([
+	[1, {priceInCents: 10000, name: "10 Dolla"}],
+	[2, {priceInCents: 20000, name: "20 Dolla"}],
+])
+
+router.post("/create-checkout-session", async (req, res) => {
+    console.log('start checkout')
+	try {
+		const session = await stripe.checkout.sessions.create({
+			payment_method_types: ['card'],
+			mode: 'payment',
+			line_items:items.map(item => {
+				const storeItem = storeItems.get(item.id)
+				return {
+					price_data: {
+						currency: 'sgd',
+						product_data: {
+							name: storeItem.name
+						},
+						unit_amount: storeItem.priceInCents
+					},
+					quantity: item.quantity
+				}
+			}),
+			success_url: `${process.env.SERVER_URL}/delivery/success/`,
+			cancel_url: `${process.env.SERVER_URL}/delivery/cancel/`
+		})
+        global.location = session.url
+        res.redirect(session.url)
+		console.log('redirect to stripe')
+	}catch (e) {
+		console.error('error')
+		res.status(500).json({ error:e.message })
+	}
+})
+
+router.get("/success", (req,res) => {
+	res.render('delivery/success')
+})
+
+router.get('/cancel', (req,res) => {
+	res.render('delivery/cancel')
+})
+
+router.post('/',ensureAuthenticated, async function (req, res) {
     // let { delivery_date, delivery_time } = req.body;
     let delivery_date = req.body.fromDate;
     let delivery_time = req.body.time;
-    Delivery.create({delivery_date, delivery_time})
+    let delivery_address = req.body.address;
+    let delivery_city = req.body.city;
+    let delivery_state = req.body.state;
+    let delivery_zip = req.body.zip;
+    let userId = req.user.id
+    Delivery.create({delivery_date, delivery_time,delivery_address, delivery_city, delivery_state, delivery_zip, userId})
         .then((delivery)=> {
             console.log(delivery.toJSON());
+        })
+        .catch(err => console.log(err))
+    Order.create({name, email, address, phone, delivery_date, delivery_time})
+        .then((order)=> {
+            console.log(order.toJSON());
             flashMessage(res,'success', 'Successfully Purchased Items')
             res.redirect('/');
         })
         .catch(err => console.log(err))
-    // let isValid = true;
-    // if (password.length < 6) {
-    //     flashMessage(res, 'error', 'Password must be at least 6 characters');
-    //     isValid = false;
-    // }
-    // if (password != password2) {
-    //     flashMessage(res, 'error', 'Passwords do not match');
-    //     isValid = false;
-    // }
-    // if (!isValid) {
-    //     res.render('user/register', {
-    //         name, email
-    //     });
-    //     return;
-    // }
-    
-    // try {
-    //     // If all is well, checks if user is already registered
-    //     let user = await User.findOne({ where: { email: email } });
-    //     if (user) {
-    //         // If user is found, that means email has already been registered
-    //         flashMessage(res, 'error', email + ' alreay registered');
-    //         res.render('user/register', {
-    //             name, email
-    //         });
-    //     }
-    //     else {
-    //         // Create new user record 
-    //         var salt = bcrypt.genSaltSync(10);
-    //         var hash = bcrypt.hashSync(password, salt);
-    //         // Use hashed password
-    //         let user = await User.create({ name, email, password: hash });
-    //         flashMessage(res, 'success', email + ' registered successfully');
-            // res.render('delivery/delivery_completed');
-    //     }
-    // }
-    // catch (err) {
-    //     console.log(err);
-    // }
 });
+
 
 module.exports = router

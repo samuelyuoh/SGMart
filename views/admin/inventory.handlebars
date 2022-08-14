@@ -15,8 +15,9 @@
             <th>Edit</th>
             <th>Delete</th>
         </thead>
-        <tbody>
+        <tbody class="tbody" id="tbody">
           {{#product}}
+          <div class="product">
           <tr>
             <td>{{id}}</td>
             <td> 
@@ -60,29 +61,103 @@
 
           </tr>
 
-<div class="modal" id="myModal_{{id}}">
-      <div class="modal-dialog">
-        <div class="modal-content">
+        <div class="modal" id="myModal_{{id}}">
+              <div class="modal-dialog">
+                <div class="modal-content">
 
-          <!-- Modal Header -->
-          <div class="modal-header">
-            <h4 class="modal-title">Delete Confirmation</h4>
-            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-          </div>
+                  <!-- Modal Header -->
+                  <div class="modal-header">
+                    <h4 class="modal-title">Delete Confirmation</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                  </div>
 
-          <!-- Modal body -->
-          <div class="modal-body">
-            Are you sure you want to delete {{product_name}}?
-          </div>
+                  <!-- Modal body -->
+                  <div class="modal-body">
+                    Are you sure you want to delete {{product_name}}?
+                  </div>
 
-          <!-- Modal footer -->
-          <div class="modal-footer">
-            <input type="submit" value="Delete" class="btn btn-danger">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-          </div>
+                  <!-- Modal footer -->
+                  <div class="modal-footer">
+                    <input type="submit" value="Delete" class="btn btn-danger">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                  </div>
 
-        </div>
+                </div>
+              </div>
+            </div>
+      </form>
       </div>
-    </div>
-</form>
 {{/product}}
+      </tbody>
+      </table>
+      </div>
+<div class="w-100 text-center pagination">
+  {{#if (havePrevious currentPage totalPages)}}
+  <button href="{{previous}}">&laquo;</a>
+  {{else}}
+  <button href="{{previous}}" disabled>&laquo;</button>
+  {{/if}}
+  {{#each (increment 0 totalPages)}}
+    <button value="{{this}}" onclick="getPage(this)" id="{{this}}">{{next this}}</button>
+  {{/each}}
+  {{#if (haveNext currentPage totalPages)}}
+  <button href="{{previous}}">&raquo;</button>
+  {{else}}
+  <button href="{{previous}}" disabled>&raquo;</button>
+  {{/if}}
+
+</div>
+      </div>
+      </div>
+
+<style>
+.pagination {
+  display: inline-block;
+}
+
+.pagination button {
+  color: black;
+  padding: 8px 16px;
+  text-decoration: none;
+}
+
+.pagination button.active {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.pagination button {
+  padding: 8px 16px;
+  text-decoration: none;
+}
+
+.pagination button:hover:not(.active) {background-color: #ddd;}
+</style>
+<script>
+  function getPage(element){
+    page = element.value
+    $.ajax({
+      type: 'GET',
+      url: '/admin/inventory?page='+page,
+      success: function(data){
+        location.replace('/admin/inventory?page='+page);
+      }
+    })
+  }
+  function getParameterByName(name, url = window.location.href) {
+    name = name.replace(/[\[\]]/g, '\\$&');
+    var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
+        results = regex.exec(url);
+    if (!results) return null;
+    if (!results[2]) return '';
+    return decodeURIComponent(results[2].replace(/\+/g, ' '));
+}
+var page = getParameterByName('page');
+if(page == null){
+    page = 0
+}
+window.addEventListener('load', setActive)
+  function setActive(){
+    document.getElementById(page).classList.add('active')
+  }
+</script>  

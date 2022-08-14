@@ -30,7 +30,7 @@ const ifmoney = function(amountSpent) {
 // });
 
 const checkdiscount = function(discount){
-    if (discount > 0) {
+    if ((discount) > 0) {
         return true;
     }else{
         return false;
@@ -100,6 +100,27 @@ const haveNext = function(currentPage, totalPages){
     }else{return true}
 }
 
+const calculatePrice = function(price, discount){
+    return parseFloat(parseFloat(price) * ((100-parseFloat(discount))/100)).toFixed(2)
+}
+
+const breaklines = function(text){
+    text = Handlebars.Utils.escapeExpression(text);
+    text =  text.replace(/(\r\n|\n|\r)/gm, '<br>');
+    return new Handlebars.SafeString(text);
+}
+const increment = function(page, totalPages){
+    list_of_pages = []
+    if(page < totalPages){
+        while(page < totalPages){
+            list_of_pages.push(page)
+            page += 1
+        }
+    }
+    return list_of_pages
+}
+
 module.exports = {formatDate, replaceCommas, checkboxCheck, radioCheck, ifEquals, 
                 checkdiscount, checkstock,checkurl, ifmoney, ifstatus, isStaff, 
-                isAdmin, isMAdmin, checkWishlist, next, previous, haveNext, havePrevious, iftfa};
+                isAdmin, isMAdmin, checkWishlist, next, previous, haveNext, havePrevious,
+                calculatePrice, breaklines, increment, iftfa};

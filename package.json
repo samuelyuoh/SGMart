@@ -9,8 +9,13 @@
   "dependencies": {
     "@handlebars/allow-prototype-access": "^1.0.5",
     "@sendgrid/mail": "^7.7.0",
+    "authenticator": "^1.1.5",
+    "axios": "^0.27.2",
     "bcryptjs": "^2.4.3",
+    "biskviit": "^2.0.0",
+    "body-parser": "^1.20.0",
     "bootstrap-show-modal": "^3.0.4",
+    "chrome": "^0.1.0",
     "connect-flash": "^0.1.1",
     "cookie-parser": "^1.4.6",
     "dotenv": "^16.0.1",
@@ -20,6 +25,7 @@
     "express-mysql-session": "^2.1.8",
     "express-paginate": "^1.0.2",
     "express-session": "^1.15.6",
+    "extension": "^0.2.2",
     "fetch": "^1.1.0",
     "flash-messenger": "^1.1.1",
     "handlebars": "^4.7.7",
@@ -33,12 +39,14 @@
     "passport": "^0.5.3",
     "passport-google-oauth": "^2.0.0",
     "passport-local": "^1.0.0",
+    "querystring": "^0.2.1",
     "request": "^2.88.2",
     "sequelize": "^6.21.0",
     "speakeasy": "^2.0.0",
     "sqlite3": "^5.0.8",
     "sweetalert2": "^11.4.24",
     "uuid": "^8.3.2",
-    "xlsx": "^0.18.5"
+    "xlsx": "^0.18.5",
+    "stripe": "^9.16.0"
   }
 }

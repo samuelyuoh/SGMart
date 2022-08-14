@@ -240,14 +240,8 @@ router.post('/login', async (req, res, next) => {
     }
 });
 
-router.get('/logout', (req, res) => {
-    req.logout();
-    flashMessage(res, 'success', 'Logged Out.')
-    res.redirect('/');
-});
-
-router.get('/logout1', (req, res) => {
-    req.logout();
+router.get('/logout', (req, res,next) => {
+    req.logout(next);
     res.redirect('/');
 });
 
@@ -571,8 +565,8 @@ router.post('/upload', ensureAuthenticated, (req, res) => {
     if (!fs.existsSync('./public/uploads/' + req.user.id)) {
         fs.mkdirSync('./public/uploads/' + req.user.id, { recursive: true });
     }
-
     upload(req, res, (err) => {
+        // console.log(req.file)
         if (err) {
             // e.g. File too large
             res.json({ err: err });
@@ -788,7 +782,7 @@ router.post('/changepassword/:id', async (req,res) => {
     }
 });
 
-router.get('/check_delivery', (req, res) => {
+router.get('/check_delivery', ensureAuthenticated, (req, res) => {
     const metadata = {
         // layout: 'user',
         // nav: {
@@ -796,11 +790,11 @@ router.get('/check_delivery', (req, res) => {
         // }
     }
     Delivery.findAll({
+        where: {userId : req.user.id},
         order: [['id']],
         raw: true
     })
         .then((delivery) => {
-            // pass object to admincouponlist.handlebars
             metadata.delivery = delivery
             res.render('user/check_delivery', metadata);
         })
@@ -809,7 +803,6 @@ router.get('/check_delivery', (req, res) => {
 
 router.get('/deleteDelivery/:id', ensureAuthenticated, async function(req, res) {
     try {
-        console.log("hi")
         let delivery = await Delivery.findByPk(req.params.id);
         // if (!video) {
         //     flashMessage(res, 'error', 'Delivery Time Slot not found');
@@ -833,7 +826,6 @@ router.get('/deleteDelivery/:id', ensureAuthenticated, async function(req, res) 
 
 router.get('/editDelivery/:id', ensureAuthenticated, async function(req, res) {
     try {
-        console.log("fak u")
         let delivery = await Delivery.findByPk(req.params.id);
         // if (!video) {
         //     flashMessage(res, 'error', 'Delivery Time Slot not found');

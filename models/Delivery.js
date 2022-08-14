@@ -13,6 +13,10 @@ const Delivery = db.define('delivery',
         // category_id: { type: Sequelize.INTEGER },
         // image: { type: Sequelize.STRING }
         delivery_date: {type: Sequelize.DATE},
-        delivery_time: {type: Sequelize.STRING}
+        delivery_time: {type: Sequelize.STRING},
+        delivery_address : {type: Sequelize.STRING},
+        delivery_city : {type: Sequelize.STRING},
+        delivery_state : {type: Sequelize.STRING},
+        delivery_zip : {type: Sequelize.STRING}
     });
 module.exports = Delivery;

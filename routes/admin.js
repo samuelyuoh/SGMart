@@ -10,13 +10,13 @@ const { Op } = require('sequelize');
 const ensureAuthenticated = require('../helpers/auth');
 const bcrypt = require('bcryptjs');
 const Sequelize = require('sequelize');
-
 const jwt = require('jsonwebtoken');
 const sgMail = require('@sendgrid/mail');
 const User = require('../models/User');
 const createlogs = require('../helpers/logs');
 const {convertJsonToExcel, getUsers, getStaff} = require('../helpers/excel');
 const fs = require('fs');
+const upload = require('../helpers/productUpload');
 
 function rot13(message) {
     // cypher cus cnt upload actual key
@@ -313,7 +313,43 @@ router.get('/admincouponcreate', (req, res) => {
 	});
 
 router.get('/inventory', async (req, res) => {
-	Product.findAll({
+	const pageAsNumber = Number.parseInt(req.query.page)
+	let page = 0
+	if(!Number.isNaN(pageAsNumber) && pageAsNumber >= 0) {
+		page = pageAsNumber;
+	}
+	Product.findAndCountAll({
+		limit:8,
+		offset: page*8,
+		include: [{
+			model: Brand,
+		},
+		{
+			model: Category,
+		}
+	],
+		raw: true
+	})
+		.then((product) => {
+			res.render('admin/inventory', {
+				product: product.rows,
+				totalPages: Math.ceil(product.count/8),
+				currentPage: page,
+				layout: 'admin', 
+				nav: { sidebarActive: 'product' }
+			})
+	})
+	.catch(err => console.log(err));
+})
+router.get('/getPage', async (req, res) => {
+	const pageAsNumber = Number.parseInt(req.query.page)
+	let page = 0
+	if(!Number.isNaN(pageAsNumber) && pageAsNumber >= 0) {
+		page = pageAsNumber;
+	}
+	Product.findAndCountAll({
+		limit:2,
+		offset: page*2,
 		include: [{
 			model: Brand,
 			required: true,
@@ -326,10 +362,17 @@ router.get('/inventory', async (req, res) => {
 		raw: true
 	})
 		.then((product) => {
-			res.render('admin/inventory', {product: product, layout: 'admin', nav: { sidebarActive: 'product' }})
+			res.send({
+				product: product.rows,
+				totalPages: Math.ceil(product.count/2),
+				currentPage: page,
+				layout: 'admin', 
+				nav: { sidebarActive: 'product' }
+			})
 	})
 	.catch(err => console.log(err));
 })
+
 
 router.get('/addproduct',async (req, res) => {
 	var brand = await Brand.findAll({raw: true})
@@ -338,16 +381,43 @@ router.get('/addproduct',async (req, res) => {
 	res.render('admin/addproducts', { brands: brand , category: category , layout: 'admin', nav: { sidebarActive: 'addproduct' },path })
 });
 router.post('/addproduct',async function (req, res) {	
-	let { product_name, product_price, discount, stock, desc, image, brandId, categoryId } = req.body;
+	let { product_name, product_price, discount, stock, desc, image, brandId, categoryId, cost } = req.body;
 	try{
-		let product = await Product.create({product_name, product_price, discount, stock, desc, image, brandId, categoryId});
+		let product = await Product.create({product_name, product_price, discount, stock, desc, image, brandId, categoryId, cost});
 		flashMessage(res, 'success', 'Product created successfully.');
-		res.redirect('/')
+		res.redirect('/admin/inventory')
 	}
 	catch(err){
 		console.log(err)
 	}
+	
+})
 
+router.post('/upload', ensureAuthenticated, (req, res) => {
+    // Creates user id directory for upload if not exist
+    if (!fs.existsSync('./public/images/')) {
+        fs.mkdirSync('./public/images/', { recursive: true });
+    }
+    upload(req, res, (err) => {
+		console.log(req.file)
+        // console.log(req.file)
+        if (err) {
+            // e.g. File too large
+            res.json({ err: err });
+        }
+        else if (req.file == undefined) {
+            res.json({});
+        }
+        else {
+            res.json({ file: `/images/${req.file.originalname}` });
+        }
+    });
+});
+router.post('uploadsubmit', (req,res)=>{
+	let image = req.body
+	if (!fs.existsSync('./public/images/')){
+		fs.mkdirSync('./public/images/', {recursive: true})
+	}
 })
 
 router.get('/updateproduct/:id', async (req, res) => {
@@ -361,6 +431,10 @@ router.get('/updateproduct/:id', async (req, res) => {
 
 router.post('/updateproduct/:id', async function(req, res) {
 	let { product_name, product_price, discount, stock, desc, image, brandId, categoryId } = req.body;
+	product = await Product.findByPk(req.params.id)
+	if(image == ''){
+		image = product.image
+	}
 	try{
 		Product.update(
 			{
@@ -370,7 +444,7 @@ router.post('/updateproduct/:id', async function(req, res) {
 				where: { id: req.params.id}
 			})
 			flashMessage(res, 'success', 'Product updated successfully.')
-			res.redirect('/')
+			res.redirect('/admin/inventory')
 	}
 	catch(err){
 		console.log(err);
