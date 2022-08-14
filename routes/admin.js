@@ -16,7 +16,6 @@ const Sequelize = require('sequelize');
 const jwt = require('jsonwebtoken');
 const sgMail = require('@sendgrid/mail');
 const User = require('../models/User');
-const Order = require('../models/Order');
 const createlogs = require('../helpers/logs');
 const {convertJsonToExcel, getUsers, getStaff} = require('../helpers/excel');
 const fs = require('fs');

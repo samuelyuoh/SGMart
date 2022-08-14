@@ -115,7 +115,6 @@ const blogRoute = require('./routes/blog');
 const couponRoute = require('./routes/coupon');
 
 const { application, response } = require('express');
-const couponRoute = require('./routes/coupon');
 const { request } = require('http');
 const flashMessage = require('./helpers/messenger');
 
@@ -174,9 +173,6 @@ const storeItems = new Map([
 // Starts the server and listen to port
 app.listen(port, () => {
 	console.log(`Server started on port ${port}`);
-<<<<<<< HEAD
-});
-=======
 });
 
 app.post('/signup', (req, res) => {
