@@ -19,7 +19,7 @@
 				{{/if}}
 			</div>
 			<div class="table-responsive">
-				<table class="table user-list" cellspacing="0" cellpadding="0">
+				<table class="table user-list" cellspacing="0" cellpadding="0" id="myTable" data-paging='false'>
 					<thead>
 						<tr>
 							<th><span>ID</span></th>
@@ -149,6 +149,11 @@
 	</div>
 </div>
 </div>
+<script>
+	$(document).ready( function () {
+		$('#myTable').DataTable();
+	} );
+</script>
 <style>
 
 body{margin-top:20px;}
