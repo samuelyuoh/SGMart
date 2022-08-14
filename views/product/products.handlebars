@@ -278,6 +278,19 @@ function loadProducts() {
             contentType: "application/json",
             data: '',
             success: function(data){
+              if(data['product'].length == 0 && page == 0){
+                      $(".products").append(`<div class="py-6 py-lg-12">
+        <div class="container">
+            <div class="row">
+                <div class="offset-lg-3 col-lg-6 col-md-12 col-12 text-center">
+                    <img src="https://hmp.me/dw7n"alt="" class="img-fluid mb-4" style="height: 400px; padding-top: 75px;" />
+                    <h3>The product you are looking for does <span style="color: #27ae60; font-weight:bold;"> not exist</span></h3>
+                    <a href="/product/products" class="btn btn-outline-light" style="background:var(--green); ">Explore Products</a>
+                </div>
+            </div>
+        </div>
+    </div>`)
+                  }else{
                 for(var a in data['product']){
                     id = data['product'][a]['id']
                     price = data['product'][a]['product_price']
@@ -285,7 +298,6 @@ function loadProducts() {
                     stock = data['product'][a]['stock']
                     desc = data['product'][a]['desc']
                     desc = desc.replace(/(\r\n|\n|\r)/gm, '<br>')
-                    console.log(data['wishlist'].length)
                     
                     if(discount > 0){
                         price_info = `<p class = "product-price">$`+price+`</p>
@@ -301,16 +313,20 @@ function loadProducts() {
                                       </div>`
                         modal_discount = ""
                     }
-                    if(typeof(data['wishlist']) == 'undefined' || data['wishlist'].length == 0){
+                    if(typeof(data['wishlist']) == 'undefined'){
                         wishlist = `<button value=`+id+` class="btn btn-sm bx bx-bookmark" onclick="submitForm(this)" style="font-size:2rem; float:right!important"></button>`
                     }else {
-                      for(var check in data['wishlist']){
-                          if(checkWishlist(id, data['wishlist'][check]['productId'])== true){
-                            wishlist = `<button value=`+id+` class="btn btn-sm bx bx-bookmark bxs-bookmark" onclick="submitForm(this)" style="font-size:2rem; float:right!important"></button>`
-                          }else{
-                            wishlist = `<button value=`+id+` class="btn btn-sm bx bx-bookmark" onclick="submitForm(this)" style="font-size:2rem; float:right!important"></button>`
+                      if(data['wishlist'].length == 0){
+                        wishlist = `<button value=`+id+` class="btn btn-sm bx bx-bookmark" onclick="submitForm(this)" style="font-size:2rem; float:right!important"></button>`
+                      }else{
+                        for(var check in data['wishlist']){
+                            if(checkWishlist(id, data['wishlist'][check]['productId'])== true){
+                              wishlist = `<button value=`+id+` class="btn btn-sm bx bx-bookmark bxs-bookmark" onclick="submitForm(this)" style="font-size:2rem; float:right!important"></button>`
+                            }else{
+                              wishlist = `<button value=`+id+` class="btn btn-sm bx bx-bookmark" onclick="submitForm(this)" style="font-size:2rem; float:right!important"></button>`
+                            }
                           }
-                        }
+                      }
                     }
                     if(stock>0){
                         modal_stock = `<div class="stock-status"></div>
@@ -384,10 +400,12 @@ function loadProducts() {
                       </div>
                     </div>
                                         `
-                    image_id = "<div class='product-img'><a href='"+ modal_id+"' data-bs-toggle='modal'>"+image+"</a></div>"                                                                                                                                                                                                     
-                    $(".product-items").append(`<div class='product'><div class="product-content">`+image_id+`<div class = "product-btns">`+btns+modal+form+`</div></div>`+productInfo+`</div>`)
-                    /*$('body').append(modal)*/
+                      image_id = "<div class='product-img'><a href='"+ modal_id+"' data-bs-toggle='modal'>"+image+"</a></div>"                                                                                                                                                                                                     
+                      $(".product-items").append(`<div class='product'><div class="product-content">`+image_id+`<div class = "product-btns">`+btns+modal+form+`</div></div>`+productInfo+`</div>`)
+                      /*$('body').append(modal)*/
+
                 }
+                                          }
                 page += 1
                 setTimeout(function(){
                     working = false;
