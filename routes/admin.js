@@ -2,14 +2,11 @@ const { raw } = require('express');
 const express = require('express');
 const router = express.Router();
 const flashMessage = require('../helpers/messenger');
-const Brand = require('../models/Brand');
 const Category = require('../models/Category');
 const Product = require('../models/Product');
 const Coupon = require('../models/Coupon');
 const moment = require('moment');
 const Brand = require('../models/Brand');
-const Category = require('../models/Category');
-const Product = require('../models/Product');
 const Order = require('../models/Order');
 const Invoice = require('../models/Invoice');
 
@@ -438,7 +435,7 @@ router.get('/addproduct',async (req, res) => {
 	var brand = await Brand.findAll({raw: true})
 	var category = await Category.findAll({raw: true})
 	var path = req.path
-	res.render('admin/addproducts', { brands: brand , category: category , layout: 'admin', nav: { sidebarActive: 'addproduct' },path })
+	res.render('admin/addproducts', { brands: brand , category: category , layout: 'admin',path })
 });
 router.post('/addproduct',async function (req, res) {	
 	let { product_name, product_price, discount, stock, desc, image, brandId, categoryId, cost } = req.body;
