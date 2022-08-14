@@ -1,119 +1,109 @@
-
-
-{{!-- <body onload="autoclick()">
-<a type="button" id="url" class="btn btn-success" href="{{url_for('Forbidden')}}"></a>
-<script>
-  function autoclick(){
-    document.getElementById("url").click();
-  }
-</script>
-</body> --}}
-
 <body>
-<div class="box">
-  <aside>
-    <div class="above">
-
-      <a class="logo" href=""><i class="fas fa-shopping-basket"></i>SGMart Admin</a>
-      <div class="ham" id="no-btn">
-        <span class="material-icons-sharp">close</span>
+<input type="checkbox" id="sidebar-toggle">
+  <div class="sidebar">
+    <div class="sidebar-container">
+      <div class="sidebar-header">
+        <h3 class="brand">
+              <span class="fas fa-shopping-basket" style="color:#27ae60"></span>
+              <span>SGMart Admin</span>
+        </h3>
+        <label for="sidebar-toggle" class="las la-bars"></label>
       </div>
-    </div>
-
-    <div class="sidenav">
-      <a href="" class={{ifEquals nav.sidebarActive 'dashboard'}}>
-        <span class="material-icons-sharp">grid_view</span>
-        <h3>Dashboard</h3>
-      </a>
-      <a href="" class={{ifEquals nav.sidebarActive 'orders'}}>
-        <span class="material-icons-sharp">receipt_long</span>        
-        <h3>Orders</h3>
-      </a>
-      <a href="" class={{ifEquals nav.sidebarActive 'logs'}}>
-        <span class="material-icons-sharp">supervisor_account</span>
-        <h3>Logs</h3>
-      </a>
-      <a href="" class={{ifEquals nav.sidebarActive 'product'}}>
-        <span class="material-icons-sharp">inventory</span>
-        <h3>Products</h3>
-      </a>
-      <a href="" class={{ifEquals nav.sidebarActive 'brand'}}>
-        <span class="material-icons-sharp">style</span>
-        <h3>Brands</h3>
-      </a>
-      <a href="" class={{ifEquals nav.sidebarActive 'cat'}}>
-        <span class="material-icons-sharp">category</span>
-        <h3>Categories</h3>
-      </a>
-      <a href="/blog/listBlogs" class={{ifEquals nav.sidebarActive 'blog'}}>
-        <span class="material-icons-sharp">newspaper</span>
-        <h3>Blogs</h3>
-      </a>       
-
-      <a href="/admin/admincouponlist" class={{ifEquals nav.sidebarActive 'cat'}}>
-        <span class="material-icons-sharp">local_offer</span>
-        <h3>Coupons</h3>
-      </a>
-      <a href="" class={{ifEquals nav.sidebarActive 'addproduct'}}>
-        <span class="material-icons-sharp">add</span>
-        <h3>Add Product</h3>
-      </a>
-      <a href="" class={{ifEquals nav.sidebarActive 'addbrand'}}>
-        <span class="material-icons-sharp">add</span>
-        <h3>Add Brand</h3>
-      </a>
-      <a href="" class={{ifEquals nav.sidebarActive 'addcat'}}>
-        <span class="material-icons-sharp">add</span>
-        <h3>Add Category</h3>
-      </a>
-      <a href="/blog/addBlog" class={{ifEquals nav.sidebarActive 'addblog'}} style="text-decoration: none;">
-        <span class="material-icons-sharp">add</span>
-        <h3>Add blogs</h3>
-      </a>
-      <a href="" class={{ifEquals nav.sidebarActive 'discount'}} style="text-decoration: none;">
-        <span class="material-icons-sharp">add</span>
-        <h3>Create Discount</h3>
-      </a>
-
-      <a href="/admin/admincouponcreate"  class={{ifEquals nav.sidebarActive 'coupon'}} style="text-decoration: none;">
-        <span class="material-icons-sharp">add</span>
-        <h3>Create Coupon</h3>
-      </a>
-
-      <a href="" class={{ifEquals nav.sidebarActive 'logout'}}>
-        <span class="material-icons-sharp">logout</span>
-        <h3>Logout</h3>
-      </a>
-    </div>
-  </aside>
-
-
-
-  <main>
-    
-  </main>
-  
- 
-</div>
-
-<div class="top">
-    <div class="up">
-      <button id="ham-btn">
-        <span class="material-icons-sharp">menu</span>
-      </button>
-      <div class="dark">
-        <span class="material-icons-sharp active">light_mode</span>
-        <span class="material-icons-sharp">dark_mode</span>
-      </div>
-      <div class="acc">
-        <div class="details">
-          
-          <p>Hey, <b>someone</b></p>
-          <small class="gray">Admin</small>
+        <div class="sidebar-menu">
+            <ul>
+              <li>
+                <a href="/admin" class="active">
+                  <span class="las la-chart-bar"></span>
+                  <span>Dashboard</span>
+                </a>
+              </li>
+              <li>
+                <a href="/admin/listorders">
+                  <span class="las la-receipt"></span>
+                  <span>Orders</span>
+                </a>
+              </li>
+              <li>
+                <a href="">
+                  <span class="las la-users"></span>
+                  <span>Logs</span>
+                </a>
+              </li>
+              <li>
+                <a href="">
+                  <span class="las la-apple-alt"></span>
+                  <span>Products</span>
+                </a>
+              </li>
+              <li>
+                <a href="">
+                  <span class="las la-thumbtack"></span>
+                  <span>Brands</span>
+                </a>
+              </li>
+              <li>
+                <a href="">
+                  <span class="las la-balance-scale"></span>
+                  <span>Categories</span>
+                </a>
+              </li>
+              <li>
+                <a href="/admin/admincouponlist">
+                  <span class="las la-tag"></span>
+                  <span>Coupons</span>
+                </a>
+              </li>
+              <li>
+                <a href="/blog/listBlogs">
+                  <span class="lab la-blogger-b"></span>
+                  <span>Blogs</span>
+                </a>
+              </li>
+              <li>
+                <a href="">
+                  <span class="las la-plus-square"></span>
+                  <span>Add Product</span>
+                </a>
+              </li>
+              <li>
+                <a href="">
+                  <span class="las la-plus-square"></span>
+                  <span>Add Brand</span>
+                </a>
+              </li>
+              <li>
+                <a href="">
+                  <span class="las la-plus-square"></span>
+                  <span>Add Category</span>
+                </a>
+              </li>
+              <li>
+                <a href="/blog/addBlog">
+                  <span class="las la-plus-square"></span>
+                  <span>Add Blogs</span>
+                </a>
+              </li>
+              <li>
+                <a href="/admin/admincouponcreate">
+                  <span class="las la-plus-square"></span>
+                  <span>Create Coupons</span>
+                </a>
+              </li>
+              <li>
+                <a href="/admin/createStaffAcc">
+                  <span class="las la-user-plus"></span>
+                  <span>Create Staff</span>
+                </a>
+              </li>
+              <li>
+                <a href="">
+                  <span class="las la-power-off"></span>
+                  <span>Logout</span>
+                </a>
+              </li>
+            </ul>
         </div>
-        <div class="pfp">
-          <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBwgHBgkIBwgKCgkLDRYPDQwMDRsUFRAWIB0iIiAdHx8kKDQsJCYxJx8fLT0tMTU3Ojo6Iys/RD84QzQ5OjcBCgoKDQwNGg8PGjclHyU3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3N//AABEIAIAAgAMBIgACEQEDEQH/xAAbAAEAAwEBAQEAAAAAAAAAAAAAAwQFAQIHBv/EADQQAAICAAMECAQFBQAAAAAAAAECAAMEETEFIUFREhMiMlJhcYEzQmKSFBVDU8EjkaHR4f/EABQBAQAAAAAAAAAAAAAAAAAAAAD/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwD7jERARPLsEUsxyA1MzcTjmclaT0V8XEwL12Jqp3M2beEaylZtB2P9NQo5nfKUQJGxFz961vY5TwSTqc/WciABI0OR8pKmIuTSxvcyKIFyvaLr8RQw5jcZdpxVV25WybkdZjR6QP0ETLw2OZMlt7S8+ImmrKyhlOYOhEDsREBPLsEUsxyA1M9TL2hiOk5qU9ldfMwIsViWvfkg0H+5BEQEREBET0tbt3UYjyEDzE9NW672RgPMGeYCIiAk+FxJw7c0OokEQN9WDKGU5gzsy9n4go/VMey2nkZqQIcXb1NJYancPWYsu7TsztVOCjMylAREQElw9DXtku4DU8p4rQ2OEXUnKbVNS1VhFG4f5gR04Sqod0M3MyxEQB3yvdhKrflCt4lliIGJfh3obJhu4EcZFNy6pbqyjjcePKYtiGt2RhvBygeYiICbOEu66kNxG4+sxpd2ZZlayHRhnArYluniLD9Rkc6TmSec5AREQLuy687Hc8BkPeaco7K7lnrL0BERAREQEzNqJlYrj5hkZpyjtXuV+pgZsREBJMM3QxFZ+oSOdU5MDyMDhGRI4iJLiV6GIsH1EyKAiIgXdmWBbWQ/MN3tNOYCMUcMuoOYm1h7lurDKfUcjAliIgIiICZm07OlaqD5RL2IuWiss2vAczMV2LuWY5knOByIiAnVGbAczOSXDL08RWPqBgWNp15Wq40YZH1lKbOMq66hlHe1ExoCIiAklNz0t0kO/iOcjAzOQ1kgouP6T/aYGlTjqrAA56Deen95ZDBhmpBHlMTqLv2n+0x1F37Vn2mBtlgozYgDzlW7HVV5hD028tJnGi461P8AaY/D3ftP9pgLrnufpOf+SOSGi4fpP9pkZ3HI7jAREQEu7MrztazgoyHrKU2cJT1NAU94729YE8y9oYfoP1qjstrlwM1JxlDKVYZg6iBgS3hMGbQHszVeA4mctw4w16mwFqc9x/gzURlZQVOYOkDldSVjJFAHlPcRAREQEREBPFlSWjJ1De09xAycXgzT20318eYlWb1hVUJfIKBvzmXThhiLm6vMU56n+IHrZ+H6b9Y47K6eZmpOKoRQqjIDQTsBERA8uqupVhmDqDKTU3YVi9HbTihl+IFejF1W7s+i3hMsSC7DVW72XteIayHqcVT8G0OvJ4F2JT/FXp8XDN6rH5hWO8jj2gXIlP8AMKz3Uc+0fir3+Fhm9WMC5K9+Krp3E5t4RIupxV3xbAi+FJNRhaqd6r2vEdYEAptxTBr+xWN4QS6qhFCqMgOE7EBERA//2Q==" style="width: 2.799rem; height: 2.799rem; overflow: hidden;">
-        </div>
-      </div>
     </div>
-  </div> 
+  </div>
+
+</body>

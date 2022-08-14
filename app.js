@@ -10,6 +10,8 @@ const cookieParser = require('cookie-parser');
 const session = require('express-session');
 const path = require('path');
 const bodyParser = require('body-parser');
+const fetch = (...args) =>
+  import('node-fetch').then(({ default: fetch }) => fetch(...args));
 require('dotenv').config();
 
 /*
@@ -38,7 +40,7 @@ app.set('view engine', 'handlebars');
 
 // Express middleware to parse HTTP body in order to read HTTP data
 app.use(express.urlencoded({
-	extended: false
+	extended: true
 }));
 app.use(express.json());
 
@@ -65,7 +67,7 @@ var options = {
 // To store session information. By default it is stored as a cookie on browser
 app.use(session({
 	key: 'vidjot_session',
-	secret: 'tojdiv',
+	secret: process.env.APP_SECRET,
 	store: new MySQLStore(options),
 	resave: false,
 	saveUninitialized: false,
@@ -74,7 +76,7 @@ app.use(session({
 // Bring in database connection
 const DBConnection = require('./config/DBConnection');
 // Connects to MySQL database
-DBConnection.setUpDB(false); // To set up database with new tables
+DBConnection.setUpDB(process.env.DB_RESET == 1); // To set up database with new tables
 
 // Messaging libraries
 const flash = require('connect-flash');
@@ -98,6 +100,9 @@ app.use(function (req, res, next) {
 	res.locals.user = req.user || null;
 	next();
 });
+app.use(bodyParser.urlencoded({extended: false}));
+app.use(bodyParser.json())
+
 
 // mainRoute is declared to point to routes/main.js
 const mainRoute = require('./routes/main');
@@ -109,7 +114,9 @@ const cartRoute = require('./routes/cart');
 const blogRoute = require('./routes/blog');
 const couponRoute = require('./routes/coupon');
 
-const { application } = require('express');
+const { application, response } = require('express');
+const { request } = require('http');
+const flashMessage = require('./helpers/messenger');
 
 // Any URL with the pattern ‘/*’ is directed to routes/main.js
 app.use('/', mainRoute);
@@ -124,7 +131,7 @@ app.use('/coupon', couponRoute);
 * Creates a port for express server since we don't want our app to clash with well known
 * ports such as 80 or 8080.
 * */
-const port = 5000;
+const port = process.env.PORT;
 
 // Stripe Setup
 const stripe = require("stripe")(process.env.STRIPE_PRIVATE_KEY)
@@ -167,3 +174,39 @@ const storeItems = new Map([
 app.listen(port, () => {
 	console.log(`Server started on port ${port}`);
 });
+
+app.post('/signup', (req, res) => {
+	const { email } = req.body;
+
+	if (!email) {
+		console.log('fail')
+		return;
+	}
+
+	const data = {
+		members: [
+		  {
+			email_address: email,
+			status: 'subscribed',
+		  }
+		]
+	};
+
+	const postData = JSON.stringify(data);
+
+
+	fetch('https://us8.api.mailchimp.com/3.0/lists/647d66c570', {
+		method: 'POST',
+		headers: {
+		  Authorization: 'auth df35f2b0e89b55385582cc9db74a34ae-us8'
+		},
+		body: postData
+	})
+
+	.then(res.statusCode === 200 ?
+		res.redirect('/') :
+		console.log('fail'))
+	.catch(err => console.log(err))
+	
+});
+

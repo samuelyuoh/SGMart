@@ -1,2 +1,154 @@
-<h1>hello</h1>
-<p>how</p>
+<main>
+        <section>
+            <h3 class="section-head">Overview</h3>
+            <div class="analytics">
+                <div class="analytic">
+                    <div class="analytic-icon">
+                        <span class="las la-eye"></span>
+                    </div>
+                    <div class="analytic-info">
+                        <h4 style="">Total Users</h4>
+                        <h3 id="users"></h3>
+                    </div>
+                </div>
+                <div class="analytic">
+                    <div class="analytic-icon">
+                        <span class="las la-clock"></span>
+                    </div>
+                    <div class="analytic-info">
+                        <h4>Total Orders</h4>
+                        <h3 id="order"></h3>
+                    </div>
+                </div>
+                <div class="analytic">
+                    <div class="analytic-icon">
+                        <span class="las la-users"></span>
+                    </div>
+                    <div class="analytic-info">
+                        <h4>Total Revenue</h4>
+                        <h3>1.3K <small class="text-success">5%</small></h3>
+                    </div>
+                </div>
+                <div class="analytic">
+                    <div class="analytic-icon">
+                        <span class="las la-heart"></span>
+                    </div>
+                    <div class="analytic-info">
+                        <h4>Total Expenses</h4>
+                        <h3>3.4K</h4>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    <section>
+        <div class="block-grid">
+            <div class="revenue-card">
+                <h3 class="section-head">Total Revenue</h3>
+                <div class="rev-content">
+                    <img src="https://cdn.iconscout.com/icon/free/png-256/avatar-372-456324.png"alt="">
+                    <div class="rev-info">
+                        <h3>{{user.name}}</h3>
+                        <h4>{{user.email}}</h4>
+                    </div>
+                    <div class="rev-sum">
+                        <h4>Joined At</h4>
+                        <h6 style="font-size: 10.72px;">{{user.createdAt}}</h4>
+                    </div>
+                </div>
+            </div>
+            <div class="graph-card">
+                <h3 class="section-head">Graph</h3>
+                <div class="graph-content">
+                    <div class="graph-head">
+                        <div class="icons-wrapper">
+                            <div class="icon">
+                                <span class="las la-eye text-main"></span>
+                            </div>
+                            <div class="icon">
+                                <span class="las la-clock text-success"></span>
+                            </div>
+                        </div>
+                        <div class="graph-select">
+                            <select name="" id="">
+                                <option value="">This Month</option>
+                                <option value="">This Week</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="graph-board">
+                        <canvas id="revenueChart" width="100%" height="51px"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    </main>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.bundle.js"></script>
+<script>
+    a = []
+    $( document ).ready(function() {
+      setTimeout(() => {
+        $.getJSON('/admin/dashboardinfo', function (data) {
+          $('#users').text(data.users.all.toString())
+          temp = ((data.users.l30-data.users.l60)/data.users.l60*100)
+          if (temp < 0) {
+            $('#users').append(' <small class="text-danger" id="usersstat"></small>');
+            temp = temp * (-1)
+          } else {
+            $('#users').append(' <small class="text-success" id="usersstat"></small>');
+          }
+          $('#usersstat').text((temp).toString() + '%');
+
+          $('#order').text(data.orders.all.toString())
+          temp = ((data.orders.l30-data.users.l60)/data.orders.l60*100)
+          if (temp < 0) {
+            $('#order').append(' <small class="text-danger" id="orderstat"></small>');
+            temp = temp * (-1)
+          } else {
+            $('#order').append(' <small class="text-success" id="orderstat"></small>');
+          }
+          $('#orderstat').text((temp).toString() + '%');
+
+          graphinfo = data.graph
+          for(let key in graphinfo) {
+            a.push(graphinfo[key])
+          }
+        })
+      },500),
+      setTimeout(()=> {
+        Chart.defaults.global.defaultFontFamily = "Poppins";
+        let ctx = document.querySelector("#revenueChart");
+
+        let revChart=new Chart(ctx, {
+            type:"line",
+            data:{
+                labels:["Sept1","Sept3","Sept6","Sept9","Sept 12","Sept 15", "Sept 18","Sept 21","Sept 24","Sept 27","Sept 30"],
+                datasets:[
+                    {
+                        label:"Profits",
+                        borderColor:"#396aff",
+                        borderWidth:"3",
+                        backgroundColor:"rgba(233,238,253,0.7)",
+                        data:a
+                    }
+                ]
+            },
+            options:{
+                responsive: true,
+                tooltips: {
+                    intersect: false,
+                    node: "index"
+                }
+            }
+        });
+      },1000)
+    });
+    
+</script>
+
+<style>
+    header {
+        background-color: white;
+    }
+</style>

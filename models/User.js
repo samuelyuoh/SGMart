@@ -10,6 +10,16 @@ const User = db.define('user',
         address: { type: Sequelize.STRING },
         address2: { type: Sequelize.STRING },
         postalCode: { type: Sequelize.INTEGER },
-        amountSpent: { type: Sequelize.INTEGER }
+        amountSpent: { type: Sequelize.INTEGER },
+        userType: { type: Sequelize.STRING }, //admin, staff, customer
+        status: { type: Sequelize.INTEGER }, //0 active, 1 deactivated, 2 banned
+        verified: { type: Sequelize.BOOLEAN },
+        tfa: { type: Sequelize.BOOLEAN },
+        gtfa: { type: Sequelize.BOOLEAN },
+        pfp: { type: Sequelize.STRING },
+        otptoken: { type: Sequelize.STRING }, //email otp
+        secret: { type: Sequelize.STRING },
+        Points:{ type: Sequelize.INTEGER },
+        //google authenticator otp
     });
 module.exports = User;

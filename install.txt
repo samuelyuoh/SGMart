@@ -1,0 +1,3 @@
+npm i express cookie-parser dotenv ejs
+npm install otp-generator --save.
+npm i handlebars-paginate

@@ -1,0 +1,243 @@
+<div class="container">
+    <div class="main-body">
+        <div class="row gutters-sm"  style="margin-top: 2.5%">
+            <div class="col-md-4 mb-3">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex flex-column align-items-center text-center">
+                            <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBwgHBgkIBwgKCgkLDRYPDQwMDRsUFRAWIB0iIiAdHx8kKDQsJCYxJx8fLT0tMTU3Ojo6Iys/RD84QzQ5OjcBCgoKDQwNGg8PGjclHyU3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3N//AABEIAIAAgAMBIgACEQEDEQH/xAAbAAEAAwEBAQEAAAAAAAAAAAAAAwQFAQIHBv/EADQQAAICAAMECAQFBQAAAAAAAAECAAMEETEFIUFREhMiMlJhcYEzQmKSFBVDU8EjkaHR4f/EABQBAQAAAAAAAAAAAAAAAAAAAAD/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwD7jERARPLsEUsxyA1MzcTjmclaT0V8XEwL12Jqp3M2beEaylZtB2P9NQo5nfKUQJGxFz961vY5TwSTqc/WciABI0OR8pKmIuTSxvcyKIFyvaLr8RQw5jcZdpxVV25WybkdZjR6QP0ETLw2OZMlt7S8+ImmrKyhlOYOhEDsREBPLsEUsxyA1M9TL2hiOk5qU9ldfMwIsViWvfkg0H+5BEQEREBET0tbt3UYjyEDzE9NW672RgPMGeYCIiAk+FxJw7c0OokEQN9WDKGU5gzsy9n4go/VMey2nkZqQIcXb1NJYancPWYsu7TsztVOCjMylAREQElw9DXtku4DU8p4rQ2OEXUnKbVNS1VhFG4f5gR04Sqod0M3MyxEQB3yvdhKrflCt4lliIGJfh3obJhu4EcZFNy6pbqyjjcePKYtiGt2RhvBygeYiICbOEu66kNxG4+sxpd2ZZlayHRhnArYluniLD9Rkc6TmSec5AREQLuy687Hc8BkPeaco7K7lnrL0BERAREQEzNqJlYrj5hkZpyjtXuV+pgZsREBJMM3QxFZ+oSOdU5MDyMDhGRI4iJLiV6GIsH1EyKAiIgXdmWBbWQ/MN3tNOYCMUcMuoOYm1h7lurDKfUcjAliIgIiICZm07OlaqD5RL2IuWiss2vAczMV2LuWY5knOByIiAnVGbAczOSXDL08RWPqBgWNp15Wq40YZH1lKbOMq66hlHe1ExoCIiAklNz0t0kO/iOcjAzOQ1kgouP6T/aYGlTjqrAA56Deen95ZDBhmpBHlMTqLv2n+0x1F37Vn2mBtlgozYgDzlW7HVV5hD028tJnGi461P8AaY/D3ftP9pgLrnufpOf+SOSGi4fpP9pkZ3HI7jAREQEu7MrztazgoyHrKU2cJT1NAU94729YE8y9oYfoP1qjstrlwM1JxlDKVYZg6iBgS3hMGbQHszVeA4mctw4w16mwFqc9x/gzURlZQVOYOkDldSVjJFAHlPcRAREQEREBPFlSWjJ1De09xAycXgzT20318eYlWb1hVUJfIKBvzmXThhiLm6vMU56n+IHrZ+H6b9Y47K6eZmpOKoRQqjIDQTsBERA8uqupVhmDqDKTU3YVi9HbTihl+IFejF1W7s+i3hMsSC7DVW72XteIayHqcVT8G0OvJ4F2JT/FXp8XDN6rH5hWO8jj2gXIlP8AMKz3Uc+0fir3+Fhm9WMC5K9+Krp3E5t4RIupxV3xbAi+FJNRhaqd6r2vEdYEAptxTBr+xWN4QS6qhFCqMgOE7EBERA//2Q==" class="rounded-circle" width="150">
+                            <div class="mt-3">
+                                <h4>{{user.name}}</h4>
+                                <span class="text-black-50">Date Created: {{formatDate user.createdAt 'DD MMM YYYY'}}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="profile-nav col-md-3 w-100">
+                        <div class="panel">
+                            <ul class="nav nav-pills nav-stacked">
+                                <li><a href="/user/profile/{{user.id}}"> <i class="fa fa-user"></i> Account Overview</a></li>
+                                <li><a href="/user/editprofile/{{user.id}}"><i class="fa fa-edit"></i> Edit information</a></li>
+                                <li class="active"><a href="/user/viewrewards/{{user.id}}"><i class="fas fa-award"></i> View Rewards</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-8">
+                <div class="card mb-3">
+                    <div class="container rounded bg-white mt-5 mb-5">
+                        <div class="row">
+                            <div class=" border-right">
+                                <div class="p-3 py-5">
+                                    <div class="d-flex justify-content-between align-items-center mb-3">
+                                        <h4 class="text-right">Points Owned: {{user.Points}} <br> Owned Coupons: <br></h4>
+                                    </div>
+                                    <div class="container">
+                                        {{#if usercouponinfos}}
+                                            <div class="card card-body ">
+                                                {{#each usercouponinfos}}
+                                                <div class="card border-primary mb-2 w-100 mx-auto heado">
+                                                    <div class="card-body">
+                                                        <div class="row">
+                                                            <div class="col-sm-12 col-md-12 col-lg-4">
+                                                                <p class="font-italic">Coupon Name</p>
+                                                                <p class="text-info">
+                                                                    {{couponName}}
+                                                                </p>
+                                                            </div>
+                                                            <div class="col-sm-12 col-md-12 col-lg-4">
+                                                                <p class="font-italic">Percentage Discount</p>
+                                                                <p class="text-info">
+                                                                    {{percentageDiscount}}%
+                                                                </p>
+                                                            </div>
+                                                            <div class="col-sm-12 col-md-12 col-lg-4">
+                                                                <p class="font-italic">Expiry Date</p>
+                                                                <p class="text-info">{{formatDate expiryDate 'YYYY-MM-DD'}}</p>
+                                                            </div>
+                                                        </div>
+                                                </div>                                     
+                                            </div>
+                                            {{/each}}
+                                        </div>
+                                        {{/if}}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {{!-- <div class="col-sm-6 mb-3">
+                  <div class="card h-100">
+                    <div class="card-body">
+                      <small>Web Design</small>
+                      <div class="progress mb-3" style="height: 5px">
+                        <div class="progress-bar bg-primary" role="progressbar" style="width: 80%" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100"></div>
+                      </div>
+                    </div>
+                  </div>
+                </div> --}}
+              </div>
+            </div>
+          </div>
+        </div>
+    </div>
+
+<style>
+  body {
+    background: #EEEEEE;
+}
+
+.form-control:focus {
+    box-shadow: none;
+    border-color: #BA68C8;
+}
+
+.profile-button {
+    background: rgb(99, 39, 120);
+    box-shadow: none;
+    border: none
+}
+.profile-button:hover {
+    background: #682773
+}
+
+.profile-button:focus {
+    background: #682773;
+    box-shadow: none
+}
+
+.profile-button:active {
+    background: #682773;
+    box-shadow: none
+}
+
+.back:hover {
+    color: #682773;
+    cursor: pointer
+}
+.labels {
+    font-size: 12px;
+}
+
+.add-experience:hover {
+    background: #BA68C8;
+    color: #fff;
+    cursor: pointer;
+    border: solid 1px #BA68C8
+}
+</style>
+
+
+
+<style>
+    body{
+    color: #1a202c;
+    text-align: left;
+    background-color: #eeeeee;    
+}
+.col-md-3 {
+}
+.main-body {
+    padding: 15px;
+}
+.card {
+    box-shadow: 0 1px 3px 0 rgba(0,0,0,.1), 0 1px 2px 0 rgba(0,0,0,.06);
+}
+
+.card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    word-wrap: break-word;
+    background-color: white !important;
+    background-clip: border-box;
+    border: 0 solid rgba(0,0,0,.125);
+    border-radius: .25rem;
+}
+
+.card-body {
+    flex: 1 1 auto;
+    min-height: 1px;
+    padding: 1rem;
+}
+
+.gutters-sm {
+    margin-right: -8px;
+    margin-left: -8px;
+}
+
+.gutters-sm>.col, .gutters-sm>[class*=col-] {
+    padding-right: 8px;
+    padding-left: 8px;
+}
+.mb-3, .my-3 {
+    margin-bottom: 1rem!important;
+}
+
+.bg-gray-300 {
+    background-color: #e2e8f0;
+}
+.h-100 {
+    height: 100%!important;
+}
+.shadow-none {
+    box-shadow: none!important;
+}
+
+.profile-nav .user-heading h1 {
+    font-size: 22px;
+    font-weight: 300;
+    margin-bottom: 5px;
+}
+
+.profile-nav .user-heading p {
+    font-size: 12px;
+}
+.profile-nav ul {
+    margin-top: 1px;
+}
+
+.profile-nav ul > li {
+    border-bottom: 1px solid #ebeae6;
+    margin-top: 0;
+    line-height: 30px;
+    width: 100% !important;
+}
+.profile-nav ul > li:last-child {
+    border-bottom: none;
+}
+
+.profile-nav ul > li > a {
+    border-radius: 0;
+    -webkit-border-radius: 0;
+    color: #89817f;
+    border-left: 5px solid #fff;
+    position: relative;
+    display: block;
+    padding: 10px 15px;
+    width: 100%;
+    background-color: #fff;
+    text-decoration: none;
+}
+
+.profile-nav ul > li > a:hover, .profile-nav ul > li > a:focus, .profile-nav ul li.active  a {
+    background: #f8f7f5 !important;
+    border-left: 5px solid #fbc02d;
+    color: #89817f !important;
+}
+
+.profile-nav ul > li:last-child > a:last-child {
+    border-radius: 0 0 4px 4px;
+    -webkit-border-radius: 0 0 4px 4px;
+}
+
+.profile-nav ul > li > a > i{
+    font-size: 16px;
+    padding-right: 10px;
+    color: #bcb3aa;
+}
+</style>
