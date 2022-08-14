@@ -81,24 +81,7 @@ router.get('/', ensureAuthenticated, async (req, res) => {
 	
 });
 
-router.get('/createStaffAcc', ensureAuthenticated, (req, res) => {
-	if (!isAdmin(req.user.userType) && isStaff(req.user.userType)) {
-		res.redirect('/admin');
-	} else if (!isStaff(req.user.userType)){
-		res.redirect('/')
-	} else {
-		const metadata = {
-			layout: 'admin',
-			nav: {
-				sidebarActive: 'cstaff'
-			},
-			user: req.user
-		}
 
-		res.render('admin/createStaff', metadata)
-	}
-	
-});
 
 router.post('/createStaffAcc', ensureAuthenticated, async (req, res) => {
 	email = req.body.email;
@@ -115,9 +98,8 @@ router.post('/createStaffAcc', ensureAuthenticated, async (req, res) => {
 		};
 		sendEmail(message)
 			.then(response => {
-				console.log(response);
 				flashMessage(res, 'success','registered link sent to '+email+' successfully');
-				res.redirect('/admin');
+				res.redirect('/admin/stafflist');
 			})
 			.catch(err => {
 				console.log(err);
@@ -129,7 +111,7 @@ router.post('/createStaffAcc', ensureAuthenticated, async (req, res) => {
 			{where: {email: email}}
 		).then((result) => {
 			flashMessage(res, 'success', 'Account updated to staff account');
-			res.redirect('/admin')
+			res.redirect('/admin/stafflist')
 		})
 	}
 	
@@ -227,7 +209,10 @@ router.get('/status/:change/:id', async (req, res) => {
 	if (!user) {
 		flashMessage(res, 'error', 'No user found');
 		
-	} else {
+	} else if (user.userType == 'madmin') {
+		flashMessage(res, 'error', 'Main admin cannot be banned');
+	} 
+	else {
 		if (change == 'ban') {
 			if (user.status == 2) {
 				flashMessage(res, 'error', 'User already banned');
