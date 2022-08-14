@@ -70,6 +70,9 @@ router.get('/', ensureAuthenticated, async (req, res) => {
 			}
 		}
 		metadata.l30 = a.length;
+
+		test = [0,30,60,25,60,25,50,10,50,90,120]
+		metadata.test = test
 		res.render('admin/index', metadata)
 
 	}
