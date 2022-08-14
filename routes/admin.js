@@ -13,6 +13,7 @@ const Sequelize = require('sequelize');
 const jwt = require('jsonwebtoken');
 const sgMail = require('@sendgrid/mail');
 const User = require('../models/User');
+const Order = require('../models/Order');
 const createlogs = require('../helpers/logs');
 const {convertJsonToExcel, getUsers, getStaff} = require('../helpers/excel');
 const fs = require('fs');
@@ -71,8 +72,6 @@ router.get('/', ensureAuthenticated, async (req, res) => {
 		}
 		metadata.l30 = a.length;
 
-		test = [0,30,60,25,60,25,50,10,50,90,120]
-		metadata.test = test
 		res.render('admin/index', metadata)
 
 	}
@@ -300,8 +299,60 @@ router.get('/generateexcel/:list', async (req, res) => {
 				}
 		}, 3000)
 	}
-	
-	
+});
+
+router.get('/dashboardinfo', async (req, res) => {
+	curdate = moment.now()
+	users = await User.findAll();
+	a = []
+	b = []
+	for (var i = 0;i < users.length;i++) {
+		if ((curdate - moment(users[i].createdAt))< 2592000000 ) { //num of seconds in 30 days
+			a.push(users[i])
+			b.push(users[i])
+			
+		} else if ((curdate - moment(users[i].createdAt))< 2592000000*2) {
+			b.push(users[i])
+		}
+	}
+	c = []
+	d = []
+	orders = await Order.findAll()
+	for (var i = 0;i < orders.length;i++) {
+		if ((curdate - moment(orders[i].createdAt))< 2592000000 ) { //num of seconds in 30 days
+			a.push(orders[i])
+			b.push(orders[i])
+			
+		} else if ((curdate - moment(orders[i].createdAt))< 2592000000*2) {
+			b.push(orders[i])
+		}
+	}
+	const ResponseObject = {
+		users: {
+			all: users.length,
+			l30: a.length,
+			l60: b.length,
+		},
+		orders: {
+			all: orders.length,
+			l30: c.length,
+			l60: d.length,
+		},
+		graph: {
+			a: 0,
+			b: 30,
+			c: 60,
+			d: 40,
+			e: 70,
+			f: 65,
+			g: 40,
+			h: 80,
+			i: 60,
+			w: 80,
+			q: 100,
+		}
+	}
+	return res.json(ResponseObject)
 });
 
 router.get('/admincouponcreate', (req, res) => {
