@@ -28,28 +28,18 @@
       <div class="box border-bottom">
         <div class="box-label text-uppercase d-flex align-items-center">Categories <button class="btn ms-auto" type="button" data-bs-toggle="collapse" data-bs-target="#inner-box" aria-expanded="false" aria-controls="inner-box" id="out" onclick="outerFilter()"> <span class="fas fa-plus"></span> </button> </div>
         <div id="inner-box" class="collapse mt-2 me-1">
-          <div class="my-1"> <label class="tick">Food & Pantry<input type="checkbox"> <span class="check"></span> </label> </div>
-          <div class="my-1"> <label class="tick">Bakery, Cereal & Spreads <input type="checkbox"> <span class="check"></span> </label> </div>
-          <div class="my-1"> <label class="tick">Dairy, Chilled & Frozen <input type="checkbox"> <span class="check"></span> </label> </div>
-          <div class="my-1"> <label class="tick">Snacks & Drinks <input type="checkbox"> <span class="check"></span> </label> </div>
-          <div class="my-1"> <label class="tick">Health & Beauty <input type="checkbox"> <span class="check"></span> </label> </div>
-          <div class="my-1"> <label class="tick">Mum & Baby <input type="checkbox" > <span class="check"></span> </label> </div>
-          <div class="my-1"> <label class="tick">Fruits & Vegetables<input type="checkbox"> <span class="check"></span> </label> </div>
-          <div class="my-1"> <label class="tick">Household & Pets <input type="checkbox" > <span class="check"></span> </label> </div>
+          {{#each category}}
+          <div class="my-1"> <label class="tick">{{category_name}}<input type="checkbox"> <span class="check"></span> </label> </div>
+          {{/each}}
         </div>
       </div>
 
       <div class="box border-bottom">
         <div class="box-label text-uppercase d-flex align-items-center">Brands <button class="btn ms-auto" type="button" data-bs-toggle="collapse" data-bs-target="#inner-box2" aria-expanded="false" aria-controls="inner-box2"><span class="fas fa-plus"></span></button> </div>
         <div id="inner-box2" class="collapse mt-2 me-1">
-          <div class="my-1"> <label class="tick">Meiji<input type="checkbox"> <span class="check"></span> </label> </div>
-          <div class="my-1"> <label class="tick">Sunshine <input type="checkbox"> <span class="check"></span> </label> </div>
-          <div class="my-1"> <label class="tick">Kleenex <input type="checkbox" > <span class="check"></span> </label> </div>
-          <div class="my-1"> <label class="tick">Lay's <input type="checkbox"> <span class="check"></span> </label> </div>
-          <div class="my-1"> <label class="tick">Heinz <input type="checkbox"> <span class="check"></span> </label> </div>
-          <div class="my-1"> <label class="tick">Dettol <input type="checkbox"> <span class="check"></span> </label> </div>
-          <div class="my-1"> <label class="tick">Huggies <input type="checkbox"> <span class="check"></span> </label> </div>
-          <div class="my-1"> <label class="tick">Cold Storage<input type="checkbox"> <span class="check"></span> </label> </div>
+          {{#each brands}}
+          <div class="my-1"> <label class="tick">{{brand_name}}<input type="checkbox"> <span class="check"></span> </label> </div>
+          {{/each}}
         </div>
       </div>
 

@@ -14,6 +14,7 @@ const op = sequelize.Op
 
 router.get('/products', async (req, res) => {
 	var brands = await Brand.findAll({raw:true});
+	var category = await Category.findAll({raw:true});
 	const pageAsNumber = Number.parseInt(req.query.page)
 	var search = req.query.search
 	if(search == undefined){
@@ -49,6 +50,7 @@ router.get('/products', async (req, res) => {
 				currentPage: page,
 				brands: brands, 
 				wishlist: wishlist,
+				category: category, 
 			});
 		}else{
 			Product.findAndCountAll({
@@ -71,13 +73,14 @@ router.get('/products', async (req, res) => {
 			raw: true
 		})
 		.then((product) => {
+			
 			res.render('product/products', 
 			{
 				product: product.rows,
 				totalPages: Math.ceil(product.count/2),
 				currentPage: page,
 				brands: brands,
-
+				category: category, 
 			});
 		})
 		.catch(err => console.log(err));
@@ -113,6 +116,7 @@ router.post('/removewishlist', async (req, res) => {
 
 router.get('/nextpage', async (req, res) => {
 	var brands = await Brand.findAll({raw:true});
+	var category = await Category.findAll({raw:true});
 	var search = req.query.search
 	if(search == undefined){
 		search = ""
@@ -152,7 +156,8 @@ router.get('/nextpage', async (req, res) => {
 				product: product.rows,
 				totalPages: Math.ceil(product.count/2),
 				currentPage: page,
-				brands: brands, 
+				brands: brands,
+				category: category, 
 				wishlist: wishlist,
 			});
 		}else{
@@ -181,6 +186,8 @@ router.get('/nextpage', async (req, res) => {
 				product: product.rows,
 				totalPages: Math.ceil(product.count/2),
 				currentPage: page,
+				category: category,
+				brands: brands
 			});
 		})
 	}
