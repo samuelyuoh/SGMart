@@ -1,6 +1,10 @@
+const { raw } = require('express');
 const express = require('express');
 const router = express.Router();
 const flashMessage = require('../helpers/messenger');
+const Brand = require('../models/Brand');
+const Category = require('../models/Category');
+const Product = require('../models/Product');
 const Coupon = require('../models/Coupon');
 const moment = require('moment');
 const Brand = require('../models/Brand');
@@ -531,7 +535,7 @@ router.get('/deleteproduct/:id', async function(req, res){
 })
 
 router.post('/admincouponcreate', (req, res) => {
-	let { couponName, percentageDiscount, expiryDate } = req.body;
+	let { couponName, percentageDiscount, expiryDate, couponQuantity, userid, pointstoattain, redeemedquantity } = req.body;
 
 	const metadata = {
 		layout: 'admin',
@@ -539,8 +543,8 @@ router.post('/admincouponcreate', (req, res) => {
 			sidebarActive: 'coupon'
 		}
 	}
-
-	Coupon.create({ couponName, percentageDiscount, expiryDate });
+	redeemedquantity = 0;
+	Coupon.create({ couponName, percentageDiscount, expiryDate, couponQuantity, userid, pointstoattain, redeemedquantity });
 	flashMessage(res, 'success', couponName + ' has been created successfully');
 
 	res.render('admin/admincouponcreate', metadata)
@@ -563,6 +567,8 @@ router.post('/admincouponedit/:id', (req, res) => {
 	let couponName = req.body.couponName;
 	let percentageDiscount = req.body.percentageDiscount;
 	let expiryDate = moment(req.body.expiryDate, ' YYYY-MM-DD HH:MI:SS');
+	let couponQuantity = req.body.couponQuantity;
+	let pointstoattain = req.body.pointstoattain
 	
 	const metadata = {
 		layout: 'admin',
@@ -571,7 +577,7 @@ router.post('/admincouponedit/:id', (req, res) => {
 		}
 	}
     Coupon.update(
-        { couponName, percentageDiscount, expiryDate },
+        { couponName, percentageDiscount, expiryDate, couponQuantity, pointstoattain },
         { where: { id: req.params.id } }
     )
         .then((result) => {
@@ -590,7 +596,7 @@ router.get('/admincouponlist', (req, res) => {
 		}
 	}
 	Coupon.findAll({
-		order: [['expiryDate', 'DESC']],
+		order: [['couponName', 'DESC']],
 		raw: true
 	})
 		.then((coupons) => {
@@ -607,7 +613,7 @@ router.get('/admincouponlist', (req, res) => {
 
 
 
-router.get('/admincoupondelete/:id', async function (req, res) {
+router.post('/admincoupondelete/:id', async function (req, res) {
 	try {
 		let coupon = await Coupon.findByPk(req.params.id);
 		if (!coupon) {
@@ -616,7 +622,7 @@ router.get('/admincoupondelete/:id', async function (req, res) {
 			return;
 		}
 
-		let result = await Coupon.destroy({ where: { couponName: coupon.couponName } });
+		let result = await Coupon.destroy({ where: { couponName: coupon.couponName } }); //change to delete from id
 		flashMessage(res, 'success',result + ' coupon deleted');
 		res.redirect('/admin/admincouponlist');
 	}
@@ -653,4 +659,99 @@ router.get('/listorders', async(req, res) => {
 })
 
 
+router.get('/couponstats', async (req, res) => {
+	const metadata = {
+		layout: 'admin',
+		nav: {
+			sidebarActive: 'coupon'
+		}
+	}
+
+	var date = new Date();
+	today = date.toISOString().slice(0,10) //Today's date
+
+	date.setDate(date.getDate() - 1); 
+	yesterday = date.toISOString().slice(0,10) //Yesterday's date
+
+	date.setDate(date.getDate() - 1);
+	twodaysback = date.toISOString().slice(0,10) // 2 days back date
+
+	date.setDate(date.getDate() - 1);
+	threedaysback = date.toISOString().slice(0,10) // 3 days back date
+
+	date.setDate(date.getDate() - 1);
+	fourdaysback = date.toISOString().slice(0,10) // 4 days back date
+
+	const { count: todaycount } = await CouponRedemption.findAndCountAll({
+		
+		where: { DateofRedemption: today },
+		groupBy: {
+			DateofRedemption: today
+		},
+		
+	});
+
+	const { count: yesterdaycount } = await CouponRedemption.findAndCountAll({
+		
+		where: { DateofRedemption: yesterday },
+		groupBy: {
+			DateofRedemption: yesterday
+		},
+		
+	});
+
+	const { count: twodaysbackcount } = await CouponRedemption.findAndCountAll({
+		
+		where: { DateofRedemption: twodaysback },
+		groupBy: {
+			DateofRedemption: twodaysback
+		},
+		
+	});
+
+	const { count: threedaysbackcount } = await CouponRedemption.findAndCountAll({
+		
+		where: { DateofRedemption: threedaysback },
+		groupBy: {
+			DateofRedemption: threedaysback
+		},
+		
+	});
+
+	const { count: fourdaysbackcount } = await CouponRedemption.findAndCountAll({
+		
+		where: { DateofRedemption: fourdaysback },
+		groupBy: {
+			DateofRedemption: fourdaysback
+		},
+		
+	});
+
+	const { count: total } = await CouponRedemption.findAndCountAll({
+
+	});
+	
+	console.log(total)
+
+	metadata.todaycount = todaycount
+	metadata.yesterdaycount = yesterdaycount
+	metadata.twodaysbackcount = twodaysbackcount
+	metadata.threedaysbackcount = threedaysbackcount
+	metadata.fourdaysbackcount = fourdaysbackcount
+	metadata.total = total
+	res.render('admin/couponstats', metadata)
+	
+});
+
+
+router.get('/couponstats', (req, res) => {
+	const metadata = {
+		layout: 'admin',
+		nav: {
+			sidebarActive: 'coupon'
+		}
+	}
+	
+	res.render('admin/couponstats', metadata)
+	});
 module.exports = router;

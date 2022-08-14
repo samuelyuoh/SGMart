@@ -2,9 +2,11 @@ const express = require('express');
 const router = express.Router();
 const flashMessage = require('../helpers/messenger');
 const User = require('../models/User');
+const Coupon = require('../models/Coupon');
 const bcrypt = require('bcryptjs');
 const passport = require('passport');
 const ensureAuthenticated = require('../helpers/auth');
+const UserCouponInfo = require('../models/UserCouponInfo');
 const Delivery = require('../models/Delivery');
 const Order = require('../models/Order');
 const Cart = require('../models/Cart');
@@ -79,7 +81,7 @@ router.post('/register', async function (req, res) {
         let user = await User.findOne({ where: { email: email } });
         if (user) {
             // If user is found, that means email has already been registered
-            flashMessage(res, 'error', email + ' already registered');
+            flashMessage(res, 'error', email + ' alreay registered');
             res.render('user/register', {
                 name, email
             });
@@ -89,7 +91,8 @@ router.post('/register', async function (req, res) {
             var salt = bcrypt.genSaltSync(10);
             var hash = bcrypt.hashSync(password, salt);
             // Use hashed password
-            let user = await User.create({ name, email, password: hash, 'userType': 'customer', 'status': 0, 'tfa': 0, 'gtfa': 0  });
+            Points = 0
+            let user = await User.create({ name, email, password: hash,Points, 'userType': 'customer', 'status': 0, 'tfa': 0, 'gtfa': 0  });
             // Send email
             let token = jwt.sign(email, process.env.APP_SECRET);
             let url = `${process.env.BASE_URL}:${process.env.PORT}/user/verify/${user.id}/${token}`;
@@ -110,6 +113,13 @@ router.post('/register', async function (req, res) {
                     res.redirect('/');
                 });
         }
+
+        let result = await User.update(
+            { verified: 1 },
+            { where: { id: user.id } });
+        console.log(result[0] + ' user updated');
+        flashMessage(res, 'success', user.email + ' verified. Please login');
+        res.redirect('/user/login');
     }
     catch (err) {
         console.log(err);
@@ -317,6 +327,33 @@ router.get('/editprofile/:id', ensureAuthenticated, (req, res) => {
             
         })
         .catch(err => console.log(err));
+});
+
+router.get('/viewrewards/:id', ensureAuthenticated, (req, res) => {
+    User.findByPk(req.params.id)
+        .then((user) => {
+            if (!user) {
+                flashMessage(res, 'error', 'User not found');
+                res.redirect('/user/login');
+                return;
+            }
+            if (req.user.id != req.params.id) {
+                flashMessage(res, 'error', 'Unauthorised access');
+                res.redirect('/');
+                return;
+            }
+        UserCouponInfo.findAll({
+            order: [['couponName', 'DESC']],
+            raw: true
+        })
+            .then((usercouponinfos) => {
+                // pass object to admincouponlist.handlebars
+                res.render('user/viewrewards', { user, usercouponinfos});
+            })
+            .catch(err => console.log(err));
+            })
+        .catch(err => console.log(err));
+
 });
 
 router.get('/deleteAccount/:id', ensureAuthenticated, async function (req, res) {

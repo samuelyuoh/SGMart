@@ -18,6 +18,8 @@ const User = db.define('user',
         gtfa: { type: Sequelize.BOOLEAN },
         pfp: { type: Sequelize.STRING },
         otptoken: { type: Sequelize.STRING }, //email otp
-        secret: { type: Sequelize.STRING }, //google authenticator otp
+        secret: { type: Sequelize.STRING },
+        Points:{ type: Sequelize.INTEGER },
+        //google authenticator otp
     });
 module.exports = User;

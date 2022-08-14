@@ -1,7 +1,13 @@
+const { response } = require('express');
 const express = require('express');
 const router = express.Router();
 const flashMessage = require('../helpers/messenger');
 const User = require('../models/User');
+const Coupon = require('../models/Coupon');
+const ensureAuthenticated = require('../helpers/auth');
+const CouponRedemption = require('../models/CouponRedemption');
+const { DATEONLY } = require('sequelize');
+const UserCouponInfo = require('../models/UserCouponInfo');
 const Brand = require('../models/Brand');
 
 router.get('/', async (req, res) => {
@@ -28,41 +34,73 @@ router.get('/about', (req, res) => {
 	res.render('about', { author });
 	});
 
-router.get('/usercoupongenerate', (req, res) => {
-	User.findAll({
-		order: [['amountSpent', 'DESC']],
+router.get('/usercoupongenerate/:id', ensureAuthenticated, (req, res) => {
+
+	
+	Points = req.user.Points;
+	
+	Coupon.findAll({
+		order: [['couponName', 'DESC']],
 		raw: true
 	})
-		.then((users) => {
-			// pass object to admincouponlist.handlebars
-			res.render('coupon/usercoupongenerate');
+		.then((coupons) => {
+			res.render('coupon/usercoupongenerate', {coupons, Points});
 		})
 		.catch(err => console.log(err));
-
-
-	res.render('coupon/usercoupongenerate')
 });
 
-// router.post('/admincouponedit/:id', (req, res) => {
-// 	let couponName = req.body.couponName;
-// 	let percentageDiscount = req.body.percentageDiscount;
-// 	let expiryDate = moment(req.body.expiryDate, ' YYYY-MM-DD HH:MI:SS');
+
+router.post('/usercoupongenerate/:id', ensureAuthenticated, async (req, res) => {
+	// let DateofRedemption = req.body.DateofRedemption ? req.body.DateofRedemption : null;
+	user = await User.findByPk(req.params.id);
+	let {cid} = req.body;
+	coupon = await Coupon.findByPk(cid);
+
+	amt = user.Points;
+	amt -= coupon.pointstoattain;
+
+
+	User.update(
+        {Points : amt}, 
+        { where: { id: req.params.id } }
+    )
+        .catch(err => console.log(err));
+	quant = coupon.couponQuantity;
+	quant -= 1;	
 	
-// 	const metadata = {
-// 		layout: 'admin',
-// 		nav: {
-// 			sidebarActive: 'dashboard'
-// 		}
-// 	}
-//     Coupon.update(
-//         { couponName, percentageDiscount, expiryDate },
-//         { where: { id: req.params.id } }
-//     )
-//         .then((result) => {
-//             console.log(result[0] + ' coupon updated');
-//             res.redirect('/admin/admincouponlist');
-//         })
-//         // .catch(err => console.log(err));
-// 	});
+	redeemingcount = coupon.redeemedquantity;
+	redeemingcount += 1;
+
+	Coupon.update(
+		{couponQuantity : quant, redeemedquantity: redeemingcount}, 
+		{ where: { id: cid } }
+	)
+		.catch(err => console.log(err));
+	
+	var datetime = new Date();
+	x = datetime.toISOString().slice(0,10)
+	todays_date = x; 
+	
+	CouponRedemption.create(
+		{DateofRedemption : todays_date, couponId: cid}, 
+		{ where: { id: cid } }
+	)
+	
+	UserCouponInfo.create(
+		{ couponName : coupon.couponName, percentageDiscount: coupon.percentageDiscount, expiryDate: coupon.expiryDate, userId: user.id, couponId: cid }, 
+		{ where: { id: cid } }
+	)
+
+    User.findByPk(req.params.id)
+        .then ((user) => {
+            flashMessage(res, 'success', 'Coupon has been claimed');
+            res.redirect(`/`);
+        })
+        .catch(err => console.log(err));
+
+
+});
+
+
 
 module.exports = router;

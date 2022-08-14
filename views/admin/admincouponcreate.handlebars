@@ -7,6 +7,78 @@
 				<label class="font-italic" for="couponName">Coupon Name</label>
 				<input class="form-control" id="couponName" name="couponName" placeholder="Code123 etc." min="6" required/>
 			</div>
+
+			<div class="form-group mb-4">
+				<label class="font-italic" for="percentageDiscount">Percentage Discount</label>
+				<input class="form-control" type="number" id="percentageDiscount" name="percentageDiscount" min="5" max="10" placeholder="Please enter an integer (in terms of percentage)" required/>
+			</div>
+
+			<div class="form-group mb-4">
+				<label class="font-italic" for="expiryDate">Expiry date</label>
+				<input class="form-control" type="date" id="expiryDate" name="expiryDate" placeholder="Please enter an Expiry Date" required/>
+			</div>
+
+			<div class="form-group mb-4">
+				<label class="font-italic" for="couponQuantity">Coupon Quantity</label>
+				<input class="form-control" type="number" id="couponQuantity" name="couponQuantity" min="5" max="10" placeholder="Please enter number of coupons you want to create" required/>
+			</div>
+
+			<div class="form-group mb-4">
+				<label class="font-italic" for="couponQuantity">Points to Redeem</label>
+				<input class="form-control" type="number" id="pointstoattain" name="pointstoattain" min="50" max="75" step="5" placeholder="Please enter points to want to define for this coupon" required/>
+			</div>
+			</div>
+			<br>
+			<button id="btnSubmit" type="submit" class="btn btn-primary savo">Create
+			</button>
+		</form>
+	</div>
+</div>
+
+<style>
+	.savo{
+		background-color: white;
+		color: black;
+		border-color: black;
+	}
+	.savo:hover{
+		background-color: #198754;
+		border-color: #198754;
+	}
+	.container{
+		margin-left: 200px;
+		width: 83%;
+		padding: 20px;
+	}
+
+</style>
+
+<script>
+	var today = new Date();
+	var dd = today.getDate();
+	var mm = today.getMonth() + 1;
+	var yyyy = today.getFullYear();
+
+	if (dd < 10){
+		dd = "0" + dd;
+	}
+
+	if (mm < 10){
+		mm = "0" + mm
+	}
+
+	today = yyyy + "-" + mm + "-" + dd;
+	document.getElementById("expiryDate").setAttribute("min", today);
+</script>
+
+{{!-- <div class="container">
+	<div class="card card-body">
+		<h3>Add Coupon</h3>
+		<form action="" method="post">
+			<div class="form-group">
+				<label class="font-italic" for="couponName">Coupon Name</label>
+				<input class="form-control" id="couponName" name="couponName" placeholder="Code123 etc." min="6" required/>
+			</div>
 			<div class="form-group mb-4">
 				<label class="font-italic" for="percentageDiscount">Percentage Discount</label>
 				<input class="form-control" type="number" id="percentageDiscount" name="percentageDiscount" min="5" max="10" placeholder="Please enter an integer (in terms of percentage)" required/>
@@ -58,4 +130,4 @@
 
 	today = yyyy + "-" + mm + "-" + dd;
 	document.getElementById("expiryDate").setAttribute("min", today);
-</script>
+</script> --}}

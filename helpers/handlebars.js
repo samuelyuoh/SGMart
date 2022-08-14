@@ -1,6 +1,8 @@
 const Handlebars = require('handlebars');
 const moment = require('moment');
 const { DATEONLY } = require('sequelize');
+const Brand = require('../models/Brand');
+const Coupon = require('../models/Coupon');
 const formatDate = function (date, targetFormat) {
     return moment(date).format(targetFormat);
 };
@@ -21,22 +23,23 @@ const ifEquals = function (value, CorrectValue) {
     return (value == CorrectValue ? "active" : '')
 }
 
-const ifmoney = function(amountSpent) {
-    console.log(amountSpent)
-    return (amountSpent >= 50 ? true : false)
-}
-    
-// Handlebars.registerHelper('ifEquals', function(arg1, arg2, options) {
-//     return (arg1 == arg2) ? options.fn(this) : options.inverse(this);
-// });
-
 const checkdiscount = function(discount){
-    if ((discount) > 0) {
+    if (discount > 0) {
         return true;
     }else{
         return false;
     }
 };
+
+
+const ifpoints50 = function(Points) {
+    return (Points >= 50 ? true : false)
+};
+
+const ifcouponquantityzero = function(couponQuantity) {
+    return (couponQuantity > 0 ? true : false)
+}
+
 
 const checkstock = function(stock){
     if (stock > 0) {
@@ -125,6 +128,7 @@ const getDateOnly = function(date){
 }
 
 module.exports = {formatDate, replaceCommas, checkboxCheck, radioCheck, ifEquals, 
-                checkdiscount, checkstock,checkurl, ifmoney, ifstatus, isStaff, 
+                checkdiscount, checkstock,checkurl, ifstatus, isStaff, 
                 isAdmin, isMAdmin, checkWishlist, next, previous, haveNext, havePrevious,
-                calculatePrice, breaklines, increment, iftfa, getDateOnly};
+                calculatePrice, breaklines, increment, iftfa, getDateOnly,ifpoints50,
+                ifcouponquantityzero};

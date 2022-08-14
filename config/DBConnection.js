@@ -1,6 +1,7 @@
 const mySQLDB = require('./DBConfig');
 const User = require('../models/User');
-
+const CouponRedemption = require('../models/CouponRedemption');
+const UserCouponInfo = require('../models/UserCouponInfo');
 const Coupon = require('../models/Coupon')
 const Delivery = require('../models/Delivery')
 const Product = require('../models/Product');
@@ -17,7 +18,8 @@ const Logs = require('../models/Logs');
 
 
 
-// If drop is true, all existing tables are dropped and recreated
+
+// If drop is true, all exis    ting tables are dropped and recreated
 const setUpDB = (drop) => {
     mySQLDB.authenticate()
         .then(() => {
@@ -59,6 +61,8 @@ const setUpDB = (drop) => {
             });
         })
         .catch(err => console.log(err));
+        
+        
 };
 
 module.exports = { setUpDB };
