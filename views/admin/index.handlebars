@@ -62,17 +62,12 @@
                 <div class="graph-content">
                     <div class="graph-head">
                         <div class="icons-wrapper">
-                            <div class="icon">
-                                <span class="las la-eye text-main"></span>
-                            </div>
-                            <div class="icon">
-                                <span class="las la-clock text-success"></span>
-                            </div>
+                            <h3>Profits</h3>
                         </div>
                         <div class="graph-select">
-                            <select name="" id="">
-                                <option value="">This Month</option>
-                                <option value="">This Week</option>
+                            <select name="" id="time">
+                                <option value="m">Last 30 Days</option>
+                                <option value="w">Last 7 Days</option>
                             </select>
                         </div>
                     </div>
@@ -86,6 +81,69 @@
     </main>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.bundle.js"></script>
 <script>
+    Chart.defaults.global.defaultFontFamily = "Poppins";
+        let ctx = document.querySelector("#revenueChart");
+
+        let revChart=new Chart(ctx, {
+            type:"line",
+            data:{
+                labels:[],
+                datasets:[
+                    {
+                        label:"Profits",
+                        borderColor:"#396aff",
+                        borderWidth:"3",
+                        backgroundColor:"rgba(233,238,253,0.7)",
+                        data:[]
+                    }
+                ]
+            },
+            options:{
+                responsive: true,
+                tooltips: {
+                    intersect: false,
+                    node: "index"
+                }
+            }
+        });
+
+    const time = document.getElementById('time')
+    time.addEventListener('change', changedata)
+
+    function changedata() {
+        if (time.value == "w") {
+            d = new Date();
+            temp2 = []
+            for (var i = 0; i < 8; i++) {
+                ts = `${d.getDate()}/${d.getMonth()+1}`
+                d.setDate(d.getDate()-1)
+                temp2.push(ts)
+            }
+            temp = [90, 70, 85, 40, 20, 55, 60, 80]
+            revChart.data.labels = temp2.reverse();
+            revChart.data.datasets[0].data = temp;
+            revChart.update()
+        } else {
+            d = new Date();
+            temp2 = []
+            for (var i = 0; i < 11; i++) {
+                ts = `${d.getDate()}/${d.getMonth()+ 1}`
+                d.setDate(d.getDate()-3)
+                temp2.push(ts)
+            }
+            revChart.data.labels = temp2.reverse();
+            temp = [0, 30, 60, 40, 70, 55, 60, 85, 70, 50, 70]
+            revChart.data.datasets[0].data = temp;
+            revChart.update()
+        }
+    }
+    function addData(chart, label, data) {
+        chart.data.labels.push(label);
+        chart.data.datasets.forEach((dataset) => {
+            dataset.data.push(data);
+        });
+        chart.update();
+    }
     a = []
     $( document ).ready(function() {
       setTimeout(() => {
@@ -117,32 +175,8 @@
         })
       },500),
       setTimeout(()=> {
-        Chart.defaults.global.defaultFontFamily = "Poppins";
-        let ctx = document.querySelector("#revenueChart");
-
-        let revChart=new Chart(ctx, {
-            type:"line",
-            data:{
-                labels:["Sept1","Sept3","Sept6","Sept9","Sept 12","Sept 15", "Sept 18","Sept 21","Sept 24","Sept 27","Sept 30"],
-                datasets:[
-                    {
-                        label:"Profits",
-                        borderColor:"#396aff",
-                        borderWidth:"3",
-                        backgroundColor:"rgba(233,238,253,0.7)",
-                        data:a
-                    }
-                ]
-            },
-            options:{
-                responsive: true,
-                tooltips: {
-                    intersect: false,
-                    node: "index"
-                }
-            }
-        });
-      },1000)
+        changedata()
+        },1000)
     });
     
 </script>
