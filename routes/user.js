@@ -19,7 +19,6 @@ const upload = require('../helpers/imageUpload');
 const googlelogin = require('../helpers/googlelogin');
 const speakeasy = require('speakeasy');
 const { stringify } = require('querystring');
-const fetch = require('node-fetch');
 
 const isStaff = function(userType) {
 	return (userType == 'staff' || userType == 'admin' || userType == 'madmin')
@@ -602,8 +601,6 @@ router.get('/login/google/callback',
   passport.authenticate('google', { failureRedirect: '/' }),
   function(req, res) {
     // Successful authentication, redirect success.
-    // console.log(res.message)
-    flashMessage(res, 'success', req.authInfo.message)
     res.redirect('/');
   });
 // router.get('/check_delivery', (req, res) => {
