@@ -1,224 +1,138 @@
+<link rel="stylesheet" href="/css/profile.css">
 
-<div class="container">
-    <div class="main-body">
-        <div class="row gutters-sm"  style="margin-top: 2.5%">
-            <div class="col-md-4 mb-3">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="d-flex flex-column align-items-center text-center">
-                            <div class="container1">
-                                <div class="outer">
-                                    {{#if user.password}}
-                                        {{#unless user.pfp}}
-                                        <img class="rounded-circle" height="50%" width="50%" src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBwgHBgkIBwgKCgkLDRYPDQwMDRsUFRAWIB0iIiAdHx8kKDQsJCYxJx8fLT0tMTU3Ojo6Iys/RD84QzQ5OjcBCgoKDQwNGg8PGjclHyU3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3N//AABEIAIAAgAMBIgACEQEDEQH/xAAbAAEAAwEBAQEAAAAAAAAAAAAAAwQFAQIHBv/EADQQAAICAAMECAQFBQAAAAAAAAECAAMEETEFIUFREhMiMlJhcYEzQmKSFBVDU8EjkaHR4f/EABQBAQAAAAAAAAAAAAAAAAAAAAD/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwD7jERARPLsEUsxyA1MzcTjmclaT0V8XEwL12Jqp3M2beEaylZtB2P9NQo5nfKUQJGxFz961vY5TwSTqc/WciABI0OR8pKmIuTSxvcyKIFyvaLr8RQw5jcZdpxVV25WybkdZjR6QP0ETLw2OZMlt7S8+ImmrKyhlOYOhEDsREBPLsEUsxyA1M9TL2hiOk5qU9ldfMwIsViWvfkg0H+5BEQEREBET0tbt3UYjyEDzE9NW672RgPMGeYCIiAk+FxJw7c0OokEQN9WDKGU5gzsy9n4go/VMey2nkZqQIcXb1NJYancPWYsu7TsztVOCjMylAREQElw9DXtku4DU8p4rQ2OEXUnKbVNS1VhFG4f5gR04Sqod0M3MyxEQB3yvdhKrflCt4lliIGJfh3obJhu4EcZFNy6pbqyjjcePKYtiGt2RhvBygeYiICbOEu66kNxG4+sxpd2ZZlayHRhnArYluniLD9Rkc6TmSec5AREQLuy687Hc8BkPeaco7K7lnrL0BERAREQEzNqJlYrj5hkZpyjtXuV+pgZsREBJMM3QxFZ+oSOdU5MDyMDhGRI4iJLiV6GIsH1EyKAiIgXdmWBbWQ/MN3tNOYCMUcMuoOYm1h7lurDKfUcjAliIgIiICZm07OlaqD5RL2IuWiss2vAczMV2LuWY5knOByIiAnVGbAczOSXDL08RWPqBgWNp15Wq40YZH1lKbOMq66hlHe1ExoCIiAklNz0t0kO/iOcjAzOQ1kgouP6T/aYGlTjqrAA56Deen95ZDBhmpBHlMTqLv2n+0x1F37Vn2mBtlgozYgDzlW7HVV5hD028tJnGi461P8AaY/D3ftP9pgLrnufpOf+SOSGi4fpP9pkZ3HI7jAREQEu7MrztazgoyHrKU2cJT1NAU94729YE8y9oYfoP1qjstrlwM1JxlDKVYZg6iBgS3hMGbQHszVeA4mctw4w16mwFqc9x/gzURlZQVOYOkDldSVjJFAHlPcRAREQEREBPFlSWjJ1De09xAycXgzT20318eYlWb1hVUJfIKBvzmXThhiLm6vMU56n+IHrZ+H6b9Y47K6eZmpOKoRQqjIDQTsBERA8uqupVhmDqDKTU3YVi9HbTihl+IFejF1W7s+i3hMsSC7DVW72XteIayHqcVT8G0OvJ4F2JT/FXp8XDN6rH5hWO8jj2gXIlP8AMKz3Uc+0fir3+Fhm9WMC5K9+Krp3E5t4RIupxV3xbAi+FJNRhaqd6r2vEdYEAptxTBr+xWN4QS6qhFCqMgOE7EBERA//2Q==">
-                                        {{else}}
-                                        <img class="rounded-circle" height="50%" width="50%" src='/uploads/{{user.id}}/{{user.pfp}}'>
-                                        {{/unless}}
-                                    {{else}} 
-                                        <img class="rounded-circle" height="50%" width="50%" src="{{user.pfp}}">
-                                    {{/if}}
-                                    <div class="inner">
-                                        <button style="top: 10px;"type="button" class="btn" data-bs-toggle="modal" data-bs-target="#exampleModal"><label><svg xmlns="http://www.w3.org/2000/svg" width="20" height="17" viewBox="0 0 20 17"><path d="M10 0l-5.2 4.9h3.3v5.1h3.8v-5.1h3.3l-5.2-4.9zm9.3 11.5l-3.2-2.1h-2l3.4 2.6h-3.5c-.1 0-.2.1-.2.1l-.8 2.3h-6l-.8-2.2c-.1-.1-.1-.2-.2-.2h-3.6l3.4-2.6h-2l-3.2 2.1c-.4.3-.7 1-.6 1.5l.6 3.1c.1.5.7.9 1.2.9h16.3c.6 0 1.1-.4 1.3-.9l.6-3.1c.1-.5-.2-1.2-.7-1.5z"></path></svg></label></button>
-                                        <div class="text-danger small mb-2" id="posterErr" style="display:none"></div>
-                                        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                            <div class="modal-dialog">
-                                                <div class="modal-content">
-                                                    <div class="modal-header">
-                                                        <h5 class="modal-title" id="exampleModalLabel">
-                                                            Upload a new profile picture
-                                                        </h5> 
-                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                    </div>
-                                                    <div class="modal-body">
-                                                        <p class="body-desc"> 
-                                                            You can upload the image in JPG, JPEG, JFIF, GIF or PNG format. 
-                                                        </p>
-                                                        <div class="photo-input"> 
-                                                            <form method="POST" action="/user/uploadsubmit">
-                                                                <input type="file" class="custom-file-input" id="pfpUpload" name="pfpUpload" accept="image/png,image/jpeg,image/jpg,image/gif,image/jfif" onchange="imagePreview(event);"/> 
-                                                                <div class="text-danger small mb-2" id="pfpErr" style="display:none"></div>
-                                                                <img id="pfp" src="/img/no-image.jpg" alt="pfp" class="border img-thumbnail img-fluid rounded-circle" style="height: 150px !important;width: 150px !important;display: block !important; margin: auto !important;">
-                                                                {{!—- Hidden field to submit URL of poster to the server --}}
-                                                                <input id="pfpURL" type="hidden" name="pfpURL">
 
-                                                                <button type="submit" class="btn btn-primary" style="margin-top: 1rem !important;">Change Profile Picture</button>
-                                                            </form>
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-lg-3 my-lg-0 my-md-1">
+                <div id="sidebar" class="bg-purple">
+                    <div class="h4 text-white">Account</div>
+                    <ul>
+                        <li class="">
+                            <a href="/user/orders/{{user.id}}" class="text-decoration-none d-flex align-items-start">
+                                <div class="fas fa-box pt-2 me-3"></div>
+                                <div class="d-flex flex-column">
+                                    <div class="link">My Order</div>
+                                    <div class="link-desc">View & Manage orders and returns</div>
+                                </div>
+                            </a>
+                        </li>
+                        <li class="active">
+                            <a href="/user/profile/{{user.id}}" class="text-decoration-none d-flex align-items-start">
+                                <div class="far fa-user pt-2 me-3"></div>
+                                <div class="d-flex flex-column">
+                                    {{!-- <div class="link"><a href="/user/profile"> Profile</a></div> --}}
+                                    <div class="link" href="/user/profile"> Profile</div>
+                                    <div class="link-desc">Change your profile details & password</div>
+                                </div>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/user/contact" class="text-decoration-none d-flex align-items-start">
+                                <div class="fas fa-headset pt-2 me-3"></div>
+                                <div class="d-flex flex-column">
+                                    <div class="link">Help & Support</div>
+                                    <div class="link-desc">Contact Us for help and support</div>
+                                </div>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-lg-9 my-lg-0 my-1">
+                <div id="main-content" class="bg-white border">
+                    <div class="container">
+                        <div class="main-body">
+                            <div class="row gutters-sm"  style="margin-top: 2.5%">
+                                <div class="col-md-4 mb-3">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <div class="d-flex flex-column align-items-center text-center">
+                                                <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBwgHBgkIBwgKCgkLDRYPDQwMDRsUFRAWIB0iIiAdHx8kKDQsJCYxJx8fLT0tMTU3Ojo6Iys/RD84QzQ5OjcBCgoKDQwNGg8PGjclHyU3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3N//AABEIAIAAgAMBIgACEQEDEQH/xAAbAAEAAwEBAQEAAAAAAAAAAAAAAwQFAQIHBv/EADQQAAICAAMECAQFBQAAAAAAAAECAAMEETEFIUFREhMiMlJhcYEzQmKSFBVDU8EjkaHR4f/EABQBAQAAAAAAAAAAAAAAAAAAAAD/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwD7jERARPLsEUsxyA1MzcTjmclaT0V8XEwL12Jqp3M2beEaylZtB2P9NQo5nfKUQJGxFz961vY5TwSTqc/WciABI0OR8pKmIuTSxvcyKIFyvaLr8RQw5jcZdpxVV25WybkdZjR6QP0ETLw2OZMlt7S8+ImmrKyhlOYOhEDsREBPLsEUsxyA1M9TL2hiOk5qU9ldfMwIsViWvfkg0H+5BEQEREBET0tbt3UYjyEDzE9NW672RgPMGeYCIiAk+FxJw7c0OokEQN9WDKGU5gzsy9n4go/VMey2nkZqQIcXb1NJYancPWYsu7TsztVOCjMylAREQElw9DXtku4DU8p4rQ2OEXUnKbVNS1VhFG4f5gR04Sqod0M3MyxEQB3yvdhKrflCt4lliIGJfh3obJhu4EcZFNy6pbqyjjcePKYtiGt2RhvBygeYiICbOEu66kNxG4+sxpd2ZZlayHRhnArYluniLD9Rkc6TmSec5AREQLuy687Hc8BkPeaco7K7lnrL0BERAREQEzNqJlYrj5hkZpyjtXuV+pgZsREBJMM3QxFZ+oSOdU5MDyMDhGRI4iJLiV6GIsH1EyKAiIgXdmWBbWQ/MN3tNOYCMUcMuoOYm1h7lurDKfUcjAliIgIiICZm07OlaqD5RL2IuWiss2vAczMV2LuWY5knOByIiAnVGbAczOSXDL08RWPqBgWNp15Wq40YZH1lKbOMq66hlHe1ExoCIiAklNz0t0kO/iOcjAzOQ1kgouP6T/aYGlTjqrAA56Deen95ZDBhmpBHlMTqLv2n+0x1F37Vn2mBtlgozYgDzlW7HVV5hD028tJnGi461P8AaY/D3ftP9pgLrnufpOf+SOSGi4fpP9pkZ3HI7jAREQEu7MrztazgoyHrKU2cJT1NAU94729YE8y9oYfoP1qjstrlwM1JxlDKVYZg6iBgS3hMGbQHszVeA4mctw4w16mwFqc9x/gzURlZQVOYOkDldSVjJFAHlPcRAREQEREBPFlSWjJ1De09xAycXgzT20318eYlWb1hVUJfIKBvzmXThhiLm6vMU56n+IHrZ+H6b9Y47K6eZmpOKoRQqjIDQTsBERA8uqupVhmDqDKTU3YVi9HbTihl+IFejF1W7s+i3hMsSC7DVW72XteIayHqcVT8G0OvJ4F2JT/FXp8XDN6rH5hWO8jj2gXIlP8AMKz3Uc+0fir3+Fhm9WMC5K9+Krp3E5t4RIupxV3xbAi+FJNRhaqd6r2vEdYEAptxTBr+xWN4QS6qhFCqMgOE7EBERA//2Q==" class="rounded-circle" height="50%" width="50%">
+                                                <div class="mt-3">
+                                                    <h4>{{user.name}}</h4>
+                                                    <span class="text-black-50">Date Created: {{formatDate user.createdAt 'DD MMM YYYY'}}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="profile-nav col-md-3 w-100">
+                                            <div class="panel">
+                                                <ul class="nav nav-pills nav-stacked">
+                                                    <li><a href="/user/profile/{{user.id}}"> <i class="fa fa-user"></i> Account Overview</a></li>
+                                                    <li class="active"><a href="#"><i class="fa fa-edit"></i> Edit Information</a></li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-8">
+                                    <div class="card mb-3">
+                                        <div class="container rounded bg-white mt-5 mb-5">
+                                            <div class="row">
+                                                <div class=" border-right">
+                                                    <div class="p-3 py-5">
+                                                        <div class="d-flex justify-content-between align-items-center mb-3">
+                                                            <h4 class="text-right">Edit Profile</h4>
                                                         </div>
-                                                    </div>
-                                                    <div class="modal-footer">
-                                                        <p class="footer-title">
-                                                            If you're having problems uploading, try choosing a smaller photo.
-                                                        </p>
+                                                        <form method="POST">
+                                                            <div class="row mt-2 editp">
+                                                                <div class="col-md-12 ">
+                                                                    <label class="labels">Name</label>
+                                                                    <input name="name" type="text" class="form-control" placeholder="name" value="{{user.name}}" required>
+                                                                </div>
+                                                                <div class="col-md-12">
+                                                                    <label class="labels">Email</label>
+                                                                    <input name="email" type="text" class="form-control" placeholder="email" value="{{user.email}}" required disabled>
+                                                                </div>
+                                                                <div class="col-md-12">
+                                                                    <label class="labels">Mobile Number</label>
+                                                                    <input name="phoneNumber" type="number" class="form-control" placeholder="phone number" value="{{user.phoneNumber}}">
+                                                                </div>
+                                                                <div class="col-md-12">
+                                                                    <label class="labels">Address Line 1</label>
+                                                                    <input name="address" type="text" class="form-control" placeholder="address line 1" value="{{user.address}}">
+                                                                </div>
+                                                                <div class="col-md-12">
+                                                                    <label class="labels">Address Line 2</label>
+                                                                    <input name="address2" type="text" class="form-control" placeholder="address line 2" value="{{user.address2}}">
+                                                                </div>
+                                                                <div class="col-md-12">
+                                                                    <label class="labels">Postal Code</label>
+                                                                    <input name="postalCode" type="number" class="form-control" placeholder="postal code" value="{{user.postalCode}}">
+                                                                </div>
+                                                            </div>
+                                                            <div class="mt-5" style="float: right; width: 25%;">
+                                                                <a class="cancel" href="/user/profile/{{user.id}}" >Cancel</a>
+                                                                <button class="btn btn-primary profile-button" type="submit">Save Profile</button>
+                                                            </div>
+                                                        </form>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
-                                        
                                     </div>
+                                    {{!-- <div class="col-sm-6 mb-3">
+                                    <div class="card h-100">
+                                        <div class="card-body">
+                                        <small>Web Design</small>
+                                        <div class="progress mb-3" style="height: 5px">
+                                            <div class="progress-bar bg-primary" role="progressbar" style="width: 80%" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100"></div>
+                                        </div>
+                                        </div>
+                                    </div>
+                                    </div> --}}
+                                </div>
                                 </div>
                             </div>
-                            <div class="mt-3">
-                                <h4>{{user.name}}</h4>
-                                <span class="text-black-50">Date Joined: {{formatDate user.createdAt 'DD MMM YYYY'}}</span>
-                            </div>
-                        </div>
                     </div>
-                </div>
-                <div class="row">
-                    <div class="profile-nav col-md-3 w-100">
-                        <div class="panel">
-                            <ul class="nav nav-pills nav-stacked">
-                                <li><a href="/user/profile/{{user.id}}"> <i class="fa fa-user"></i> Account Overview</a></li>
-                                <li class="active"><a href="#"><i class="fa fa-edit"></i> Edit Information</a></li>
-                                <li><a href="/user/changepassword/{{user.id}}"><i class="fa fa-edit"></i> Change Password</a></li>
-                            </ul>
                         </div>
-                    </div>
                 </div>
             </div>
-            <div class="col-md-8">
-                <div class="card mb-3">
-                    <div class="container rounded bg-white mt-5 mb-5">
-                        <div class="row">
-                            <div class=" border-right">
-                                <div class="p-3 py-5">
-                                    <div class="d-flex justify-content-between align-items-center mb-3">
-                                        <h4 class="text-right">Edit Profile</h4>
-                                    </div>
-                                    <form method="POST">
-                                        <div class="row mt-2 editp">
-                                            <div class="col-md-12 ">
-                                                <label class="labels">Name</label>
-                                                <input name="name" type="text" class="form-control" placeholder="name" value="{{user.name}}" required>
-                                            </div>
-                                            <div class="col-md-12">
-                                                <label class="labels">Email</label>
-                                                <input name="email" type="text" class="form-control" placeholder="email" value="{{user.email}}" required disabled>
-                                            </div>
-                                            <div class="col-md-12">
-                                                <label class="labels">Mobile Number</label>
-                                                <input name="phoneNumber" type="number" class="form-control" placeholder="phone number" value="{{user.phoneNumber}}">
-                                            </div>
-                                            <div class="col-md-12">
-                                                <label class="labels">Address Line 1</label>
-                                                <input name="address" type="text" class="form-control" placeholder="address line 1" value="{{user.address}}">
-                                            </div>
-                                            <div class="col-md-12">
-                                                <label class="labels">Address Line 2</label>
-                                                <input name="address2" type="text" class="form-control" placeholder="address line 2" value="{{user.address2}}">
-                                            </div>
-                                            <div class="col-md-12">
-                                                <label class="labels">Postal Code</label>
-                                                <input name="postalCode" type="number" class="form-control" placeholder="postal code" value="{{user.postalCode}}">
-                                            </div>
-                                        </div>
-                                        <div class="mt-5" style="float: right !important; width: 25%;">
-                                            <a class="cancel" href="/user/profile/{{user.id}}" >Cancel</a>
-                                            <button class="btn btn-primary profile-button" type="submit">Save Profile</button>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                {{!-- <div class="col-sm-6 mb-3">
-                  <div class="card h-100">
-                    <div class="card-body">
-                      <small>Web Design</small>
-                      <div class="progress mb-3" style="height: 5px">
-                        <div class="progress-bar bg-primary" role="progressbar" style="width: 80%" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100"></div>
-                      </div>
-                    </div>
-                  </div>
-                </div> --}}
-              </div>
-            </div>
-          </div>
         </div>
     </div>
-<script>
-    var imagePreview = function(event) {
-        var reader = new FileReader();
-        reader.onload = function(){
-          var output = document.getElementById('pfp');
-          output.src = reader.result;
-        };
-        reader.readAsDataURL(event.target.files[0]);
-      };
-</script>
+
 <style>
-.modal-body>.body-desc,.footer-title {
-    font-size: 14px !important;
-    font-weight: normal !important;
-}
-    img {
-        height: 100% !important;
-        width: 100% !important;
-    }
-    .container1 {
-  width: 150px;
-  height: 150px;
-
-}
-    .outer {
-  width: 100% !important;
-  height: 100% !important;
-  max-width: 150px !important; /* any size */
-  max-height: 150px !important; /* any size */
-  margin: auto;
-  background-color: #6eafd4;
-  border-radius: 100%;
-  position: relative;
-  }
-  
-.inner {
-  background-color: #ff1414;
-  width: 50px;
-  height: 50px;
-  border-radius: 100%;
-  position: absolute;
-  bottom: 0;
-  right: 0;
-}
-
-.inner:hover {
-  background-color: #5555ff;
-}
-.inputfile {
-    opacity: 0;
-    overflow: hidden;
-    position: absolute;
-    z-index: 1;
-    width: 50px;
-    height: 50px;
-}
-.inputfile + label {
-    font-size: 1.25rem;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    display: inline-block;
-    overflow: hidden;
-    width: 50px;
-    height: 50px;
-    pointer-events: none;
-    cursor: pointer;
-    line-height: 50px;
-    text-align: center;
-}
-.inputfile + label svg {
-    fill: #fff;
-}
-    .bold {
-    font-weight: bold;
-}
-.red {
-    color: red;
-}
-  body {
-    background: #EEEEEE;
-}
-
 .form-control:focus {
     box-shadow: none;
     border-color: #BA68C8;
@@ -235,21 +149,21 @@
     color: #ababab;
 }
 .profile-button {
-    background: rgb(99, 39, 120);
+    background: #27ae60;
     box-shadow: none;
     border: none
 }
 .profile-button:hover {
-    background: #682773
+    background: #27ae60
 }
 
 .profile-button:focus {
-    background: #682773;
+    background: #27ae60;
     box-shadow: none
 }
 
 .back:hover {
-    color: #682773;
+    color: #27ae60;
     cursor: pointer
 }
 .labels {
@@ -272,7 +186,6 @@
     body{
     color: #1a202c;
     text-align: left;
-    background-color: #eeeeee;    
 }
 .col-md-3 {
 }

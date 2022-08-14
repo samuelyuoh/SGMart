@@ -1,5 +1,17 @@
+<div class="main-content">
+    <header>
+    <div class="search-wrapper">
+        <span class="las la-search"></span>
+        <input type="search" placeholder="Search">
+    </div>
+    <div class="social-icons">
+        <span class="las la-bell"></span>
+        <span class="las la-comment"></span>
+        <div></div>
+    </div>
+    </header>
 
-<main>
+    <main>
         <section>
             <h3 class="section-head">Overview</h3>
             <div class="analytics">
@@ -8,8 +20,8 @@
                         <span class="las la-eye"></span>
                     </div>
                     <div class="analytic-info">
-                        <h4 style="">Total Users</h4>
-                        <h3 id="users"></h3>
+                        <h4 style="">Total Views</h4>
+                        <h3>10.3M</h3>
                     </div>
                 </div>
                 <div class="analytic">
@@ -17,8 +29,8 @@
                         <span class="las la-clock"></span>
                     </div>
                     <div class="analytic-info">
-                        <h4>Total Orders</h4>
-                        <h3 id="orderstat"></h3>
+                        <h4>Watch Time</h4>
+                        <h3>20.9K <small class="text-danger">5%</small></h3>
                     </div>
                 </div>
                 <div class="analytic">
@@ -26,7 +38,7 @@
                         <span class="las la-users"></span>
                     </div>
                     <div class="analytic-info">
-                        <h4>Total Revenue</h4>
+                        <h4>Subscribers</h4>
                         <h3>1.3K <small class="text-success">5%</small></h3>
                     </div>
                 </div>
@@ -35,7 +47,7 @@
                         <span class="las la-heart"></span>
                     </div>
                     <div class="analytic-info">
-                        <h4>Total Expenses</h4>
+                        <h4>Total Likes</h4>
                         <h3>3.4K</h4>
                     </div>
                 </div>
@@ -72,8 +84,7 @@
                         </div>
                         <div class="graph-select">
                             <select name="" id="">
-                                <option value="">This Month</option>
-                                <option value="">This Week</option>
+                                <option value="">September</option>
                             </select>
                         </div>
                     </div>
@@ -85,60 +96,39 @@
         </div>
     </section>
     </main>
+</div>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.bundle.js"></script>
 <script>
-    a = []
-    $( document ).ready(function() {
-      setTimeout(() => {
-        $.getJSON('/admin/dashboardinfo', function (data) {
-          $('#users').text(data.users.all.toString())
-          temp = ((data.users.l30-data.users.l60)/data.users.l60*100)
-          if (temp < 0) {
-            $('#users').append(' <small class="text-danger" id="usersstat"></small>');
-            temp = temp * (-1)
-          } else {
-            $('#users').append(' <small class="text-success" id="usersstat"></small>');
-          }
-          $('#usersstat').text((temp).toString() + '%');
-          graphinfo = data.graph
-          for(let key in graphinfo) {
-            a.push(graphinfo[key])
-          }
-        })
-      },500),
-      setTimeout(()=> {
-        Chart.defaults.global.defaultFontFamily = "Poppins";
-        let ctx = document.querySelector("#revenueChart");
+    Chart.defaults.global.defaultFontFamily = "Poppins";
+    let ctx = document.querySelector("#revenueChart");
 
-        let revChart=new Chart(ctx, {
-            type:"line",
-            data:{
-                labels:["Sept1","Sept3","Sept6","Sept9","Sept 12","Sept 15", "Sept 18","Sept 21","Sept 24","Sept 27","Sept 30"],
-                datasets:[
-                    {
-                        label:"Profits",
-                        borderColor:"#396aff",
-                        borderWidth:"3",
-                        backgroundColor:"rgba(233,238,253,0.7)",
-                        data:a
-                    }
-                ]
-            },
-            options:{
-                responsive: true,
-                tooltips: {
-                    intersect: false,
-                    node: "index"
+    let revChart=new Chart(ctx, {
+        type:"line",
+        data:{
+            labels:["Sept1","Sept3","Sept6","Sept9","Sept 12","Sept 15", "Sept 18","Sept 21","Sept 24","Sept 27","Sept 30"],
+            datasets:[
+                {
+                    label:"Views",
+                    borderColor:"#2ec3a3",
+                    borderWidth:"3",
+                    backgroundColor:"rgba(235,247,245,0.7)",
+                    data:[0,30,60,25,60,25,50,10,50,90,120]
+                },
+                {
+                    label:"Watch Time",
+                    borderColor:"#396aff",
+                    borderWidth:"3",
+                    backgroundColor:"rgba(233,238,253,0.7)",
+                    data:[0,60,25,100,20,75,30,55,20,60,20]
                 }
+            ]
+        },
+        options:{
+            responsive: true,
+            tooltips: {
+                intersect: false,
+                node: "index"
             }
-        });
-      },1000)
+        }
     });
-    
 </script>
-
-<style>
-    header {
-        background-color: white;
-    }
-</style>

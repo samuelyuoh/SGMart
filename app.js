@@ -10,6 +10,8 @@ const cookieParser = require('cookie-parser');
 const session = require('express-session');
 const path = require('path');
 const bodyParser = require('body-parser');
+const fetch = (...args) =>
+  import('node-fetch').then(({ default: fetch }) => fetch(...args));
 require('dotenv').config();
 
 /*
@@ -112,7 +114,10 @@ const cartRoute = require('./routes/cart');
 const blogRoute = require('./routes/blog');
 const couponRoute = require('./routes/coupon');
 
-const { application } = require('express');
+const { application, response } = require('express');
+const couponRoute = require('./routes/coupon');
+const { request } = require('http');
+const flashMessage = require('./helpers/messenger');
 
 // Any URL with the pattern ‘/*’ is directed to routes/main.js
 app.use('/', mainRoute);
@@ -169,4 +174,43 @@ const storeItems = new Map([
 // Starts the server and listen to port
 app.listen(port, () => {
 	console.log(`Server started on port ${port}`);
+<<<<<<< HEAD
 });
+=======
+});
+
+app.post('/signup', (req, res) => {
+	const { email } = req.body;
+
+	if (!email) {
+		console.log('fail')
+		return;
+	}
+
+	const data = {
+		members: [
+		  {
+			email_address: email,
+			status: 'subscribed',
+		  }
+		]
+	};
+
+	const postData = JSON.stringify(data);
+
+
+	fetch('https://us8.api.mailchimp.com/3.0/lists/647d66c570', {
+		method: 'POST',
+		headers: {
+		  Authorization: 'auth df35f2b0e89b55385582cc9db74a34ae-us8'
+		},
+		body: postData
+	})
+
+	.then(res.statusCode === 200 ?
+		res.redirect('/') :
+		console.log('fail'))
+	.catch(err => console.log(err))
+	
+});
+

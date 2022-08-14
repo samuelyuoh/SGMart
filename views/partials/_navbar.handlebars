@@ -39,8 +39,10 @@
                 </div>
             </div>
 
-            <a href="">Contact</a>
+            
             <a href="/blog/viewBlogs">Blogs</a>
+            <a href="/user/contact">Contact</a>
+            <a href="/user/about">About</a>
 
 
             {{!-- <a href="/usercoupongenerate">Coupon(User)</a> --}}
@@ -48,10 +50,11 @@
         </nav>
         
         <div class="icons">
-          <a class="fas fa-user-circle nav-link" type="button" data-bs-toggle="dropdown" id="dropdownMenuLink" aria-expanded="false" href="#" style="font-size: 25px !important; width: 25px !important; display: inline-block !important;"></a>
+          <a class="fas fa-user-circle nav-link"  type="button" data-bs-toggle="dropdown" id="dropdownMenuLink" aria-expanded="false" href="#" style="font-size: 25px !important; width: 25px !important; display: inline-block !important;"></a>
           {{#if user}}
             <div class="dropdown-menu">
                   <a class="dropdown-item" href="/user/profile/{{user.id}}">Account</a>
+                  <a class="dropdown-item" href="/user/orders/{{user.id}}">My Orders</a>
                   {{#if (isStaff user.userType)}}
                   <a class="dropdown-item" href="/Admin">Admin</a>
                   {{/if}}

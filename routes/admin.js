@@ -6,6 +6,9 @@ const moment = require('moment');
 const Brand = require('../models/Brand');
 const Category = require('../models/Category');
 const Product = require('../models/Product');
+const Order = require('../models/Order');
+const Invoice = require('../models/Invoice');
+
 const { Op } = require('sequelize');
 const ensureAuthenticated = require('../helpers/auth');
 const bcrypt = require('bcryptjs');
@@ -364,7 +367,7 @@ router.get('/admincouponcreate', (req, res) => {
 	}
 
 	res.render('admin/admincouponcreate', metadata)
-	});
+});
 
 router.get('/inventory', async (req, res) => {
 	const pageAsNumber = Number.parseInt(req.query.page)
@@ -622,5 +625,33 @@ router.get('/admincoupondelete/:id', async function (req, res) {
 	console.log(err);
 	}
 });
+
+router.get('/listorders', async(req, res) => {
+	const metadata = {
+		layout: 'admin',
+		nav: {
+			sidebarActive: 'coupon'
+		}
+	}
+
+	let totalAmount = 0
+    var orders = await Order.findAll({
+		order: [['id', 'desc']],
+		raw: true
+	})
+    var cost_of_each_item = await Invoice.findAll({
+        attributes: [
+            'totalCost',
+        ],
+        raw: true
+    })
+    var items = await Invoice.findAll({raw:true})
+
+    for(var a in cost_of_each_item){
+        totalAmount += parseFloat(cost_of_each_item[a]['totalCost'])
+    }
+    res.render('admin/listorders', {orders: orders, item: items, totalAmount: totalAmount, layout: 'admin'})
+})
+
 
 module.exports = router;

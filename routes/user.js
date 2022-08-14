@@ -860,6 +860,112 @@ router.post('/editDelivery/:id', ensureAuthenticated, (req, res) => {
         .catch(err => console.log(err));
 });
 
+
+router.get('/orders/:id', ensureAuthenticated, async  (req, res) => {
+    let totalAmount = 0
+    User.findByPk(req.params.id)
+        .then((user) => {
+            if (!user) {
+                flashMessage(res, 'error', 'User not found');
+                // res.redirect('/user/login');
+                return;
+            }
+            if (req.user.id != req.params.id) {
+                flashMessage(res, 'error', 'Unauthorised access');
+                // res.redirect('/');
+                return;
+            }
+        })
+
+    var orders = await Order.findAndCountAll({
+        order: [['id', 'desc']],
+        raw: true,
+        where:{userId: req.user.id},
+    })
+    var cart = await Cart.findAll({
+        raw: true,
+        where:{userId: req.user.id},
+    })
+    var items = await Item.findAndCountAll({
+        where: {cartId: cart[0]['id']}
+    })
+            // var invoice = Invoice.findAll({where: {orderId: orders[0]['id']}})
+    res.render('user/orders', {orders:orders.rows, order_count:orders.count, cart: items.count})
+    
+});
+
+router.get('/orderDetail/:id', ensureAuthenticated, async(req, res) => {
+    let totalAmount = 0
+    var orders = await Order.findByPk(req.params.id)
+    var cost_of_each_item = await Invoice.findAll({
+        where: {orderId: orders['id']},
+        attributes: [
+            'totalCost',
+        ],
+        raw: true
+    })
+    var items = await Invoice.findAll({where: {orderId: orders['id']},raw:true})
+
+    for(var a in cost_of_each_item){
+        totalAmount += parseFloat(cost_of_each_item[a]['totalCost'])
+    }
+    res.render('user/orderdetail', {orders: orders, item: items, totalAmount: totalAmount})
+})
+
+
+router.get('/contact', (req, res) => {
+    res.render('user/contact');
+});
+
+router.post('/contact', (req, res) => {
+    const output = `
+      <p>You have a new contact request</p>
+      <h3>Contact Details</h3>
+      <ul>  
+        <li>Name: ${req.body.name}</li>
+        <li>Email: ${req.body.email}</li>
+        <li>Phone: ${req.body.phone}</li>
+        <li>Subject: ${req.body.subject}</li>
+      </ul>
+      <h3>Message</h3>
+      <p>${req.body.message}</p>
+    `;
+      // create reusable transporter object using the default SMTP transport
+  let transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: 'sgmart2107@gmail.com',
+      pass: 'cwaavbrqplassgid'
+    },
+    tls:{
+        rejectUnauthorized:false
+    }
+  });
+
+  var mailOptions = {
+    from: 'sgmart2107@gmail.com',
+    to: 'sgmartreceiver@gmail.com',
+    subject: 'Node Contact Request',
+    text: 'Hello World',
+    html: output
+  };
+  
+  transporter.sendMail(mailOptions, function(error, info){
+    if (error) {
+      console.log(error);
+    } else {
+      console.log('Email sent: ' + info.response);
+    }
+    res.render('user/contact', {msg: 'Email has been sent'})
+  });
+
+});
+
+
+router.get('/about', (req, res) => {
+    res.render('user/about');
+});
+
 router.get('/viewWishlist', async(req, res) => {
     var wishlist = await Wishlist.findAll(
         {where: { userId: req.user.id},
