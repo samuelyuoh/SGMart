@@ -56,13 +56,13 @@ router.get('/cart', async function(req, res, next) {
         raw: true,
         include:{
             model: Product,
-            required:false
+            required:true
         },
         where: { cartId: id[0]['id']}
     })
         .then((carts) => {
+            console.log(carts)
             res.render('cart/cart', { carts });
-            
         })
         .catch(err => console.log(err));
 });
