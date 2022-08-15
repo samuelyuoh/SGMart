@@ -126,14 +126,14 @@ router.get('/nextpage', async (req, res) => {
 	let categoryAsFilter = req.query.category
 	let brandAsFilter = req.query.brand
 	var search = req.query.search
-	var min = parseInt(req.query.min)
-	var max = parseInt(req.query.max)
-	if(min == "" || min == undefined || min == "null" || Number.isNaN(min)){
-		min = 0
-	}
-	if(max == "" || max == undefined || max == "null" || Number.isNaN(max)){
-		max = parseInt(productMax['max'])
-	}
+	// var min = parseInt(req.query.min)
+	// var max = parseInt(req.query.max)
+	// if(min == "" || min == undefined || min == "null" || Number.isNaN(min)){
+	// 	min = 0
+	// }
+	// if(max == "" || max == undefined || max == "null" || Number.isNaN(max)){
+	// 	max = parseInt(productMax['max'])
+	// }
 	if(categoryAsFilter == ""){
 		categoryAsFilter = ""
 	}else if(categoryAsFilter == undefined || categoryAsFilter == "null"){
@@ -191,7 +191,7 @@ router.get('/nextpage', async (req, res) => {
 					[op.like]: '%'+	search +'%'
 				},
 				[op.or]: tmp,
-				product_price: {[op.between]: [min, max]}
+				// product_price: {[op.between]: [min, max]}
 			},
 				raw: true
 			})
