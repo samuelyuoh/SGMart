@@ -11,7 +11,23 @@ const Item = db.define('item',
         discount: { type: Sequelize.DECIMAL(5,2) },
         stock: { type: Sequelize.INTEGER },
         desc: { type: Sequelize.STRING(500) },
-        image: { type: Sequelize.STRING }
+        image: { type: Sequelize.STRING },
+        cartId: {
+            allowNull: true,
+            type: Sequelize.INTEGER,
+            references: {
+                model: 'carts',
+                key: 'id'
+            }
+        },
+        productId: {
+            allowNull: true,
+            type: Sequelize.INTEGER,
+            references: {
+                model: 'products',
+                key: 'id'
+            }
+        },  
     });
 
 
