@@ -423,6 +423,7 @@ router.get('/addproduct',async (req, res) => {
 	var brand = await Brand.findAll({raw: true})
 	var category = await Category.findAll({raw: true})
 	var path = req.path
+	path = path.toLowerCase()
 	res.render('admin/addproducts', { brands: brand , category: category , layout: 'admin',path })
 });
 router.post('/addproduct',async function (req, res) {	
