@@ -164,8 +164,8 @@ router.get('/verify/:userId/:token', async function (req, res) {
     }
 });
 router.post('/login', async (req, res, next) => {
-    let {email, password} = req.body;
-    const captcha = req.body['g-recaptcha-response']
+    let {email, password, recaptcha} = req.body;
+    const captcha = req.body['g-recaptcha-response'] || recaptcha
     if (captcha === undefined || captcha === '' || captcha === null) {
         // return res.json({"success" : false, "msg": "Please select recaptcha"});
         flashMessage(res, 'error', 'Please select recaptcha');

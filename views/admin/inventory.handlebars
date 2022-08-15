@@ -91,7 +91,7 @@
       </tbody>
       </table>
       </div>
-<div class="w-100 text-center pagination">
+<div class="w-100 text-center pagination" style="justify-content: end; padding-right:240px; padding-top: 20px;">
   <input type="hidden" value="{{totalPages}}" id="totalPages">
   <ul id="paging">
     {{!-- <li class="btn prev"><span><i class="fas fa-angle-left">Prev</i></span></li>
@@ -117,7 +117,7 @@
   display: flex;
   background: #20b2aa;
   padding: 8px;
-  border-radius: 50px;
+  border-radius: 30px;
 }
 .pagination ul li{
   list-style: none;
@@ -192,7 +192,7 @@ function element(totalPages, page){
     liTag += `<li class="btn prev" onclick="getPage(this)"value="${page-1}"><span><i class="fas fa-angle-left">Prev</i></span></li>`
   }
   if(page > 2){
-    liTag += `<li class="numb" id="1" onclick="getPage(this)" value="1"><span>1</span></li>`
+    liTag += `<li class="numb" id="1" onclick="getPage(this)" value="0"><span>1</span></li>`
     if(page > 3){
       liTag += `<li class="dots"><span>...</span></li>`
     }
@@ -211,7 +211,7 @@ function element(totalPages, page){
     if(pageLength > totalPages){
       continue;
     }
-    if(pageLength == 0){
+    if(pageLength == -1){
       pageLength = pageLength + 1
     }
     if(page==pageLength){
@@ -219,13 +219,13 @@ function element(totalPages, page){
     }else{
       activeLi = "";
     }
-    liTag += `<li class="numb ${activeLi}" onclick="getPage(this)"value="${pageLength}"><span>${pageLength}</span></li>`
+    liTag += `<li class="numb ${activeLi}" onclick="getPage(this)"value="${pageLength}"><span>${pageLength+1}</span></li>`
   }
   if(page < totalPages-1){
     if(page < totalPages -2){
       liTag += `<li class="dots"><span>...</span></li>`
     }
-    liTag += `<li class="numb" id="${totalPages}"onclick="getPage(this)" value="${totalPages}"><span>${totalPages}</span></li>`
+    liTag += `<li class="numb" id="${totalPages}"onclick="getPage(this)" value="${totalPages-1}"><span>${totalPages}</span></li>`
   }
 
   if(page < totalPages-1){

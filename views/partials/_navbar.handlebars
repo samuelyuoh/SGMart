@@ -45,7 +45,7 @@
             <a href="/user/about">About</a>
 
 
-            {{!-- <a href="/usercoupongenerate">Coupon(User)</a> --}}
+            
             
         </nav>
         
@@ -54,6 +54,7 @@
           {{#if user}}
             <div class="dropdown-menu">
                   <a class="dropdown-item" href="/user/profile/{{user.id}}">Account</a>
+                  <a href="/usercoupongenerate/{{user.id}}">Redeem Coupons</a>
                   <a class="dropdown-item" href="/user/orders/{{user.id}}">My Orders</a>
                   {{#if (isStaff user.userType)}}
                   <a class="dropdown-item" href="/Admin">Admin</a>

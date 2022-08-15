@@ -1,3 +1,6 @@
 npm i express cookie-parser dotenv ejs
 npm install otp-generator --save.
 npm i handlebars-paginate
+npm i nodemailer
+npm i fetch
+npm i node-fetch
