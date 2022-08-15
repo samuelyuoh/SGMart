@@ -18,7 +18,7 @@ const jwt = require('jsonwebtoken');
 const sgMail = require('@sendgrid/mail');
 const User = require('../models/User');
 const createlogs = require('../helpers/logs');
-const {convertJsonToExcel, getUsers, getStaff} = require('../helpers/excel');
+const {convertJsonToExcel, getUsers, getStaff, getLogs} = require('../helpers/excel');
 const fs = require('fs');
 const upload = require('../helpers/productUpload');
 const Logs = require('../models/Logs');
@@ -322,11 +322,16 @@ router.get('/generateexcel/:list', async (req, res) => {
 		var data = await getStaff();
 		var sheetName = 'staff';
 		var fileName = 'staff.xlsx';
-	} else {
+	} else if (list == 'logs') {
+		var data = await getLogs();
+		var sheetName = 'logs';
+		var fileName = 'logs.xlsx';
+	}
+	else {
 		flashMessage(res, 'error', 'Invalid Parameter');
 		res.redirect('/admin');
 	}
-	if (list == 'users' || list == 'staff') {
+	if (list == 'users' || list == 'staff' || list == 'logs') {
 		res.removeHeader('Content-Type')
 		res.removeHeader("Content-Disposition")
 		convertJsonToExcel(data, sheetName , fileName);
@@ -347,6 +352,8 @@ router.get('/generateexcel/:list', async (req, res) => {
 				console.error(err)
 				}
 		}, 3000)
+	} else if (list == 'logs') {
+		
 	}
 });
 
@@ -436,13 +443,38 @@ router.get('/logs', async (req, res) => {
 		}],
 		raw: true
 	}).then((logs) => {
-			metadata.totalPages = Math.ceil(logs.count/1)
+			metadata.totalPages = Math.ceil(logs.count/8)
 			metadata.currentPage = page
-			metadata.users = logs.rows;
+			metadata.logs = logs.rows;
 			res.render('admin/logs', metadata);
 	}).catch(err => console.log(err))
 })
 
+router.get('/getPage/logs', async (req, res) => {
+	const pageAsNumber = Number.parseInt(req.query.page)
+	let page = 0
+	if(!Number.isNaN(pageAsNumber) && pageAsNumber >= 0) {
+		page = pageAsNumber;
+	}
+	await Logs.findAndCountAll({
+		limit:8,
+		offset: page*8,
+		include: [{
+			model: User,
+		}],
+		raw: true
+	})
+		.then((logs) => {
+			metadata.totalPages = Math.ceil(logs.count/8)
+			metadata.currentPage = page
+			metadata.logs = logs.rows;
+			res.send(metadata)
+			// res.render('admin/userList', metadata);
+			
+		})
+		.catch(err => console.log(err));
+	
+})
 router.get('/inventory', async (req, res) => {
 	const pageAsNumber = Number.parseInt(req.query.page)
 	let page = 0

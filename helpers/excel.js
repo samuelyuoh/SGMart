@@ -1,6 +1,7 @@
 const XLSX = require('xlsx');
 const User = require('../models/User');
 const { Op } = require('sequelize');
+const Logs = require('../models/Logs');
 
 function convertJsonToExcel(data, sheetName, fileName) {
     // file name must be in format of ___.xlsx
@@ -48,6 +49,18 @@ async function getStaff() {
     return newUsers;
 } 
 
+async function getLogs() {
+    logs = await Logs.findAll();
+	var newLogs = []
+	logs.forEach(element => {
+		
+		var b = formatData(element.dataValues);
+		
+		newLogs.push(b);
+	});
+    return newLogs;
+} 
+
 function formatData(data) {
     var remove = ["status", "tfa", "gtfa", "pfp", "otptoken", "secret"];
     if (data.userType == 'madmin') {
@@ -58,4 +71,4 @@ function formatData(data) {
     }
     return data;
 }
-module.exports = {convertJsonToExcel, getUsers, getStaff};
+module.exports = {convertJsonToExcel, getUsers, getStaff, getLogs};

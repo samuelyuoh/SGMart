@@ -148,17 +148,17 @@
 			</div>
 			<ul class="pagination pull-right">
 				{{#if (havePrevious currentPage totalPages)}}
-					<li><button href="{{previous}}"><i class="fa fa-chevron-left"></i></button></li>
+					<li><button href="{{previous currentPage}}"><i class="fa fa-chevron-left"></i></button></li>
 				{{else}}
-					<li><button href="{{previous}}" disabled><i class="fa fa-chevron-left"></i></button></li>
+					<li><button href="{{previous currentPage}}" disabled><i class="fa fa-chevron-left"></i></button></li>
 				{{/if}}
 				{{#each (increment 0 totalPages)}}
 					<li><button value="{{this}}" onclick="getPage(this)" id="{{this}}">{{next this}}</button></li>
 				{{/each}}
 				{{#if (haveNext currentPage totalPages)}}
-					<li><button href="{{previous}}"><i class="fa fa-chevron-right"></i></button></li>
+					<li><button href="{{next currentPage}}"><i class="fa fa-chevron-right"></i></button></li>
 				{{else}}
-					<li><button href="{{previous}}" disabled><i class="fa fa-chevron-right"></i></button></li>
+					<li><button href="{{next currentPage}}" disabled><i class="fa fa-chevron-right"></i></button></li>
 				{{/if}}
 			</ul>
 		</div>
@@ -198,7 +198,10 @@ window.addEventListener('load', setActive)
   }
 </script>
 <style>
-
+.active {
+    background-color: #337ab7 !important;
+    color: white !important;
+}
 body{margin-top:20px;}
 table {border: none;}
 
