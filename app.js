@@ -146,6 +146,8 @@ const storeItems = new Map([
 	[2, {priceInCents: 20000, name: "20 Dolla"}],
 ])
 
+const { STATUS_CODES } = require('http');
+
 // // Stripe
 // app.post("/create-checkout-session", async (req, res) => {
 // 	try {

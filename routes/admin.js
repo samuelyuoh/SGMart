@@ -21,6 +21,7 @@ const createlogs = require('../helpers/logs');
 const {convertJsonToExcel, getUsers, getStaff} = require('../helpers/excel');
 const fs = require('fs');
 const upload = require('../helpers/productUpload');
+const { STATUS_CODES } = require('http');
 
 function rot13(message) {
     // cypher cus cnt upload actual key
@@ -51,20 +52,15 @@ const isMAdmin = function(userType) {
 	return (userType == 'madmin')
 };
 
-router.get('*', async(req, res) => {
-	if(req.isAuthenticated()){
-		if(!isStaff(req.user.userType)){
-			res.render('401')
-		}
+router.get('*', ensureAuthenticated, (req, res, next) => {
+	if(!isStaff(req.user.userType)){
+		return res.status(401).render('401');
 	}else{
-		res.render('401')
+		next();
 	}
 })
 
 router.get('/', ensureAuthenticated, async (req, res) => {
-	if (!isStaff(req.user.userType)) {
-		res.render('401');
-	} else {
 		const metadata = {
 			layout: 'admin',
 			nav: {
@@ -86,9 +82,6 @@ router.get('/', ensureAuthenticated, async (req, res) => {
 		metadata.l30 = a.length;
 
 		res.render('admin/index', metadata)
-
-	}
-	
 });
 
 
