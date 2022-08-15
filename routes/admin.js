@@ -10,7 +10,7 @@ const Brand = require('../models/Brand');
 const Order = require('../models/Order');
 const Invoice = require('../models/Invoice');
 
-const { Op } = require('sequelize');
+const { Op, where } = require('sequelize');
 const ensureAuthenticated = require('../helpers/auth');
 const bcrypt = require('bcryptjs');
 const Sequelize = require('sequelize');
@@ -22,6 +22,8 @@ const {convertJsonToExcel, getUsers, getStaff} = require('../helpers/excel');
 const fs = require('fs');
 const upload = require('../helpers/productUpload');
 const { STATUS_CODES } = require('http');
+const { formatDate } = require('../helpers/handlebars');
+
 
 function rot13(message) {
     // cypher cus cnt upload actual key
@@ -312,13 +314,62 @@ router.get('/dashboardinfo', async (req, res) => {
 	c = []
 	d = []
 	orders = await Order.findAll()
-	for (var i = 0;i < orders.length;i++) {
-		if ((curdate - moment(orders[i].createdAt))< 2592000000 ) { //num of seconds in 30 days
-			a.push(orders[i])
-			b.push(orders[i])
+	for (var i = 0;i < (orders).length;i++) {
+		if ((curdate - moment(orders[i].dataValues.createdAt))< 2592000000 ) { //num of seconds in 30 days
+			c.push(orders[i])
+			d.push(orders[i])
 			
-		} else if ((curdate - moment(orders[i].createdAt))< 2592000000*2) {
-			b.push(orders[i])
+		} else if ((curdate - moment(orders[i].dataValues.createdAt))< 2592000000*2) {
+			d.push(orders[i])
+		}
+	}
+	invoices = await Invoice.findAll({
+		include: [{
+			model: Product,
+		}]
+	})
+	var total_rev=0
+	var total_expense=0
+	var e = 0 //rev l30
+	var f =0 //rev l60
+	var g = 0 //exp l30
+	var h =0 //exp l60
+
+	for (var i = 0;i < invoices.length;i++) {
+		const temprev = parseFloat(invoices[i].dataValues.totalCost)
+		const tempexp = parseFloat(invoices[i].dataValues.quantity) * invoices[i].dataValues.product.dataValues.cost
+		total_rev += temprev
+		total_expense += tempexp
+		if ((curdate - moment(invoices[i].dataValues.createdAt))< 2592000000 ) { //num of seconds in 30 days
+			e+=temprev
+			f+=temprev
+			g+=tempexp
+			h+=tempexp
+			
+		} else if ((curdate - moment(invoices[i].dataValues.createdAt))< 2592000000*2) {
+			f+=tempexp
+			h+=tempexp
+		}
+	}
+
+	var ginfol30 = [0,0,0,0,0,0,0,0,0,0]
+	var ginfol7 = [0,0,0,0,0,0,0]
+	for (var i = 0;i < 7;i++) {
+		for (var p = 0;p < invoices.length;p++) {
+			if (formatDate(invoices[p].dataValues.createdAt, 'DD MMM YYYY') == formatDate(moment().subtract(i, 'days').toDate(), 'DD MMM YYYY')) {
+				const temprev = parseFloat(invoices[p].dataValues.totalCost)
+				const tempexp = parseFloat(invoices[p].dataValues.quantity) * invoices[p].dataValues.product.dataValues.cost
+				ginfol7[i] += temprev - tempexp
+			}
+		}
+	}
+	for (var i = 0;i < 7;i++) {
+		for (var p = 0;p < invoices.length;p++) {
+			if (formatDate(invoices[p].dataValues.createdAt, 'DD MMM YYYY') == formatDate(moment().subtract(i*3, 'days').toDate(), 'DD MMM YYYY')) {
+				const temprev = parseFloat(invoices[p].dataValues.totalCost)
+				const tempexp = parseFloat(invoices[p].dataValues.quantity) * invoices[p].dataValues.product.dataValues.cost
+				ginfol7[i] += temprev - tempexp
+			}
 		}
 	}
 	const ResponseObject = {
@@ -332,19 +383,21 @@ router.get('/dashboardinfo', async (req, res) => {
 			l30: c.length,
 			l60: d.length,
 		},
-		graph: {
-			a: 0,
-			b: 30,
-			c: 60,
-			d: 40,
-			e: 70,
-			f: 65,
-			g: 40,
-			h: 80,
-			i: 60,
-			w: 80,
-			q: 100,
-		}
+		revenue: {
+			all: total_rev,
+			l30: e,
+			l60: f,
+		},
+		expense: {
+			all: total_expense,
+			l30: g,
+			l60: h,
+		},
+		ginfo: {
+			l7: ginfol7.reverse(),
+			l30: ginfol30.reverse()
+		},
+		
 	}
 	return res.json(ResponseObject)
 });
