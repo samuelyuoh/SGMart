@@ -39,6 +39,7 @@
           {{#each category}}
           <div class="my-1"> <label class="tick">{{category_name}}<input type="checkbox" id="category" value="{{category_name}}" class="category-active" name="{{category_name}}"onclick="settingFilter(this)" checked> <span class="check"></span> </label> </div>
           {{/each}}
+          <div class="my-1"> <label class="tick">Select All Categories<input type="checkbox" id="category" value="{{category_name}}" class="category-active" name="{{category_name}}"onclick="settingFilter(this)" checked> <span class="check"></span> </label> </div>
         </div>
       </div>
 
@@ -48,6 +49,7 @@
           {{#each brands}}
           <div class="my-1"> <label class="tick">{{brand_name}}<input type="checkbox" id="brand" value="{{brand_name}}" class="brand-active" name="{{brand_name}}" onclick="settingFilter(this)" checked> <span class="check"></span> </label> </div>
           {{/each}}
+          <div class="my-1"> <label class="tick">Select All Brands<input type="checkbox" id="brand" value="{{brand_name}}" class="brand-active" name="{{brand_name}}" onclick="settingFilter(this)" checked> <span class="check"></span> </label> </div>
         </div>
       </div>
 
