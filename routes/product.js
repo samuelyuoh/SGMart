@@ -16,6 +16,7 @@ router.get('/products', async (req, res) => {
 	var brands = await Brand.findAll({raw:true});
 	var category = await Category.findAll({raw:true});
 	const pageAsNumber = Number.parseInt(req.query.page)
+	var productMax = await Product.findOne({raw:true,attributes: [[sequelize.fn('max', sequelize.col('product_price')), 'max']]})
 	var search = req.query.search
 	if(search == undefined){
 		search =""
@@ -51,6 +52,7 @@ router.get('/products', async (req, res) => {
 				brands: brands, 
 				wishlist: wishlist,
 				category: category, 
+				max: productMax['max']
 			});
 		}else{
 			Product.findAndCountAll({
@@ -81,6 +83,7 @@ router.get('/products', async (req, res) => {
 				currentPage: page,
 				brands: brands,
 				category: category, 
+				max: productMax['max']
 			});
 		})
 		.catch(err => console.log(err));
@@ -119,9 +122,18 @@ router.get('/nextpage', async (req, res) => {
 	var category = await Category.findAll({raw:true});
 	var categoryAsName = await Category.findAll({raw:true, attributes: ['category_name']});
 	var brandAsName = await Brand.findAll({raw:true, attributes: ['brand_name']});
+	var productMax = await Product.findOne({raw:true,attributes: [[sequelize.fn('max', sequelize.col('product_price')), 'max']]})
 	let categoryAsFilter = req.query.category
 	let brandAsFilter = req.query.brand
 	var search = req.query.search
+	var min = parseInt(req.query.min)
+	var max = parseInt(req.query.max)
+	if(min == "" || min == undefined || min == "null" || Number.isNaN(min)){
+		min = 0
+	}
+	if(max == "" || max == undefined || max == "null" || Number.isNaN(max)){
+		max = parseInt(productMax['max'])
+	}
 	if(categoryAsFilter == ""){
 		categoryAsFilter = ""
 	}else if(categoryAsFilter == undefined || categoryAsFilter == "null"){
@@ -148,7 +160,6 @@ router.get('/nextpage', async (req, res) => {
 	categoryAsFilter = await Category.findAll({where: {category_name: categoryAsFilter}, attributes: [['id', 'categoryId']], raw:true})
 	brandAsFilter = await Brand.findAll({where: {brand_name: brandAsFilter}, attributes: [['id', 'brandId']], raw:true})
 	var tmp = categoryAsFilter.concat(brandAsFilter)
-	console.log(tmp)
 	if(search == undefined){
 		search = ""
 	}
@@ -163,8 +174,7 @@ router.get('/nextpage', async (req, res) => {
 			where: {userId: req.user.id},
 			raw: true
 			})
-		
-		var product = await Product.findAndCountAll({
+			var product = await Product.findAndCountAll({
 			limit:2,
 			offset: page*2,
 			include: [{
@@ -180,6 +190,8 @@ router.get('/nextpage', async (req, res) => {
 				product_name: {
 					[op.like]: '%'+	search +'%'
 				},
+				[op.or]: tmp,
+				product_price: {[op.between]: [min, max]}
 			},
 				raw: true
 			})
@@ -209,6 +221,7 @@ router.get('/nextpage', async (req, res) => {
 				[op.like]: '%'+	search +'%'
 			},
 			[op.or]: tmp,
+			product_price: {[op.between]: [min, max]}
 		},
 			raw: true
 		})
