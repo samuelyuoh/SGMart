@@ -21,6 +21,7 @@ const createlogs = require('../helpers/logs');
 const {convertJsonToExcel, getUsers, getStaff} = require('../helpers/excel');
 const fs = require('fs');
 const upload = require('../helpers/productUpload');
+const { STATUS_CODES } = require('http');
 
 function rot13(message) {
     // cypher cus cnt upload actual key
@@ -51,10 +52,15 @@ const isMAdmin = function(userType) {
 	return (userType == 'madmin')
 };
 
+router.get('*', ensureAuthenticated, (req, res, next) => {
+	if(!isStaff(req.user.userType)){
+		return res.status(401).render('401');
+	}else{
+		next();
+	}
+})
+
 router.get('/', ensureAuthenticated, async (req, res) => {
-	if (!isStaff(req.user.userType)) {
-		res.redirect('/');
-	} else {
 		const metadata = {
 			layout: 'admin',
 			nav: {
@@ -76,29 +82,9 @@ router.get('/', ensureAuthenticated, async (req, res) => {
 		metadata.l30 = a.length;
 
 		res.render('admin/index', metadata)
-
-	}
-	
 });
 
-router.get('/createStaffAcc', ensureAuthenticated, (req, res) => {
-	if (!isAdmin(req.user.userType) && isStaff(req.user.userType)) {
-		res.redirect('/admin');
-	} else if (!isStaff(req.user.userType)){
-		res.redirect('/')
-	} else {
-		const metadata = {
-			layout: 'admin',
-			nav: {
-				sidebarActive: 'cstaff'
-			},
-			user: req.user
-		}
 
-		res.render('admin/createStaff', metadata)
-	}
-	
-});
 
 router.post('/createStaffAcc', ensureAuthenticated, async (req, res) => {
 	email = req.body.email;
@@ -115,9 +101,9 @@ router.post('/createStaffAcc', ensureAuthenticated, async (req, res) => {
 		};
 		sendEmail(message)
 			.then(response => {
-				console.log(response);
 				flashMessage(res, 'success','registered link sent to '+email+' successfully');
-				res.redirect('/admin');
+				createlogs("registered staff account", req.user.id)
+				res.redirect('/admin/stafflist');
 			})
 			.catch(err => {
 				console.log(err);
@@ -128,8 +114,9 @@ router.post('/createStaffAcc', ensureAuthenticated, async (req, res) => {
 			{userType: 'staff'},
 			{where: {email: email}}
 		).then((result) => {
+			createlogs("Updated to  staff account", req.user.id)
 			flashMessage(res, 'success', 'Account updated to staff account');
-			res.redirect('/admin')
+			res.redirect('/admin/stafflist')
 		})
 	}
 	
@@ -227,7 +214,10 @@ router.get('/status/:change/:id', async (req, res) => {
 	if (!user) {
 		flashMessage(res, 'error', 'No user found');
 		
-	} else {
+	} else if (user.userType == 'madmin') {
+		flashMessage(res, 'error', 'Main admin cannot be banned');
+	} 
+	else {
 		if (change == 'ban') {
 			if (user.status == 2) {
 				flashMessage(res, 'error', 'User already banned');
@@ -292,6 +282,7 @@ router.get('/generateexcel/:list', async (req, res) => {
 
 		setTimeout(() => {
 			res.download(file)
+			createlogs(`downloaded ${list} excel file`, req.params.id)
 		}, 500)
 		setTimeout(() => {
 			try {
@@ -376,8 +367,8 @@ router.get('/inventory', async (req, res) => {
 		page = pageAsNumber;
 	}
 	Product.findAndCountAll({
-		limit:8,
-		offset: page*8,
+		limit:1,
+		offset: page*1,
 		include: [{
 			model: Brand,
 		},
@@ -390,7 +381,7 @@ router.get('/inventory', async (req, res) => {
 		.then((product) => {
 			res.render('admin/inventory', {
 				product: product.rows,
-				totalPages: Math.ceil(product.count/8),
+				totalPages: Math.ceil(product.count/1),
 				currentPage: page,
 				layout: 'admin', 
 				nav: { sidebarActive: 'product' }
@@ -405,8 +396,8 @@ router.get('/getPage', async (req, res) => {
 		page = pageAsNumber;
 	}
 	Product.findAndCountAll({
-		limit:2,
-		offset: page*2,
+		limit:1,
+		offset: page*1,
 		include: [{
 			model: Brand,
 			required: true,
@@ -421,7 +412,7 @@ router.get('/getPage', async (req, res) => {
 		.then((product) => {
 			res.send({
 				product: product.rows,
-				totalPages: Math.ceil(product.count/2),
+				totalPages: Math.ceil(product.count/1),
 				currentPage: page,
 				layout: 'admin', 
 				nav: { sidebarActive: 'product' }
@@ -435,11 +426,13 @@ router.get('/addproduct',async (req, res) => {
 	var brand = await Brand.findAll({raw: true})
 	var category = await Category.findAll({raw: true})
 	var path = req.path
+	path = path.toLowerCase()
 	res.render('admin/addproducts', { brands: brand , category: category , layout: 'admin',path })
 });
 router.post('/addproduct',async function (req, res) {	
 	let { product_name, product_price, discount, stock, desc, image, brandId, categoryId, cost } = req.body;
 	try{
+		createlogs(`${product_name} created`, req.user.id)
 		let product = await Product.create({product_name, product_price, discount, stock, desc, image, brandId, categoryId, cost});
 		flashMessage(res, 'success', 'Product created successfully.');
 		res.redirect('/admin/inventory')
@@ -500,6 +493,7 @@ router.post('/updateproduct/:id', async function(req, res) {
 			{
 				where: { id: req.params.id}
 			})
+			createlogs(`${product_name}'s information updated`, req.user.id)
 			flashMessage(res, 'success', 'Product updated successfully.')
 			res.redirect('/admin/inventory')
 	}
@@ -516,6 +510,7 @@ router.post('/updatestock/:id', async (req, res) =>{
 			{where: {id: req.params.id}}
 	)
 	.catch(err => console.log(err));
+	createlogs(`${product.product_name}'s stock updated`, req.user.id)
 	flashMessage(res, 'success', 'Stock added successfully.')
 	res.redirect('/admin/inventory')
 })
@@ -524,6 +519,7 @@ router.get('/deleteproduct/:id', async function(req, res){
 	try{
 		let product = await Product.findByPk(req.params.id)
 		let result = await Product.destroy({where: { id: product.id}})
+		createlogs(`Product ${req.params.id} deleted`, req.user.id)
 		console.log(result +' product deleted')
 		res.redirect('/')
 	}catch(err){
@@ -542,6 +538,7 @@ router.post('/admincouponcreate', (req, res) => {
 	}
 	redeemedquantity = 0;
 	Coupon.create({ couponName, percentageDiscount, expiryDate, couponQuantity, userid, pointstoattain, redeemedquantity });
+	createlogs(`Coupon ${couponName} created`, req.user.id)
 	flashMessage(res, 'success', couponName + ' has been created successfully');
 
 	res.render('admin/admincouponcreate', metadata)
@@ -578,6 +575,7 @@ router.post('/admincouponedit/:id', (req, res) => {
         { where: { id: req.params.id } }
     )
         .then((result) => {
+			createlogs(`Coupon ${couponName} edited`, req.user.id)
             console.log(result[0] + ' coupon updated');
             res.redirect('/admin/admincouponlist');
         })
@@ -620,6 +618,7 @@ router.post('/admincoupondelete/:id', async function (req, res) {
 		}
 
 		let result = await Coupon.destroy({ where: { couponName: coupon.couponName } }); //change to delete from id
+		createlogs(`Coupon ${coupon.couponName} deleted`, req.user.id)
 		flashMessage(res, 'success',result + ' coupon deleted');
 		res.redirect('/admin/admincouponlist');
 	}
@@ -751,4 +750,54 @@ router.get('/couponstats', (req, res) => {
 	
 	res.render('admin/couponstats', metadata)
 	});
+
+router.get('/addCategory', (req, res) => {
+	res.render('admin/addCategory', {layout: 'admin'})
+})
+
+router.post('/addCategory', (req, res) => {
+	category_name = req.body.category
+	Category.create(category_name)
+	res.redirect('/admin/inventory')
+})
+
+router.post('/updateCategory/:id', (req, res) => {
+	category_name = req.body.category
+	Category.update({where: {id: req.params.id},category_name: category_name})
+	res.redirect('/admin/inventory')
+
+})
+router.post('/deleteCategory/:id', (req, res) => {
+	Category.destroy({where: {id: req.params.id}})
+	res.redirect('/admin/inventory')
+})
+router.get('/updateCategory/:id', (req, res) => {
+	res.render('updateCategory', {layout: 'admin'})
+})
+
+router.get('/updateBrand/:id', (req, res) => {
+	res.render('updateBrand', {layout: 'admin'})
+})
+
+router.post('/updateBrand/:id', (req, res) => {
+	brand_name = req.body.brand
+	Brand.update({where: {id: req.params.id},brand_name: brand_name})
+	res.redirect('/admin/inventory')
+})
+router.post('/deleteBrand/:id', (req, res) => {
+	Brand.destroy({where: {id: req.params.id}})
+	res.redirect('/admin/inventory')
+})
+
+router.get('/addBrand', (req, res) => {
+	res.render('admin/addBrand', {layout: 'admin'})
+})
+
+router.post('/AddBrand', (req, res) => {
+	brand_name = req.body.brand
+	Brand.create(brand_name)
+	res.redirect('/admin/inventory')
+})
+
+
 module.exports = router;

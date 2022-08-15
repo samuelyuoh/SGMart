@@ -12,7 +12,7 @@
         <div class="sidebar-menu">
             <ul>
               <li>
-                <a href="/admin" class="active">
+                <a href="/admin" class="{{ifEquals sidebarActive 'dashboard'}}">
                   <span class="las la-chart-bar"></span>
                   <span>Dashboard</span>
                 </a>
@@ -30,7 +30,19 @@
                 </a>
               </li>
               <li>
-                <a href="">
+                <a href="/admin/userlist">
+                  <span class="las la-user"></span>
+                  <span>Users</span>
+                </a>
+              </li>
+              <li>
+                <a href="/admin/stafflist">
+                  <span class="las la-user-tie"></span>
+                  <span>Staff</span>
+                </a>
+              </li>
+              <li>
+                <a href="/admin/inventory">
                   <span class="las la-apple-alt"></span>
                   <span>Products</span>
                 </a>
@@ -60,19 +72,19 @@
                 </a>
               </li>
               <li>
-                <a href="">
+                <a href="/admin/addProduct">
                   <span class="las la-plus-square"></span>
                   <span>Add Product</span>
                 </a>
               </li>
               <li>
-                <a href="">
+                <a href="/admin/addBrand">
                   <span class="las la-plus-square"></span>
                   <span>Add Brand</span>
                 </a>
               </li>
               <li>
-                <a href="">
+                <a href="/admin/addCategory">
                   <span class="las la-plus-square"></span>
                   <span>Add Category</span>
                 </a>
@@ -90,13 +102,7 @@
                 </a>
               </li>
               <li>
-                <a href="/admin/createStaffAcc">
-                  <span class="las la-user-plus"></span>
-                  <span>Create Staff</span>
-                </a>
-              </li>
-              <li>
-                <a href="">
+                <a href="/user/logout">
                   <span class="las la-power-off"></span>
                   <span>Logout</span>
                 </a>

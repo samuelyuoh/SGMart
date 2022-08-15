@@ -117,6 +117,7 @@ const couponRoute = require('./routes/coupon');
 const { application, response } = require('express');
 const { request } = require('http');
 const flashMessage = require('./helpers/messenger');
+const { ifError } = require('assert');
 
 // Any URL with the pattern ‘/*’ is directed to routes/main.js
 app.use('/', mainRoute);
@@ -136,11 +137,16 @@ const port = process.env.PORT;
 // Stripe Setup
 const stripe = require("stripe")(process.env.STRIPE_PRIVATE_KEY)
 
+app.get('*', (req, res)=>{
+	res.render('404')
+})
 // Stripe items
 const storeItems = new Map([
 	[1, {priceInCents: 10000, name: "10 Dolla"}],
 	[2, {priceInCents: 20000, name: "20 Dolla"}],
 ])
+
+const { STATUS_CODES } = require('http');
 
 // // Stripe
 // app.post("/create-checkout-session", async (req, res) => {

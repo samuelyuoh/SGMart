@@ -1,9 +1,9 @@
 <div class="container">
+  	<div class="card card-body">
     <div class="row">
         <div class="col-md-1"></div>
             <div class="col-md-10">
-            
-                <h1 class="text-center p-2 mt-3">{{#if (checkurl path "/addproduct")}}Add a {{else}}Update {{/if}}product</h1>
+            		<p class="head1">{{#if (checkurl path "/addproduct")}}Add a {{else}}Update {{/if}}product<p>
                 <form method="post">
                 <div>
                   {{#if (checkurl path "/addproduct")}}
@@ -129,6 +129,7 @@
             </div>
       <div class="col-md-10"></div>
     </div>
+    </div>
 </div>
 <script>
   var imagePreview = function(event) {
@@ -147,6 +148,16 @@
 </script>
 
 <style>
+  .head1{
+    font-size: 34px;
+    font-weight: bold;
+    text-align: center;
+}
+  .container{
+    width: auto;
+    padding-top: 50px;
+    padding-bottom: 50px;
+  }
   #drop-area {
   border: 2px dashed #ccc;
   border-radius: 20px;
