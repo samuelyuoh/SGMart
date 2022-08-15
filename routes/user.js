@@ -114,12 +114,6 @@ router.post('/register', async function (req, res) {
                 });
         }
 
-        let result = await User.update(
-            { verified: 1 },
-            { where: { id: user.id } });
-        console.log(result[0] + ' user updated');
-        flashMessage(res, 'success', user.email + ' verified. Please login');
-        res.redirect('/user/login');
     }
     catch (err) {
         console.log(err);
@@ -145,6 +139,7 @@ router.get('/verify/:userId/:token', async function (req, res) {
         }
         // Verify JWT token sent via URL 
         let authData = jwt.verify(token, process.env.APP_SECRET);
+        console.log(authData)
         if (authData != user.email) {
             flashMessage(res, 'error', 'Unauthorised Access');
             res.redirect('/user/login');
