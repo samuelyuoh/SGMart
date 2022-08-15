@@ -713,13 +713,28 @@ router.post('/uploadsubmit', ensureAuthenticated, async (req, res) => {
     if (!fs.existsSync('./public/uploads/' + req.user.id)) {
         fs.mkdirSync('./public/uploads/' + req.user.id, { recursive: true });
     }
-    await User.update(
-        {pfp:pfpURL.split('/')[3]},
-        {where: {id: req.user.id}}
-    ).then((result) => {
-        flashMessage(res, 'success', 'Profile picture changed')
-        res.redirect(`/user/profile/${req.user.id}`)
-    }).catch(err => console.log(err))
+    const user = await User.findByPk(req.user.id)
+    if (user.password == null) {
+        flashMessage(res, 'error', "Please use google to change your profile picture");
+        res.redirect(`/user/profile/${req.user.id}`);
+    } else {
+        if (pfpURL == '') {
+            flashMessage(res, 'error', "Please select a picture");
+            res.redirect(`/user/profile/${req.user.id}`);
+        } else if (pfpURL.split('/')[3] in ['PNG', 'JPG', 'JPEG', 'JFIF', 'GIF']) {
+            flashMessage(res, 'error', "Wrong file format");
+            res.redirect(`/user/profile/${req.user.id}`);
+        }
+        else {
+            await User.update(
+                {pfp:pfpURL.split('/')[3]},
+                {where: {id: req.user.id}}
+            ).then((result) => {
+                flashMessage(res, 'success', 'Profile picture changed')
+                res.redirect(`/user/profile/${req.user.id}`)
+            }).catch(err => console.log(err))
+        }
+    }
 });
 
 router.get('/login/google', 
