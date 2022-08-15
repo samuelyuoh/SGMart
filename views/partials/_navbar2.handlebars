@@ -1,0 +1,76 @@
+<nav>
+    <div class="header-1">
+
+        <a class="logo" href=""><i class="fas fa-shopping-basket"></i>SGMart</a>
+
+        <form action="/product/products" class="search-box-container" id="form-search" method="GET">
+            <input type="search" type="search" placeholder="Search" aria-label="Search" name="search" id="search-box">
+            <label for="search-box" class="fas fa-search" type="submit" id="mybtn"></label>
+        </form>
+
+    </div>
+
+    <div class="header-2">
+
+        <div id="menu-bar" class="fas fa-bars"></div>
+
+        <nav class="navbar">
+            <a href="/">Home</a>
+
+            <a href="/product/products">Products</a>
+            
+            <div class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" type="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">Brands</a>
+                <div class="dropdown-menu">
+                  {{!-- {% for brand in brands %} --}}
+                  {{#each brands}}
+                  <a class="dropdown-item" href="" >{{brand_name}}</a>
+                  {{/each}}
+                  {{!-- {% endfor %} --}}
+                </div>
+            </div>
+
+            <div class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" type="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">Categories</a>
+                <div class="dropdown-menu">
+                  {{!-- {% for category in categories %} --}}
+                  <a class="dropdown-item" href="" >category name</a>
+                  {{!-- {% endfor %} --}}
+                </div>
+            </div>
+
+            
+            <a href="/blog/viewBlogs">Blogs</a>
+            <a href="/user/contact">Contact</a>
+            <a href="/user/about">About</a>
+
+
+            {{!-- <a href="/usercoupongenerate">Coupon(User)</a> --}}
+            
+        </nav>
+        
+        <div class="icons">
+          <a class="fas fa-user-circle nav-link"  type="button" data-bs-toggle="dropdown" id="dropdownMenuLink" aria-expanded="false" href="#" style="font-size: 25px !important; width: 25px !important; display: inline-block !important;"></a>
+            <div class="dropdown-menu">
+                  <a class="dropdown-item" href="/user/login">Login</a>
+                  <a class="dropdown-item" href="/user/register">Register</a>
+            </div>
+
+          <a class="fas fa-shopping-cart" href="/cart/cart" tabindex="-1" style="font-size: 25px !important;"></a>
+        </div>
+
+
+    </div>
+</nav>
+
+<script>
+  var search = document.getElementById("search-box");
+  search.addEventListener("keypress", function(event){
+    if(event.key === "Enter"){
+      value = search.value();
+      event.preventDefault();
+      /*document.getElementById("form-search").action = "/product/products?search="+value*/
+      /*document.getElementById("form-search").submit();*/
+    }
+  })
+</script>

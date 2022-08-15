@@ -151,12 +151,16 @@
         $.getJSON('/admin/dashboardinfo', function (data) {
           $('#users').text(data.users.all.toString())
           temp = ((data.users.l30-data.users.l60)/data.users.l60*100)
-          if (temp < 0) {
-            $('#users').append(' <small class="text-danger" id="usersstat"></small>');
-            temp = temp * (-1)
-          } else {
-            $('#users').append(' <small class="text-success" id="usersstat"></small>');
+          if (Math.abs(temp) !== Infinity) {
+            if (temp < 0) {
+                $('#users').append(' <small class="text-danger" id="usersstat"></small>');
+                temp = temp * (-1)
+            } else {
+                $('#users').append(' <small class="text-success" id="usersstat"></small>');
+            }
+            $('#usersstat').text((temp).toString() + '%');
           }
+          
           $('#usersstat').text(Math.round(temp,0).toString() + '%');
 
           $('#order').text(data.orders.all.toString())

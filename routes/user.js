@@ -115,12 +115,6 @@ router.post('/register', async function (req, res) {
                 });
         }
 
-        let result = await User.update(
-            { verified: 1 },
-            { where: { id: user.id } });
-        console.log(result[0] + ' user updated');
-        flashMessage(res, 'success', user.email + ' verified. Please login');
-        res.redirect('/user/login');
     }
     catch (err) {
         console.log(err);
@@ -270,7 +264,12 @@ router.post('/login', async (req, res, next) => {
             user = await User.findOne({where :{email: email}});
             valid = user.tfa ? user.tfa : false; 
             valid1 = user.gtfa ? user.gtfa : false;
-            if (valid) {
+            console.log(user.status)
+            if (user.status == 1 || user.status == 2) {
+                flashMessage(res, 'error', 'Account has been deactivated/banned')
+                res.redirect('/')
+            }
+            else if (valid) {
                 otp = otpGenerator.generate(8, { upperCaseAlphabets: false, specialChars: false });
                 let token = jwt.sign({payload: {otp, id: user.id}}, process.env.APP_SECRET, {expiresIn: 5 * 60});
                 a = `/user/${user.id}/2fa/verifyotp/${token}`;
@@ -726,8 +725,16 @@ router.get('/login/google',
 router.get('/login/google/callback', 
   passport.authenticate('google', { failureRedirect: '/' }),
   function(req, res) {
+    if (!req.user.dataValues.status) {
+        console.log('hi')
+        flashMessage(res, 'success', 'successfully logged in')
+    } else {
+        console.log('a')
+        flashMessage(res, 'error', 'Account has been deactivated/banned')
+        res.redirect('/user/logout')
+    }
     // Successful authentication, redirect success.
-    res.redirect('/');
+    
   });
 // router.get('/check_delivery', (req, res) => {
 //     res.render('user/check_delivery');
