@@ -822,10 +822,6 @@ router.post('/changepassword/:id', async (req,res) => {
 
 router.get('/check_delivery', ensureAuthenticated, (req, res) => {
     const metadata = {
-        // layout: 'user',
-        // nav: {
-        //     sidebarActive: 'dashboard'
-        // }
     }
     Delivery.findAll({
         where: {userId : req.user.id},
@@ -842,16 +838,6 @@ router.get('/check_delivery', ensureAuthenticated, (req, res) => {
 router.get('/deleteDelivery/:id', ensureAuthenticated, async function(req, res) {
     try {
         let delivery = await Delivery.findByPk(req.params.id);
-        // if (!video) {
-        //     flashMessage(res, 'error', 'Delivery Time Slot not found');
-        //     res.redirect('/about');
-        //     return;
-        // }
-        // if (req.user.id != video.userId) {
-        //     flashMessage(res, 'error', 'Unauthorised access');
-        //     res.redirect('/about');
-        //     return;
-        // }
         let result = await Delivery.destroy({ where: { id: delivery.id } });
         console.log(result + ' Delivery Time Slot deleted');
         flashMessage(res, 'success', "Successfully deleted Delivery Time Slot")
@@ -865,19 +851,6 @@ router.get('/deleteDelivery/:id', ensureAuthenticated, async function(req, res) 
 router.get('/editDelivery/:id', ensureAuthenticated, async function(req, res) {
     try {
         let delivery = await Delivery.findByPk(req.params.id);
-        // if (!video) {
-        //     flashMessage(res, 'error', 'Delivery Time Slot not found');
-        //     res.redirect('/about');
-        //     return;
-        // }
-        // if (req.user.id != video.userId) {
-        //     flashMessage(res, 'error', 'Unauthorised access');
-        //     res.redirect('/about');
-        //     return;
-        // }
-        // let result = await Delivery.destroy({ where: { id: delivery.id } });
-        // console.log(result + ' Delivery Time Slot editted');
-        // flashMessage(res, 'success', "Successfully editted Delivery Time Slot")
         res.render('user/edit_delivery');
     }
     catch (err) {
