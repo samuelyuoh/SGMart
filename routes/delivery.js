@@ -84,8 +84,6 @@ router.get('/cancel', (req,res) => {
 })
 
 router.post('/',ensureAuthenticated, async function (req, res) {
-
-
     console.log('start checkout')
 	try {
 		const session = await stripe.checkout.sessions.create({
@@ -114,10 +112,6 @@ router.post('/',ensureAuthenticated, async function (req, res) {
 		console.error('error')
 		res.status(500).json({ error:e.message })
 	}
-
-
-
-
     let name = req.body.name;
     let email = req.body.email;
     let address = req.body.address;
