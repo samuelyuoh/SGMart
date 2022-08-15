@@ -636,7 +636,11 @@ router.get('/:id/2fa/verifyotp/:token', async (req, res) => {
     token = jwt.decode(req.params.token);
     user = await User.findByPk(req.params.id)
     // console.log(token['payload'])
-    if (user.otptoken != req.params.token) {
+    if (!user) {
+        flashMessage(res, 'error', 'Error. Access denied');
+        res.redirect('/user/logout1');
+    }
+    else if (user.otptoken != req.params.token) {
         flashMessage(res, 'error', 'Error. Access denied');
         res.redirect('/user/logout1');
     } else {
@@ -646,7 +650,7 @@ router.get('/:id/2fa/verifyotp/:token', async (req, res) => {
         } else {
             user = await User.findByPk(token['payload']['id'])
             if (token['payload']['id'] == req.params.id && user.otptoken == req.params.token) {
-                res.render('user/otp');
+                res.render('user/otp', {layout: 'otp'});
             } else {
                 flashMessage(res, 'error', 'Error. Access denied');
                 res.redirect('/user/logout1');
@@ -659,7 +663,11 @@ router.get('/:id/2fa/verifyotp/:token', async (req, res) => {
 router.post('/:id/2fa/verifyotp/:token', async (req, res) => {
     let {otp} = req.body;
     user = await User.findByPk(req.params.id);
-    if (user.otptoken != req.params.token) {
+    if (!user) {
+        flashMessage(res, 'error', 'Error. Access denied');
+        res.redirect('/user/logout1');
+    }
+    else if (user.otptoken != req.params.token) {
         flashMessage(res, 'error', 'Error. Access denied');
         res.redirect('/user/logout1');
     } else {
@@ -742,10 +750,45 @@ router.get('/login/google',
  
 router.get('/login/google/callback', 
   passport.authenticate('google', { failureRedirect: '/' }),
-  function(req, res) {
+  async function(req, res) {
     if (!req.user.dataValues.status) {
-        flashMessage(res, 'success', 'successfully logged in')
-        res.redirect('/');
+        if (req.user.dataValues.tfa) {
+            otp = otpGenerator.generate(8, { upperCaseAlphabets: false, specialChars: false });
+            let token = jwt.sign({payload: {otp, id: req.user.dataValues.id}}, process.env.APP_SECRET, {expiresIn: 5 * 60});
+            a = `/user/${req.user.dataValues.id}/2fa/verifyotp/${token}`;
+            id = req.user.dataValues.id;
+            await User.update({otptoken: token}, 
+                {where: {id: id}})
+                .then((user) => {
+                    console.log('otp saved')
+                })
+                .catch (err => console.log(err));
+            
+            console.log(jwt.decode(token));
+            const message = {
+                to: req.user.dataValues.email,
+                from: `SGMart <${process.env.SENDGRID_SENDER_EMAIL}>`,
+                subject: 'SGMart Login OTP',
+                html: `<br><br> Please use this OTP for logging in.<br><strong>Please Note: This OTP will only last 5 minutes.</strong>
+                        <br><br>OTP: <strong>${otp}</strong>`
+            };
+            sendEmail(message)
+                .then(response => {
+                    flashMessage(res, 'success','OTP successfully sent to ' +  req.user.dataValues.email);
+                    res.redirect(a)
+                })
+                .catch(err => {
+                    console.log(err);
+                    flashMessage(res, 'error', 'Error sending OTP to ' + req.user.dataValues.email);
+                    res.redirect('/');
+                });
+        } else if (req.user.dataValues.gtfa){
+            a = `/user/login/${req.user.dataValues.id}/gotp/verify`;
+            res.redirect(a);
+        } else {
+            flashMessage(res, 'success', 'successfully logged in')
+            res.redirect('/');
+        }
     } else {
         flashMessage(res, 'error', 'Account has been deactivated/banned')
         res.redirect('/user/logout')
@@ -756,7 +799,65 @@ router.get('/login/google/callback',
 // router.get('/check_delivery', (req, res) => {
 //     res.render('user/check_delivery');
 // });
-
+router.get('/login/gotp/:id/:action', async (req, res) => {
+    id = req.params.id;
+    if (id != req.user.id) {
+        flashMessage(res, 'error', 'Error. Access denied')
+        res.redirect('/')
+    } else if (req.params.action == 'enable') {
+        
+        user = await User.findByPk(id)
+        if (user) {
+            await User.update(
+                {gtfa: 1},
+                {where: {id: id}}
+            ).then((user) => {
+            }).catch(err => console.log(err));
+            await User.update(
+                // {gtfa: 1},
+                {secret: speakeasy.generateSecret().base32},
+                {where: {id: id}}
+            ).then((user) => {
+                flashMessage(res, 'success', 'Google Authenticator 2FA enabled');
+                res.redirect(`/user/profile/${id}`);
+            }).catch(err => console.log(err));
+        } else {
+            flashMessage(res, 'error', 'User not found');
+            res.redirect(`/`);
+        }
+    } else {
+        user = await User.findByPk(id)
+        if (user) {
+            if (user.password == null) {
+                await User.update(
+                    {gtfa: 0},
+                    {where: {id: id}}
+                ).then((user) => {
+                    flashMessage(res, 'success', 'Google Authenticator 2FA disabled');
+                    res.redirect(`/user/profile/${id}`);
+                }).catch(err => console.log(err));
+            } else {
+                const {pwd} = req.body;
+                const validPassword = await bcrypt.compare(pwd, user.password);
+                if (validPassword) {
+                    await User.update(
+                        {gtfa: 0},
+                        {where: {id: id}}
+                    ).then((user) => {
+                        flashMessage(res, 'success', 'Google Authenticator 2FA disabled');
+                        res.redirect(`/user/profile/${id}`);
+                    }).catch(err => console.log(err));
+                } else {
+                    flashMessage(res, 'error', 'Wrong Password. Please try again.');
+                    res.redirect(`/user/profile/${id}`)
+                }
+            }
+        } else {
+            flashMessage(res, 'error', 'User not found');
+            res.redirect(`/`);
+        }
+    } 
+})
 router.post('/login/gotp/:id/:action', async (req, res) => {
     id = req.params.id;
     if (id != req.user.id) {
@@ -851,7 +952,11 @@ router.get('/login/gotp/:id/:action', (req, res) => {
 })
 
 router.get('/login/:id/gotp/verify', (req, res) => {
-    if (req.params.id == req.user.id) {
+    if (req.user.id === undefined) {
+        flashMessage(res, 'error', 'Access denied');
+            res.redirect(`/user/logout1`);
+    }
+    else if (req.params.id == req.user.id) {
         res.render('user/gotp');
     } else {
         flashMessage(res, 'error', 'Access denied.')
