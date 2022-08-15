@@ -1,4 +1,4 @@
-const { raw } = require('express');
+const { raw, query } = require('express');
 const express = require('express');
 const router = express.Router();
 const flashMessage = require('../helpers/messenger');
@@ -151,6 +151,12 @@ router.get('/staffRegister/:email/:token', async function (req, res) {
 });
 
 router.get('/userList', async (req, res) => {
+	const pageAsNumber = Number.parseInt(req.query.page)
+	let page = 0
+	if(!Number.isNaN(pageAsNumber) && pageAsNumber >= 0) {
+		page = pageAsNumber;
+	}
+	
 	const metadata = {
 		layout: 'admin',
 		nav: {
@@ -160,7 +166,9 @@ router.get('/userList', async (req, res) => {
 		list: 'user',
 	}
 
-	await User.findAll({
+	await User.findAndCountAll({
+		limit:1,
+		offset: page*1,
 		where: {
 			userType: {
 			  [Op.or]: ['customer','admin', 'staff', 'madmin']
@@ -170,7 +178,9 @@ router.get('/userList', async (req, res) => {
 		raw: true
 	})
 		.then((users) => {
-			metadata.users = users;
+			metadata.totalPages = Math.ceil(users.count/1)
+			metadata.currentPage = page
+			metadata.users = users.rows;
 			res.render('admin/userList', metadata);
 			
 		})
@@ -178,7 +188,50 @@ router.get('/userList', async (req, res) => {
 
 })
 
+router.get('/getPage/user/:user', async (req, res) => {
+	const pageAsNumber = Number.parseInt(req.query.page)
+	let page = 0
+	if(!Number.isNaN(pageAsNumber) && pageAsNumber >= 0) {
+		page = pageAsNumber;
+	}
+	var query1 = []
+	if (req.params.user == 'user') {
+		 query1 = ['customer','admin', 'staff', 'madmin']
+	} else if (req.params.user == 'staff') {
+		 query1 = ['admin', 'staff', 'madmin']
+	} else {
+		flashMessage(res, 'error', 'Cannot get information')
+		res.redirect('/admin')
+	}
+	await User.findAndCountAll({
+		limit:1,
+		offset: page*1,
+		where: {
+			userType: {
+			  [Op.or]: query1
+			}
+		  },
+		order: Sequelize.col('id'),
+		raw: true
+	})
+		.then((users) => {
+			metadata.totalPages = Math.ceil(users.count/1)
+			metadata.currentPage = page
+			metadata.users = users.rows;
+			res.send(metadata)
+			// res.render('admin/userList', metadata);
+			
+		})
+		.catch(err => console.log(err));
+	
+})
+
 router.get('/staffList', async (req, res) => {
+	const pageAsNumber = Number.parseInt(req.query.page)
+	let page = 0
+	if(!Number.isNaN(pageAsNumber) && pageAsNumber >= 0) {
+		page = pageAsNumber;
+	}
 	const metadata = {
 		layout: 'admin',
 		nav: {
@@ -188,7 +241,9 @@ router.get('/staffList', async (req, res) => {
 		list: 'staff',
 	}
 
-	await User.findAll({
+	await User.findAndCountAll({
+		limit:1,
+		offset: page*1,
 		where: {
 			userType: {
 			  [Op.or]: ['admin', 'staff', 'madmin']
@@ -197,7 +252,9 @@ router.get('/staffList', async (req, res) => {
 		raw: true
 	})
 		.then((users) => {
-			metadata.users = users;
+			metadata.totalPages = Math.ceil(users.count/1)
+			metadata.currentPage = page
+			metadata.users = users.rows;
 			res.render('admin/userList', metadata);
 			
 		})

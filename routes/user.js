@@ -183,77 +183,89 @@ router.post('/login', async (req, res, next) => {
         //         res.redirect('/user/login');
         // } else {  
             user = await User.findOne({where :{email: email}});
-            valid = user.tfa ? user.tfa : false; 
-            valid1 = user.gtfa ? user.gtfa : false;
-            if (valid) {
-                otp = otpGenerator.generate(8, { upperCaseAlphabets: false, specialChars: false });
-                let token = jwt.sign({payload: {otp, id: user.id}}, process.env.APP_SECRET, {expiresIn: 5 * 60});
-                a = `/user/${user.id}/2fa/verifyotp/${token}`;
-                id = user.id;
-                await User.update({otptoken: token}, 
-                    {where: {id: id}})
-                    .then((user) => {
-                        console.log('otp saved')
-                    })
-                    .catch (err => console.log(err));
-                
-                console.log(jwt.decode(token));
-                const message = {
-                    to: user.email,
-                    from: `SGMart <${process.env.SENDGRID_SENDER_EMAIL}>`,
-                    subject: 'SGMart Login OTP',
-                    html: `<br><br> Please use this OTP for logging in.<br><strong>Please Note: This OTP will only last 5 minutes.</strong>
-                            <br><br>OTP: <strong>${otp}</strong>`
-                };
-                sendEmail(message)
-                    .then(response => {
-                        flashMessage(res, 'success','OTP successfully sent to ' +  user.email);
-                    })
-                    .catch(err => {
-                        console.log(err);
-                        flashMessage(res, 'error', 'Error sending OTP to ' + user.email);
-                        res.redirect('/');
-                    });
-                passport.authenticate('local', {
-                    // Success redirect URL
-                    successRedirect: a,
-                    // Failure redirect URL 
-                    failureRedirect: '/user/login',
-                    /* Setting the failureFlash option to true instructs Passport to flash 
-                    an error message using the message given by the strategy's verify callback.
-                    When a failure occur passport passes the message object as error */
-                    failureFlash: true
-                })(req, res, next);
-            } else if (valid1) {
-                a = `/user/login/${user.id}/gotp/verify`;
-                passport.authenticate('local', {
-                    // Success redirect URL
-                    successRedirect: a,
-                    // Failure redirect URL 
-                    failureRedirect: '/user/login',
-                    /* Setting the failureFlash option to true instructs Passport to flash 
-                    an error message using the message given by the strategy's verify callback.
-                    When a failure occur passport passes the message object as error */
-                    failureFlash: true
-                })(req, res, next);
+            if (!user) {
+                flashMessage(res, 'error', "No user found")
+                res.redirect('/user/login')
+            } else {
+                valid = user.tfa ? user.tfa : false; 
+                valid1 = user.gtfa ? user.gtfa : false;
+                if (valid) {
+                    otp = otpGenerator.generate(8, { upperCaseAlphabets: false, specialChars: false });
+                    let token = jwt.sign({payload: {otp, id: user.id}}, process.env.APP_SECRET, {expiresIn: 5 * 60});
+                    a = `/user/${user.id}/2fa/verifyotp/${token}`;
+                    id = user.id;
+                    await User.update({otptoken: token}, 
+                        {where: {id: id}})
+                        .then((user) => {
+                            console.log('otp saved')
+                        })
+                        .catch (err => console.log(err));
+                    
+                    console.log(jwt.decode(token));
+                    const message = {
+                        to: user.email,
+                        from: `SGMart <${process.env.SENDGRID_SENDER_EMAIL}>`,
+                        subject: 'SGMart Login OTP',
+                        html: `<br><br> Please use this OTP for logging in.<br><strong>Please Note: This OTP will only last 5 minutes.</strong>
+                                <br><br>OTP: <strong>${otp}</strong>`
+                    };
+                    sendEmail(message)
+                        .then(response => {
+                            flashMessage(res, 'success','OTP successfully sent to ' +  user.email);
+                        })
+                        .catch(err => {
+                            console.log(err);
+                            flashMessage(res, 'error', 'Error sending OTP to ' + user.email);
+                            res.redirect('/');
+                        });
+                    passport.authenticate('local', {
+                        // Success redirect URL
+                        successRedirect: a,
+                        // Failure redirect URL 
+                        failureRedirect: '/user/login',
+                        /* Setting the failureFlash option to true instructs Passport to flash 
+                        an error message using the message given by the strategy's verify callback.
+                        When a failure occur passport passes the message object as error */
+                        failureFlash: true
+                    })(req, res, next);
+                } else if (valid1) {
+                    a = `/user/login/${user.id}/gotp/verify`;
+                    passport.authenticate('local', {
+                        // Success redirect URL
+                        successRedirect: a,
+                        // Failure redirect URL 
+                        failureRedirect: '/user/login',
+                        /* Setting the failureFlash option to true instructs Passport to flash 
+                        an error message using the message given by the strategy's verify callback.
+                        When a failure occur passport passes the message object as error */
+                        failureFlash: true
+                    })(req, res, next);
+                }
+                else {
+                    passport.authenticate('local', {
+                        // Success redirect URL
+                        successRedirect: '/',
+                        // Failure redirect URL 
+                        failureRedirect: '/user/login',
+                        /* Setting the failureFlash option to true instructs Passport to flash 
+                        an error message using the message given by the strategy's verify callback.
+                        When a failure occur passport passes the message object as error */
+                        failureFlash: true
+                    })(req, res, next);
+                }
             }
-            else {
-                passport.authenticate('local', {
-                    // Success redirect URL
-                    successRedirect: '/',
-                    // Failure redirect URL 
-                    failureRedirect: '/user/login',
-                    /* Setting the failureFlash option to true instructs Passport to flash 
-                    an error message using the message given by the strategy's verify callback.
-                    When a failure occur passport passes the message object as error */
-                    failureFlash: true
-                })(req, res, next);
-            }
+            
         // }
     }
 });
 
 router.get('/logout', (req, res,next) => {
+    flashMessage(res, 'success', 'Logged Out')
+    req.logout(next);
+    res.redirect('/');
+});
+
+router.get('/logout1', (req, res,next) => {
     req.logout(next);
     res.redirect('/');
 });
