@@ -367,8 +367,8 @@ router.get('/inventory', async (req, res) => {
 		page = pageAsNumber;
 	}
 	Product.findAndCountAll({
-		limit:8,
-		offset: page*8,
+		limit:1,
+		offset: page*1,
 		include: [{
 			model: Brand,
 		},
@@ -381,7 +381,7 @@ router.get('/inventory', async (req, res) => {
 		.then((product) => {
 			res.render('admin/inventory', {
 				product: product.rows,
-				totalPages: Math.ceil(product.count/8),
+				totalPages: Math.ceil(product.count/1),
 				currentPage: page,
 				layout: 'admin', 
 				nav: { sidebarActive: 'product' }
@@ -396,8 +396,8 @@ router.get('/getPage', async (req, res) => {
 		page = pageAsNumber;
 	}
 	Product.findAndCountAll({
-		limit:2,
-		offset: page*2,
+		limit:1,
+		offset: page*1,
 		include: [{
 			model: Brand,
 			required: true,
@@ -412,7 +412,7 @@ router.get('/getPage', async (req, res) => {
 		.then((product) => {
 			res.send({
 				product: product.rows,
-				totalPages: Math.ceil(product.count/2),
+				totalPages: Math.ceil(product.count/1),
 				currentPage: page,
 				layout: 'admin', 
 				nav: { sidebarActive: 'product' }
