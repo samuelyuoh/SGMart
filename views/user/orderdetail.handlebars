@@ -97,7 +97,7 @@
           <div class="row">
             <div class="col-lg-6">
               <h3 class="h5">Product Review</h3>
-              {{#if item}}
+              {{!-- {{#if item}} --}}
               {{#each item}}
               <p>Leave us a review for the {{product_name}} you have pruchased </p>
 
@@ -106,15 +106,15 @@
               <div class="container">
                 <div class="feedback">
                   <div class="rating">
-                    <input type="radio" name="rating" id="rating-5">
+                    <input type="radio" name="rating" id="rating-5" class="{{id}}">
                     <label for="rating-5"></label>
-                    <input type="radio" name="rating" id="rating-4">
+                    <input type="radio" name="rating" id="rating-4" class="{{id}}">
                     <label for="rating-4"></label>
-                    <input type="radio" name="rating" id="rating-3">
+                    <input type="radio" name="rating" id="rating-3" class="{{id}}">
                     <label for="rating-3"></label>
-                    <input type="radio" name="rating" id="rating-2">
+                    <input type="radio" name="rating" id="rating-2" class="{{id}}">
                     <label for="rating-2"></label>
-                    <input type="radio" name="rating" id="rating-1">
+                    <input type="radio" name="rating" id="rating-1" class="{{id}}">
                     <label for="rating-1"></label>
                     <div class="emoji-wrapper">
                       <div class="emoji">
@@ -209,7 +209,7 @@
           </div>
         </div>
         {{/each}}
-        {{/if}}
+        {{!-- {{/if}} --}}
       </div>
 
 

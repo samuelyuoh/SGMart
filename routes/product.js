@@ -221,7 +221,6 @@ router.get('/nextpage', async (req, res) => {
 				[op.like]: '%'+	search +'%'
 			},
 			[op.or]: tmp,
-			product_price: {[op.between]: [min, max]}
 		},
 			raw: true
 		})
