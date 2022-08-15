@@ -38,6 +38,7 @@ const setUpDB = (drop) => {
            Wishlist.belongsTo(User);
            User.hasMany(Wishlist);
            User.hasMany(Logs);
+           Logs.belongsTo(User);
            Wishlist.belongsTo(Product);
            User.hasMany(Rating)
            Rating.belongsTo(User);

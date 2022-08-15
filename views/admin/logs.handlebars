@@ -1,0 +1,401 @@
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
+<div class="container">
+<div class="row">
+	<div class="col-lg-12">
+		<div class="main-box clearfix" style="margin-top:60px;">
+			<div>
+				<h1>Logs</h1>
+			</div>
+			<div class="table-responsive">
+				<table class="table user-list" cellspacing="0" cellpadding="0" id="myTable" data-paging='false'>
+					<thead>
+						<tr>
+							<th><span>ID</span></th>
+							<th><span>User</span></th>
+							<th><span>Created</span></th>
+							<th class="text-center"><span>Status</span></th>
+							<th><span>Email</span></th>
+							<th>&nbsp;</th>
+						</tr>
+					</thead>
+					<tbody>
+						{{#if users}}
+							{{#each users}}
+								<tr>
+								<td class="text-center" style="width: 5%;">
+									{{id}}
+								</td>
+								<td>
+									{{#if password}}
+                                        {{#unless pfp}}
+                                        <img class="rounded-circle" height="50%" width="50%" src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBwgHBgkIBwgKCgkLDRYPDQwMDRsUFRAWIB0iIiAdHx8kKDQsJCYxJx8fLT0tMTU3Ojo6Iys/RD84QzQ5OjcBCgoKDQwNGg8PGjclHyU3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3N//AABEIAIAAgAMBIgACEQEDEQH/xAAbAAEAAwEBAQEAAAAAAAAAAAAAAwQFAQIHBv/EADQQAAICAAMECAQFBQAAAAAAAAECAAMEETEFIUFREhMiMlJhcYEzQmKSFBVDU8EjkaHR4f/EABQBAQAAAAAAAAAAAAAAAAAAAAD/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwD7jERARPLsEUsxyA1MzcTjmclaT0V8XEwL12Jqp3M2beEaylZtB2P9NQo5nfKUQJGxFz961vY5TwSTqc/WciABI0OR8pKmIuTSxvcyKIFyvaLr8RQw5jcZdpxVV25WybkdZjR6QP0ETLw2OZMlt7S8+ImmrKyhlOYOhEDsREBPLsEUsxyA1M9TL2hiOk5qU9ldfMwIsViWvfkg0H+5BEQEREBET0tbt3UYjyEDzE9NW672RgPMGeYCIiAk+FxJw7c0OokEQN9WDKGU5gzsy9n4go/VMey2nkZqQIcXb1NJYancPWYsu7TsztVOCjMylAREQElw9DXtku4DU8p4rQ2OEXUnKbVNS1VhFG4f5gR04Sqod0M3MyxEQB3yvdhKrflCt4lliIGJfh3obJhu4EcZFNy6pbqyjjcePKYtiGt2RhvBygeYiICbOEu66kNxG4+sxpd2ZZlayHRhnArYluniLD9Rkc6TmSec5AREQLuy687Hc8BkPeaco7K7lnrL0BERAREQEzNqJlYrj5hkZpyjtXuV+pgZsREBJMM3QxFZ+oSOdU5MDyMDhGRI4iJLiV6GIsH1EyKAiIgXdmWBbWQ/MN3tNOYCMUcMuoOYm1h7lurDKfUcjAliIgIiICZm07OlaqD5RL2IuWiss2vAczMV2LuWY5knOByIiAnVGbAczOSXDL08RWPqBgWNp15Wq40YZH1lKbOMq66hlHe1ExoCIiAklNz0t0kO/iOcjAzOQ1kgouP6T/aYGlTjqrAA56Deen95ZDBhmpBHlMTqLv2n+0x1F37Vn2mBtlgozYgDzlW7HVV5hD028tJnGi461P8AaY/D3ftP9pgLrnufpOf+SOSGi4fpP9pkZ3HI7jAREQEu7MrztazgoyHrKU2cJT1NAU94729YE8y9oYfoP1qjstrlwM1JxlDKVYZg6iBgS3hMGbQHszVeA4mctw4w16mwFqc9x/gzURlZQVOYOkDldSVjJFAHlPcRAREQEREBPFlSWjJ1De09xAycXgzT20318eYlWb1hVUJfIKBvzmXThhiLm6vMU56n+IHrZ+H6b9Y47K6eZmpOKoRQqjIDQTsBERA8uqupVhmDqDKTU3YVi9HbTihl+IFejF1W7s+i3hMsSC7DVW72XteIayHqcVT8G0OvJ4F2JT/FXp8XDN6rH5hWO8jj2gXIlP8AMKz3Uc+0fir3+Fhm9WMC5K9+Krp3E5t4RIupxV3xbAi+FJNRhaqd6r2vEdYEAptxTBr+xWN4QS6qhFCqMgOE7EBERA//2Q==">
+                                        {{else}}
+                                        <img class="rounded-circle" height="50%" width="50%" src='/uploads/{{id}}/{{pfp}}'>
+                                        {{/unless}}
+                                    {{else}} 
+                                        <img class="rounded-circle" height="50%" width="50%" src="{{pfp}}">
+                                    {{/if}}
+									<a href="/admin/userProfile/{{id}}" class="user-link">{{name}}</a> 
+									<span class="user-subhead">{{userType}}</span>
+								</td>
+								<td>
+									{{formatDate createdAt 'DD MMM YYYY'}}
+								</td>
+								<td class="text-center">
+									{{#unless status}}
+										<span class="label label-success">Active</span>
+									{{else}}
+										{{#if (ifstatus status 1)}}
+											<span class="label label-default">Inactive</span>
+										{{else}}
+											<span class="label label-danger">Banned</span>
+										{{/if}}
+									{{/unless}}
+									{{!-- <span class="label label-default">Inactive</span> --}}
+								</td>
+								<td>
+									<a href="mailto:{{email}}">{{email}}</a>
+								</td>
+								<td style="width: 20%;">
+									<a href="#" class="table-link">
+										<span class="fa-stack">
+											<i class="fa fa-square fa-stack-2x"></i>
+											<i class="fa fa-search-plus fa-stack-1x fa-inverse"></i>
+										</span>
+									</a>
+									<a type="button" class="table-link danger btn" data-bs-toggle="modal" data-bs-target="#exampleModal">
+										<span class="fa-stack">
+											<i class="fa fa-square fa-stack-2x"></i>
+											<i class="fa fa-ban fa-stack-1x fa-inverse"></i>
+										</span>
+									</a>
+								</td>
+							</tr>
+							<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+								<div class="modal-dialog" role="document">
+									<div class="modal-content">
+										<div class="modal-header">
+											<h5 class="modal-title" id="exampleModalLabel">Ban/Unban Account</h5>
+											<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+											<span aria-hidden="true">&times;</span>
+											</button>
+										</div>
+										<div class="modal-body">
+											Choose to unban or ban user
+										</div>
+										<div class="modal-footer">
+											<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+											<a type="button" class="btn btn-danger" href="/admin/status/ban/{{id}}">Ban User</a>
+											<a type="button" class="btn btn-danger" href="/admin/status/unban/{{id}}">Unban User</a>
+										</div>
+									</div>
+								</div>
+							</div>
+
+							<div class="modal fade" id="exampleModal1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel1" aria-hidden="true">
+								<div class="modal-dialog" role="document">
+									<div class="modal-content">
+										<div class="modal-header">
+											<h5 class="modal-title" id="exampleModalLabel1">Create Staff</h5>
+											<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+											<span aria-hidden="true">&times;</span>
+											</button>
+										</div>
+										<form action="/admin/createStaffAcc" method="POST">
+											<div class="modal-body">
+													<label for="">Enter staff's email</label>
+													<input type="email" id="email" name="email" class="form-control" required>
+												
+											</div>
+											<div class="modal-footer">
+												<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+												<button type="submit" class="btn btn-danger" href="">Confirm</button>
+											</div>
+										</form>
+									</div>
+								</div>
+							</div>
+
+
+
+							{{/each}}
+						{{else}}	
+							<h1>no users found</h1>
+						{{/if}}
+					</tbody>
+				</table>
+			</div>
+			<div class="pull-left">
+				{{#if (isStaff list)}}
+					<input type="hidden" value="staff" id="list1" name="list1"></input>				
+					<a href="/admin/generateexcel/staff"><button type="btn" class="btn btn-primary">Download Staff List</button></a>
+				{{else}}
+				<input type="hidden" value="user" id="list1" name="list1"></input>
+					<a href="/admin/generateexcel/users"><button type="btn" class="btn btn-primary">Download User List</button></a>
+				{{/if}}
+			</div>
+			<ul class="pagination pull-right">
+				{{#if (havePrevious currentPage totalPages)}}
+					<li><button href="{{previous}}"><i class="fa fa-chevron-left"></i></button></li>
+				{{else}}
+					<li><button href="{{previous}}" disabled><i class="fa fa-chevron-left"></i></button></li>
+				{{/if}}
+				{{#each (increment 0 totalPages)}}
+					<li><button value="{{this}}" onclick="getPage(this)" id="{{this}}">{{next this}}</button></li>
+				{{/each}}
+				{{#if (haveNext currentPage totalPages)}}
+					<li><button href="{{previous}}"><i class="fa fa-chevron-right"></i></button></li>
+				{{else}}
+					<li><button href="{{previous}}" disabled><i class="fa fa-chevron-right"></i></button></li>
+				{{/if}}
+			</ul>
+		</div>
+	</div>
+</div>
+</div>
+<script>
+	$(document).ready( function () {
+		$('#myTable').DataTable();
+	} );
+  function getPage(element){
+	x = document.getElementById('list1').value
+    page = element.value
+    $.ajax({
+      type: 'GET',
+      url: `/admin/${x}list?page=`+page,
+      success: function(data){
+        location.replace(`/admin/${x}list?page=`+page);
+      }
+    })
+  }
+  function getParameterByName(name, url = window.location.href) {
+    name = name.replace(/[\[\]]/g, '\\$&');
+    var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
+        results = regex.exec(url);
+    if (!results) return null;
+    if (!results[2]) return '';
+    return decodeURIComponent(results[2].replace(/\+/g, ' '));
+}
+var page = getParameterByName('page');
+if(page == null){
+    page = 0
+}
+window.addEventListener('load', setActive)
+  function setActive(){
+    document.getElementById(page).classList.add('active')
+  }
+</script>
+<style>
+
+body{margin-top:20px;}
+table {border: none;}
+
+/* USER LIST TABLE */
+.user-list tbody td > img {
+    position: relative;
+	max-width: 50px;
+	float: left;
+	margin-right: 15px;
+}
+.user-list tbody td .user-link {
+	display: block;
+	font-size: 1.25em;
+	padding-top: 3px;
+	margin-left: 60px;
+}
+.user-list tbody td .user-subhead {
+	font-size: 0.875em;
+	font-style: italic;
+}
+
+/* TABLES */
+.table {
+    border-collapse: separate;
+}
+.table-hover > tbody > tr:hover > td,
+.table-hover > tbody > tr:hover > th {
+	background-color: #eee;
+}
+.table thead > tr > th {
+	border-bottom: 1px solid #C2C2C2;
+	padding-bottom: 0;
+}
+.table tbody > tr > td {
+	font-size: 0.875em;
+	background: #f5f5f5;
+	border-top: 10px solid #fff;
+	vertical-align: middle;
+	padding: 12px 8px;
+}
+.table tbody > tr > td:first-child,
+.table thead > tr > th:first-child {
+	padding-left: 20px;
+}
+.table thead > tr > th span {
+	border-bottom: 2px solid #C2C2C2;
+	display: inline-block;
+	padding: 0 5px;
+	padding-bottom: 5px;
+	font-weight: normal;
+}
+.table thead > tr > th > a span {
+	color: #344644;
+}
+.table thead > tr > th > a span:after {
+	content: "\f0dc";
+	font-family: FontAwesome;
+	font-style: normal;
+	font-weight: normal;
+	text-decoration: inherit;
+	margin-left: 5px;
+	font-size: 0.75em;
+}
+.table thead > tr > th > a.asc span:after {
+	content: "\f0dd";
+}
+.table thead > tr > th > a.desc span:after {
+	content: "\f0de";
+}
+.table thead > tr > th > a:hover span {
+	text-decoration: none;
+	color: #2bb6a3;
+	border-color: #2bb6a3;
+}
+.table.table-hover tbody > tr > td {
+	-webkit-transition: background-color 0.15s ease-in-out 0s;
+	transition: background-color 0.15s ease-in-out 0s;
+}
+.table tbody tr td .call-type {
+	display: block;
+	font-size: 0.75em;
+	text-align: center;
+}
+.table tbody tr td .first-line {
+	line-height: 1.5;
+	font-weight: 400;
+	font-size: 1.125em;
+}
+.table tbody tr td .first-line span {
+	font-size: 0.875em;
+	color: #969696;
+	font-weight: 300;
+}
+.table tbody tr td .second-line {
+	font-size: 0.875em;
+	line-height: 1.2;
+}
+.table a.table-link {
+	margin: 0 5px;
+	font-size: 1.125em;
+    text-decoration: none;
+}
+.table a.table-link:hover {
+	text-decoration: none;
+	color: #2aa493;
+}
+.table a.table-link.danger {
+	color: #fe635f;
+}
+.table a.table-link.danger:hover {
+	color: #dd504c;
+}
+
+.table-products tbody > tr > td {
+	background: none;
+	border: none;
+	border-bottom: 1px solid #ebebeb;
+	-webkit-transition: background-color 0.15s ease-in-out 0s;
+	transition: background-color 0.15s ease-in-out 0s;
+	position: relative;
+}
+.table-products tbody > tr:hover > td {
+	text-decoration: none;
+	background-color: #f6f6f6;
+}
+.table-products .name {
+	display: block;
+	font-weight: 600;
+	padding-bottom: 7px;
+}
+.table-products .price {
+	display: block;
+	text-decoration: none;
+	width: 50%;
+	float: left;
+	font-size: 0.875em;
+}
+.table-products .price > i {
+	color: #8dc859;
+}
+.table-products .warranty {
+	display: block;
+	text-decoration: none;
+	width: 50%;
+	float: left;
+	font-size: 0.875em;
+}
+.table-products .warranty > i {
+	color: #f1c40f;
+}
+.table tbody > tr.table-line-fb > td {
+	background-color: #9daccb;
+	color: #262525;
+}
+.table tbody > tr.table-line-twitter > td {
+	background-color: #9fccff;
+	color: #262525;
+}
+.table tbody > tr.table-line-plus > td {
+	background-color: #eea59c;
+	color: #262525;
+}
+.table-stats .status-social-icon {
+	font-size: 1.9em;
+	vertical-align: bottom;
+}
+.table-stats .table-line-fb .status-social-icon {
+	color: #556484;
+}
+.table-stats .table-line-twitter .status-social-icon {
+	color: #5885b8;
+}
+.table-stats .table-line-plus .status-social-icon {
+	color: #a75d54;
+}
+
+.pagination>li>a, .pagination>li>span, .pagination>li>button{
+    position: relative;
+    float: left;
+    padding: 6px 12px;
+    margin-left: -1px;
+    line-height: 1.42857143;
+    color: #337ab7;
+    text-decoration: none;
+    background-color: #fff;
+    border: 1px solid #ddd;
+}
+.label-default {
+    background-color: #777;
+}
+.label-success {
+    background-color: #5cb85c;
+}
+.label-danger {
+    background-color: #d9534f;
+}
+.label-warning {
+    background-color: #f0ad4e;
+}
+.label {
+    display: inline;
+    padding: 0.2em 0.6em 0.3em;
+    font-size: 75%;
+    font-weight: 700;
+    line-height: 1;
+    color: #fff;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: baseline;
+    border-radius: 0.25em;
+}
+</style>

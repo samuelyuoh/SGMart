@@ -21,6 +21,7 @@ const createlogs = require('../helpers/logs');
 const {convertJsonToExcel, getUsers, getStaff} = require('../helpers/excel');
 const fs = require('fs');
 const upload = require('../helpers/productUpload');
+const Logs = require('../models/Logs');
 
 function rot13(message) {
     // cypher cus cnt upload actual key
@@ -235,7 +236,7 @@ router.get('/staffList', async (req, res) => {
 	const metadata = {
 		layout: 'admin',
 		nav: {
-			sidebarActive: 'cstaff'
+			sidebarActive: 'staff'
 		},
 		user: req.user,
 		list: 'staff',
@@ -336,7 +337,7 @@ router.get('/generateexcel/:list', async (req, res) => {
 
 		setTimeout(() => {
 			res.download(file)
-			createlogs(`downloaded ${list} excel file`, req.params.id)
+			createlogs(`downloaded ${list} excel file`, req.user.id)
 		}, 500)
 		setTimeout(() => {
 			try {
@@ -413,6 +414,34 @@ router.get('/admincouponcreate', (req, res) => {
 
 	res.render('admin/admincouponcreate', metadata)
 });
+
+router.get('/logs', async (req, res) => {
+	const metadata = {
+		layout: 'admin',
+		nav: {
+			sidebarActive: 'logs'
+		},
+		user: req.user,
+	}
+	const pageAsNumber = Number.parseInt(req.query.page)
+	let page = 0
+	if(!Number.isNaN(pageAsNumber) && pageAsNumber >= 0) {
+		page = pageAsNumber;
+	}
+	await Logs.findAndCountAll({
+		limit:8,
+		offset: page*8,
+		include: [{
+			model: User,
+		}],
+		raw: true
+	}).then((logs) => {
+			metadata.totalPages = Math.ceil(logs.count/1)
+			metadata.currentPage = page
+			metadata.users = logs.rows;
+			res.render('admin/logs', metadata);
+	}).catch(err => console.log(err))
+})
 
 router.get('/inventory', async (req, res) => {
 	const pageAsNumber = Number.parseInt(req.query.page)
