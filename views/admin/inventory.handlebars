@@ -1,6 +1,6 @@
 <div class="container">
   <div class="row">
-        <div class="col-md-1"></div>
+        <div></div>
             <div class="col-md-10">
     <table class="table table-striped" style="font-size: 1.125rem!important;">
         <thead style="text-align: left!important;">
@@ -91,47 +91,68 @@
       </tbody>
       </table>
       </div>
-<div class="w-100 text-center pagination">
-  {{#if (havePrevious currentPage totalPages)}}
-  <button href="{{previous}}">&laquo;</a>
-  {{else}}
-  <button href="{{previous}}" disabled>&laquo;</button>
-  {{/if}}
-  {{#each (increment 0 totalPages)}}
-    <button value="{{this}}" onclick="getPage(this)" id="{{this}}">{{next this}}</button>
-  {{/each}}
-  {{#if (haveNext currentPage totalPages)}}
-  <button href="{{previous}}">&raquo;</button>
-  {{else}}
-  <button href="{{previous}}" disabled>&raquo;</button>
-  {{/if}}
-
+<div class="w-100 text-center pagination" style="justify-content: end; padding-right:240px; padding-top: 20px;">
+  <input type="hidden" value="{{totalPages}}" id="totalPages">
+  <ul id="paging">
+    {{!-- <li class="btn prev"><span><i class="fas fa-angle-left">Prev</i></span></li>
+    <li class="numb active"><span>1</span></li>
+    <li class="numb"><span>2</span></li>
+    <li class="dots"><span>...</span></li>
+    <li class="numb"><span>4</span></li>
+    <li class="numb"><span>5</span></li>
+    <li class="dots"><span>...</span></li>
+    <li class="numb"><span>7</span></li>
+    <li class="btn next"><span><i class="fas fa-angle-right">Next</i></span></li> --}}
+  </ul>
 </div>
       </div>
       </div>
 
 <style>
-.pagination {
-  display: inline-block;
+.container{
+  padding-top: 50px;
+	width: 130%;
+}
+.pagination ul{
+  display: flex;
+  background: #20b2aa;
+  padding: 8px;
+  border-radius: 30px;
+}
+.pagination ul li{
+  list-style: none;
+  line-height: 45px;
+  text-align: center;
+  font-size: 18px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.pagination ul li.numb{
+  border-radius: 50%;
+  height: 45px;
+  width: 45px;
+  margin: 0 3px;
+}
+.pagination ul li.dots{
+  font-size: 22px;
+  cursor: default;
+}
+.pagination ul li.btn{
+  padding: 0 20px;
+}
+.pagination ul li.prev{
+  border-radius: 25px 5px 5px 25px;
+}
+.pagination ul li.next{
+  border-radius: 5px 25px 25px 5px;
+}
+.pagination ul li.active,
+.pagination ul li.numb:hover,
+.pagination ul li.btn:hover{
+  background: #fff;
 }
 
-.pagination button {
-  color: black;
-  padding: 8px 16px;
-  text-decoration: none;
-}
-
-.pagination button.active {
-  background-color: #4CAF50;
-  color: white;
-}
-
-.pagination button {
-  padding: 8px 16px;
-  text-decoration: none;
-}
-
-.pagination button:hover:not(.active) {background-color: #ddd;}
 </style>
 <script>
   function getPage(element){
@@ -153,11 +174,63 @@
     return decodeURIComponent(results[2].replace(/\+/g, ' '));
 }
 var page = getParameterByName('page');
+var totalPages =  document.getElementById('totalPages').value;
 if(page == null){
     page = 0
 }
 window.addEventListener('load', setActive)
   function setActive(){
-    document.getElementById(page).classList.add('active')
+    element(totalPages, parseInt(page))
+    }
+const ulTag = document.getElementById('paging')
+function element(totalPages, page){
+  let liTag =""
+  let activeLi;
+  let beforePages = page - 1;
+  let afterPages = page + 1
+  if(page > 1){
+    liTag += `<li class="btn prev" onclick="getPage(this)"value="${page-1}"><span><i class="fas fa-angle-left">Prev</i></span></li>`
   }
-</script>  
+  if(page > 2){
+    liTag += `<li class="numb" id="1" onclick="getPage(this)" value="0"><span>1</span></li>`
+    if(page > 3){
+      liTag += `<li class="dots"><span>...</span></li>`
+    }
+  }
+  if(page == totalPages){
+    beforePages = beforePages - 2
+  }else if( page == totalPages -1){
+    beforePages = beforePages - 1
+  }
+  if(page == 1){
+    afterPages = afterPages + 2
+  }else if( page == 2){
+    afterPages = afterPages + 1
+  }
+  for(let pageLength = beforePages; pageLength <= afterPages; pageLength++){
+    if(pageLength > totalPages){
+      continue;
+    }
+    if(pageLength == -1){
+      pageLength = pageLength + 1
+    }
+    if(page==pageLength){
+      activeLi = "active";
+    }else{
+      activeLi = "";
+    }
+    liTag += `<li class="numb ${activeLi}" onclick="getPage(this)"value="${pageLength}"><span>${pageLength+1}</span></li>`
+  }
+  if(page < totalPages-1){
+    if(page < totalPages -2){
+      liTag += `<li class="dots"><span>...</span></li>`
+    }
+    liTag += `<li class="numb" id="${totalPages}"onclick="getPage(this)" value="${totalPages-1}"><span>${totalPages}</span></li>`
+  }
+
+  if(page < totalPages-1){
+    liTag += `<li class="btn next" id=$"{page+1}" onclick="getPage(this)" value="${page+1}"><span><i class="fas fa-angle-right">next</i></span></li>`
+  }
+  ulTag.innerHTML = liTag
+}
+</script> 

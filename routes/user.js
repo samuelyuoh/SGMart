@@ -25,6 +25,7 @@ const upload = require('../helpers/imageUpload');
 const googlelogin = require('../helpers/googlelogin');
 const speakeasy = require('speakeasy');
 const { stringify } = require('querystring');
+const fetch = require('isomorphic-fetch')
 
 const isStaff = function(userType) {
 	return (userType == 'staff' || userType == 'admin' || userType == 'madmin')
@@ -157,8 +158,8 @@ router.get('/verify/:userId/:token', async function (req, res) {
     }
 });
 router.post('/login', async (req, res, next) => {
-    let {email, password} = req.body;
-    const captcha = req.body['g-recaptcha-response']
+    let {email, password, recaptcha} = req.body;
+    const captcha = req.body['g-recaptcha-response'] || recaptcha
     if (captcha === undefined || captcha === '' || captcha === null) {
         // return res.json({"success" : false, "msg": "Please select recaptcha"});
         flashMessage(res, 'error', 'Please select recaptcha');
@@ -170,12 +171,12 @@ router.post('/login', async (req, res, next) => {
             remoteip: req.connection.remoteAddress
         })
         const verifyUrl = `https://google.com/recaptcha/api/siteverify?${query}`
-        // const body = await fetch(verifyUrl).then(res => res.json())
+        const body = await fetch(verifyUrl).then(res => res.json())
 
-        // if (body.success !== undefined && !body.success) {
-        //         flashMessage(res, 'error', 'Recaptcha verification failed. Please try again');
-        //         res.redirect('/user/login');
-        // } else {  
+        if (body.success !== undefined && !body.success) {
+                flashMessage(res, 'error', 'Recaptcha verification failed. Please try again');
+                res.redirect('/user/login');
+        } else {  
             user = await User.findOne({where :{email: email}});
             valid = user.tfa ? user.tfa : false; 
             valid1 = user.gtfa ? user.gtfa : false;
@@ -248,7 +249,7 @@ router.post('/login', async (req, res, next) => {
                     failureFlash: true
                 })(req, res, next);
             }
-        // }
+        }
     }
 });
 

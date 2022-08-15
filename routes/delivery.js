@@ -84,6 +84,34 @@ router.get('/cancel', (req,res) => {
 })
 
 router.post('/',ensureAuthenticated, async function (req, res) {
+    console.log('start checkout')
+	try {
+		const session = await stripe.checkout.sessions.create({
+			payment_method_types: ['card'],
+			mode: 'payment',
+			line_items:items.map(item => {
+				const storeItem = storeItems.get(item.id)
+				return {
+					price_data: {
+						currency: 'sgd',
+						product_data: {
+							name: storeItem.name
+						},
+						unit_amount: storeItem.priceInCents
+					},
+					quantity: item.quantity
+				}
+			}),
+			success_url: `${process.env.SERVER_URL}/delivery/success/`,
+			cancel_url: `${process.env.SERVER_URL}/delivery/cancel/`
+		})
+        // global.location = session.url
+        res.redirect(session.url)
+		console.log('redirect to stripe')
+	}catch (e) {
+		console.error('error')
+		res.status(500).json({ error:e.message })
+	}
     let name = req.body.name;
     let email = req.body.email;
     let address = req.body.address;

@@ -83,11 +83,11 @@ const checkWishlist = function(id, wishlist){
 }
 
 const next = function(currentPage){
-    return currentPage + 1
+    return parseInt((parseInt(currentPage) + 1))
 }
 
 const previous = function(currentPage){
-    return currentPage - 1
+    return parseInt((parseInt(currentPage) - 1))
 }
 
 const havePrevious = function(currentPage){
@@ -116,7 +116,7 @@ const breaklines = function(text){
 const increment = function(page, totalPages){
     list_of_pages = []
     if(page < totalPages){
-        while(page < totalPages){
+        while(page < 5){
             list_of_pages.push(page)
             page += 1
         }

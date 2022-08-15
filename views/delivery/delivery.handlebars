@@ -245,3 +245,59 @@ label.error {
   color: #000; }
 
 </style>
+<script>
+    //n = new Date()
+    //y = n.getFullYear()
+    //m = n.getMonth()+1
+    //d = n.getDate()
+    //todaydate = y + "-" + m + "-" + d
+    //document.getElementById("fromdate").innerHTML = y + "-" + m + "-" + d
+
+    //datePickerId.min = new Date().toISOString().split("T")[0];
+
+    var today = new Date();
+    var dd = today.getDate();
+    var mm = today.getMonth() + 1; //January is 0!
+    var yyyy = today.getFullYear();
+
+    if (dd < 10) {
+    dd = '0' + dd;
+    }
+
+    if (mm < 10) {
+    mm = '0' + mm;
+    } 
+        
+    today = yyyy + '-' + mm + '-' + dd;
+    document.getElementById("datefield").setAttribute("min", today);
+
+    // Stripe
+    const button = document.querySelector("submit")
+    if (button){
+      button.addEventListener("click", () => {
+        fetch('/create-checkout-session', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            items: [
+              {id:1, quantity:3},
+              {id:2, quantity:1}
+            ]
+          })
+        }).then(res => {
+          if (res.ok) return res.json()
+          return res.json().then(json => Promise.reject(json))
+          console.log('bruh')
+        }).then(({url}) => {
+          console.log(url)
+          window.location = url
+        }).catch(e => {
+          console.error(e.error)
+        })
+      })
+    }
+</script>
+<script src="https://js.stripe.com/v3/"></script>
+<script src="card.js"></script>

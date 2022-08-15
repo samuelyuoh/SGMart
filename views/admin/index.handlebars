@@ -26,7 +26,7 @@
                     </div>
                     <div class="analytic-info">
                         <h4>Total Revenue</h4>
-                        <h3>1.3K <small class="text-success">5%</small></h3>
+                        <h3 id="rev"></h3>
                     </div>
                 </div>
                 <div class="analytic">
@@ -35,7 +35,7 @@
                     </div>
                     <div class="analytic-info">
                         <h4>Total Expenses</h4>
-                        <h3>3.4K</h4>
+                        <h3 id="expense"></h4>
                     </div>
                 </div>
             </div>
@@ -114,26 +114,26 @@
         if (time.value == "w") {
             d = new Date();
             temp2 = []
-            for (var i = 0; i < 8; i++) {
+            for (var i = 0; i < 7; i++) {
                 ts = `${d.getDate()}/${d.getMonth()+1}`
                 d.setDate(d.getDate()-1)
                 temp2.push(ts)
             }
-            temp = [90, 70, 85, 40, 20, 55, 60, 80]
+            temp = [90, 70, 85, 40, 20, 55, 60]
             revChart.data.labels = temp2.reverse();
-            revChart.data.datasets[0].data = temp;
+            revChart.data.datasets[0].data = a;
             revChart.update()
         } else {
             d = new Date();
             temp2 = []
-            for (var i = 0; i < 11; i++) {
+            for (var i = 0; i < 10; i++) {
                 ts = `${d.getDate()}/${d.getMonth()+ 1}`
                 d.setDate(d.getDate()-3)
                 temp2.push(ts)
             }
             revChart.data.labels = temp2.reverse();
-            temp = [0, 30, 60, 40, 70, 55, 60, 85, 70, 50, 70]
-            revChart.data.datasets[0].data = temp;
+            temp = []
+            revChart.data.datasets[0].data = b;
             revChart.update()
         }
     }
@@ -145,6 +145,7 @@
         chart.update();
     }
     a = []
+    b = []
     $( document ).ready(function() {
       setTimeout(() => {
         $.getJSON('/admin/dashboardinfo', function (data) {
@@ -160,23 +161,40 @@
             $('#usersstat').text((temp).toString() + '%');
           }
           
+          $('#usersstat').text(Math.round(temp,0).toString() + '%');
 
           $('#order').text(data.orders.all.toString())
-            temp = ((data.orders.l30-data.users.l60)/data.orders.l60*100)
-            if (Math.abs(temp) !== Infinity) {
-                if (temp < 0) {
-                    $('#order').append(' <small class="text-danger" id="orderstat"></small>');
-                    temp = temp * (-1)
-                } else {
-                    $('#order').append(' <small class="text-success" id="orderstat"></small>');
-                }
-                $('#orderstat').text((temp).toString() + '%');
-            }
-
-          graphinfo = data.graph
-          for(let key in graphinfo) {
-            a.push(graphinfo[key])
+          temp = ((data.orders.l30-data.users.l60)/data.orders.l60*100)
+          if (temp < 0) {
+            $('#order').append(' <small class="text-danger" id="orderstat"></small>');
+            temp = temp * (-1)
+          } else {
+            $('#order').append(' <small class="text-success" id="orderstat"></small>');
           }
+          $('#orderstat').text(Math.round(temp,0).toString() + '%');
+
+          $('#rev').text('$' + data.revenue.all.toString())
+          temp = ((data.revenue.l30-data.revenue.l60)/data.revenue.l60*100)
+          if (temp < 0) {
+            $('#rev').append(' <small class="text-danger" id="revstat"></small>');
+            temp = temp * (-1)
+          } else {
+            $('#rev').append(' <small class="text-success" id="revstat"></small>');
+          }
+          $('#revstat').text(Math.round(temp,0).toString() + '%');
+
+          $('#expense').text('$' + data.expense.all.toString())
+          temp = ((data.expense.l30-data.expense.l60)/data.expense.l60*100)
+          if (temp < 0) {
+            $('#expense').append(' <small class="text-danger" id="expstat"></small>');
+            temp = temp * (-1)
+          } else {
+            $('#expense').append(' <small class="text-success" id="expstat"></small>');
+          }
+          $('#expstat').text(Math.round(temp,0).toString() + '%');
+
+          a = data.ginfo.l7
+          b = data.ginfo.l30
         })
       },500),
       setTimeout(()=> {

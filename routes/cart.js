@@ -6,8 +6,9 @@ const Cart = require('../models/cart');
 const Item = require('../models/item');
 const flashMessage = require('../helpers/messenger');
 const Invoice = require('../models/Invoice');
+const ensureAuthenticated = require('../helpers/auth');
 
-router.post('/add/:id', async function(req, res, next) {
+router.post('/add/:id', ensureAuthenticated ,async function(req, res, next) {
     let productid = req.params.id;
     let quantity = req.body.quantity
     // let totalCost = req.body.totalCost
@@ -64,21 +65,23 @@ router.post('/add/:id', async function(req, res, next) {
 
 });
 
-router.get('/cart', async function(req, res, next) {
-    var id = await Cart.findAll({where: {userId: req.user.id}})
-    Item.findAll({
-        raw: true,
-        include:{
-            model: Product,
-            required:false
-        },
-        where: { cartId: id[0]['id']}
-    })
-        .then((carts) => {
-            res.render('cart/cart', { carts });
-            
+router.get('/cart', ensureAuthenticated, async function(req, res, next) {
+    var id = await Cart.findOrCreate({where: {userId: req.user.id}})
+    if (req.user.id == undefined){
+        flashMessage(res, 'error', 'Please Login First');
+    }
+        Item.findAll({
+            raw: true,
+            include:{
+                model: Product,
+                required:false
+            },
+            where: { cartId: id[0]['id']}
         })
-        .catch(err => console.log(err));
+            .then((carts) => {
+                res.render('cart/cart', { carts });
+            })
+            .catch(err => console.log(err));
 });
 
 

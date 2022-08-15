@@ -1,7 +1,11 @@
 <link rel="stylesheet" href="/css/product.css">
 
 <div class="container" style="padding-top: 50px;">
-  <div class="bg-white rounded d-flex align-items-center justify-content-between" id="header"> <button class="btn btn-hide text-uppercase" type="button" data-bs-toggle="collapse" data-bs-target="#filterbar" aria-expanded="false" aria-controls="filterbar" id="filter-btn"> <span class="fas fa-angle-left" id="filter-angle"></span> <span id="btn-txt">Hide filters</span> </button>
+  <div class="bg-white rounded d-flex align-items-center justify-content-between" id="header"> 
+    <button class="btn btn-hide text-uppercase" type="button" data-bs-toggle="collapse" data-bs-target="#filterbar" aria-expanded="false" aria-controls="filterbar" id="filter-btn">
+     <span class="fas fa-angle-left" id="filter-angle"></span> 
+     <span id="btn-txt" >Filters</span> 
+     </button>
     <nav class="navbar navbar-expand-lg navbar-light ps-lg-0 ps-auto"> <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mynav" aria-controls="mynav" aria-expanded="false" aria-label="Toggle navigation" onclick="chnageIcon()" id="icon"> <span class="navbar-toggler-icon"></span> </button>
       <div class="collapse navbar-collapse" id="mynav">
         <ul class="navbar-nav d-lg-flex align-items-lg-center">
@@ -33,7 +37,7 @@
         <div class="box-label text-uppercase d-flex align-items-center">Categories <button class="btn ms-auto" type="button" data-bs-toggle="collapse" data-bs-target="#inner-box" aria-expanded="false" aria-controls="inner-box" id="out"> <span class="fas fa-plus"></span> </button> </div>
         <div id="inner-box" class="collapse mt-2 me-1">
           {{#each category}}
-          <div class="my-1"> <label class="tick">{{category_name}}<input type="checkbox" id="category" value="{{category_name}}" class="" onclick="settingFilter(this)"> <span class="check"></span> </label> </div>
+          <div class="my-1"> <label class="tick">{{category_name}}<input type="checkbox" id="category" value="{{category_name}}" class="category-active" name="{{category_name}}"onclick="settingFilter(this)" checked> <span class="check"></span> </label> </div>
           {{/each}}
         </div>
       </div>
@@ -42,7 +46,7 @@
         <div class="box-label text-uppercase d-flex align-items-center">Brands <button class="btn ms-auto" type="button" data-bs-toggle="collapse" data-bs-target="#inner-box2" aria-expanded="false" aria-controls="inner-box2"><span class="fas fa-plus"></span></button> </div>
         <div id="inner-box2" class="collapse mt-2 me-1">
           {{#each brands}}
-          <div class="my-1"> <label class="tick">{{brand_name}}<input type="checkbox"id="brand" value="{{brand_name}}"> <span class="check"></span> </label> </div>
+          <div class="my-1"> <label class="tick">{{brand_name}}<input type="checkbox" id="brand" value="{{brand_name}}" class="brand-active" name="{{brand_name}}" onclick="settingFilter(this)" checked> <span class="check"></span> </label> </div>
           {{/each}}
         </div>
       </div>
@@ -51,7 +55,9 @@
         <div class="box-label text-uppercase d-flex align-items-center">price <button class="btn ms-auto" type="button" data-bs-toggle="collapse" data-bs-target="#price" aria-expanded="false" aria-controls="price"><span class="fas fa-plus"></span></button> </div>
         <div class="collapse" id="price">
           <div class="middle">
-            <div class="multi-range-slider"> <input type="range" id="input-left" min="0" max="100" value="10"> <input type="range" id="input-right" min="0" max="100" value="50">
+            <div class="multi-range-slider"> 
+              <input type="range" id="input-left" min="0" max="{{max}}" value="0"> 
+            <input type="range" id="input-right" min="0" max="{{max}}" value="{{max}}">
               <div class="slider">
                 <div class="track"></div>
                 <div class="range"></div>
@@ -61,8 +67,8 @@
             </div>
           </div>
           <div class="d-flex align-items-center justify-content-between mt-2">
-            <div> <span id="amount-left" class="fw-bold"></span> SGD </div>
-            <div> <span id="amount-right" class="fw-bold"></span> SGD </div>
+            <div><span id="amount-left" class="fw-bold"></span> SGD </div>
+            <div><span id="amount-right" class="fw-bold"></span> SGD </div>
           </div>
         </div>
       </div>
@@ -85,24 +91,82 @@ var page = 0;
 var working = false;
 var search = getParameterByName('search');
 var category = getParameterByName('category');
+var brand = getParameterByName('brand');
+var min = getParameterByName('min');
+var max = getParameterByName('max');
 if(search == null){
     search =""
 }
+document.getElementById('filter-btn').addEventListener("click", changeHTML)
+window.addEventListener("load", changeToActive)
+
+function changeHTML(){
+  button = document.getElementById('filter-btn')
+  if(button.innerHTML == `<span class="fas fa-angle-left" id="filter-angle"></span> 
+     <span id="btn-txt">Hide Filters</span> `){
+      button.innerHTML = `<span class="fas fa-angle-left" id="filter-angle"></span> 
+     <span id="btn-txt" >Filters</span> `
+     }else{
+      button.innerHTML = `<span class="fas fa-angle-left" id="filter-angle"></span> 
+     <span id="btn-txt" >Hide Filters</span> `
+     }
+}
+
+function changeToActive(){
+  categories = category.split('|')
+    $('.category-active').each(function(){
+      $(this).click()
+    })
+  for(var a in categories){
+    if(categories[a]==""){
+      continue
+    }else{
+      document.getElementsByName(categories[a])[0].click()
+    }
+    document.getElementById('amount-left').innerHTML = min
+    document.getElementById('amount-right').innerHTML = max
+  }
+  brands = brand.split('|')
+    $('.brand-active').each(function(){
+      $(this).click()
+    })
+  for(var b in brands){
+    if(brands[b]==""){
+      continue
+    }else{
+      document.getElementsByName(brands[b])[0].click()
+    }
+  }
+}
+
     function settingFilter(element){
-     if(element.id == 'brand'){
+     if(element.id == 'brand' && !element.classList.contains('brand-active')){
       element.classList.add('brand-active')
-     }else if(element.id == 'category'){
+     }else if(element.id == 'category' && !element.classList.contains('category-active')){
       element.classList.add('category-active')
+     }else if(element.id=='category' && element.classList.contains('category-active')){
+      element.classList.remove('category-active')
+     }else if(element.id == 'brand' && element.classList.contains('brand-active')){
+      element.classList.remove('brand-active')
      }
     }
 
     function submitFilter(element){
       query_category = ""
+      query_brand = ""
+      min = ""
+      max = ""
       $(".category-active").each(function(){
         query_category+=$(this).val() + '|';
       })
+      $(".brand-active").each(function(){
+        query_brand+=$(this).val() + '|';
+      })
+      min = document.getElementById('input-left').value
+      max = document.getElementById('input-right').value
+
         loadProducts()
-        location.replace("/product/products?category="+query_category)
+        location.replace("/product/products?category="+query_category+"&brand="+query_brand+"&min="+min+"&max="+max)
 
         /*var search = document.getElementById("apply")*/
         /*location.replace("/product/products?category="+query_category)*/
@@ -115,7 +179,7 @@ if(search == null){
             method: 'POST',
             contentType: 'application/json',
             data: JSON.stringify({id: id}),
-            success: function(res){
+            success: async function(res){
                 if (res.status == "add"){
                     // element.classList.remove("bx-bookmarks")
                     element.classList.add('bxs-bookmark')
@@ -127,7 +191,8 @@ if(search == null){
                     element.classList.add('bx-tada')
                     setTimeout(function(){element.classList.remove('bx-tada')}, 1000)
                 }else{
-                    fireLogin(element)
+                  $('#details_'+element.value).modal('hide')
+                  await fireLogin(element)
                 }
             },
         })
@@ -137,10 +202,19 @@ function fireLogin(element){
     Swal.fire({
         title: 'Login Form',
         html: `<input type="text" id="login" class="swal2-input" placeholder="Username">
-        <input type="password" id="password" class="swal2-input" placeholder="Password">`,
+        <input type="password" id="password" class="swal2-input" placeholder="Password">
+        <div id="grecaptcha" ></div>`,
+        didOpen: () => {
+            grecaptcha.render('grecaptcha', {
+              'sitekey': '6Lewq24hAAAAACTG1H4_1IpHf0xOD0WiLpgl3GOI'
+            })
+          },
         confirmButtonText: 'Sign in',
         focusConfirm: true,
         preConfirm: () => {
+          if (grecaptcha.getResponse().length === 0) {
+              Swal.showValidationMessage(`Please verify that you're not a robot`)
+            }
             const login = Swal.getPopup().querySelector('#login').value
             const password = Swal.getPopup().querySelector('#password').value
             if (!login || !password) {
@@ -153,7 +227,8 @@ function fireLogin(element){
                 type: 'POST',
                 data:{
                     email: result.value.login,
-                    password: result.value.password
+                    password: result.value.password,
+                    recaptcha: 'true'
                 },
                 url: '/user/login',
             }).then((result) => {checkStatus(result, element)})
@@ -177,7 +252,9 @@ function checkStatus(result, element){
                     }, 100)
                 }
                 })
-                setTimeout(function(){swal.fire("logged in"), submitForm(element) }, 1500)
+                setTimeout(function(){
+                  $('#details_'+element.value).modal('show')
+                  submitForm(element)}, 1500)
             }else if(res.status == "not logged in"){
                 swal.fire("invalid login")
             }
@@ -234,7 +311,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     var percent = ((_this.value - min) / (max - min)) * 100;
 
-    amountRight.innerText = parseInt(percent * 1);
+    amountRight.innerText = parseInt(max * (percent/100));
     thumbRight.style.right = 100 - percent + "%";
     range.style.right = 100 - percent + "%";
   }
@@ -279,16 +356,13 @@ checkWishlist = function(id, wishlist){
 
 window.addEventListener("load", loadProducts);
 window.addEventListener("scroll",loadProducts);
-function hi(){
-  console.log("hi");
-}
 function loadProducts() {
     if(working == false){
         working = true;
 
         $.ajax({
             type: "GET",
-            url: "/product/nextpage?search="+search+"&page="+page+"&category="+category,
+            url: "/product/nextpage?search="+search+"&page="+page+"&category="+category+"&brand="+brand+"&min="+min+"&max="+max,
             processData: false,
             contentType: "application/json",
             data: '',
@@ -387,7 +461,7 @@ function loadProducts() {
                                         </div>
                                         <a data-bs-toggle="modal" data-bs-target="`+modal_id+`" class="product-name">`+data['product'][a]['product_name']+`</a>
                                         `+price_info
-                    modal = `<div class="modal" tabindex="-1" id="details_`+id+`" data-backdrop="static" data-bs-focus="false">
+                    modal = `<div class="modal" id="details_`+id+`" >
                             <div class="modal-dialog modal-lg modal-dialog-centered">
                             <div class="modal-content">
                             <div class="product-card" style="text-decoration: none;">
