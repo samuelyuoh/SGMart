@@ -1,250 +1,247 @@
-{{!-- <h1>Select Delivery Date and Time</h1><br>
-<h2>Select Date:</h2>
-<input type="date" name="fromDate" id="fromDate"><br>
-
-<label for="time"><h2>Select Time Slot:</h2></label>
-
-<select name="time" id="time">
-  <option value="morning">9AM - 12PM</option>
-  <option value="afternoon">1PM - 4PM</option>
-  <option value="evening">5PM - 8PM</option>
-</select> --}}
-<div class="row">
-  <div class="col-75">
+  <div class="content">
+    
     <div class="container">
-      <form method="post" action="/delivery/create-checkout-session">
-        <div class="row">
-          <div class="col-50">
-            <h3>Delivery Time Slot</h3>
-            <label for="date"><i class="fa fa-user"></i> Delivery Date</label>
-            <input type="date" name="fromDate" id="datefield" min="" required>
-            <label for="timeslotfrom"><i class="fa fa-envelope"></i> Delivery Time From:</label>
-            <select name="time" id="time" placeholder="Select Time Slot" required>
-                <option value="" disabled selected>Select Time Slot</option>
-                <option value="9AM">9AM</option>
-                <option value="10AM">10AM</option>
-                <option value="11AM">11AM</option>
-                <option value="12PM">12PM</option>
-                <option value="1PM">1PM</option>
-                <option value="2PM">2PM</option>
-                <option value="3PM">3PM</option>
-                <option value="4PM">4PM</option>
-                <option value="5PM">5PM</option>
-                <option value="6PM">6PM</option>
-                <option value="7PM">7PM</option>
-                <option value="8PM">8PM</option>
-            </select>
-            <label for="adr"><i class="fa fa-address-card-o" required></i> Address</label>
-            <input type="text" id="adr" name="address" placeholder="542 W. 15th Street" required>
-            <label for="city"><i class="fa fa-institution" required></i> City</label>
-            <input type="text" id="city" name="city" placeholder="New York" required>
+      <div class="row align-items-stretch no-gutters contact-wrap">
+        <div class="col-md-8">
+          <div class="form h-100">
+            <h3 style="color: black !important; font-weight:bold;">Checkout Form</h3>
+            {{msg}}
+            <form class="mb-5" method="post" id="contactForm" name="contactForm" action="">
+              <div class="row">
+                <div class="col-md-12 form-group mb-5">
+                  <label for="adr" class="col-form-label">Address *</label>
+                  <input type="text" class="form-control" name="address" id="adr" placeholder="Your Address" required>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-12 form-group mb-5">
+                  <label for="city" class="col-form-label">City *</label>
+                  <input type="text" class="form-control" name="city" id="city"  placeholder="Your city" required>
+                </div>
+              </div>
 
-            <div class="row">
-              <div class="col-50">
-                <label for="state">State</label>
-                <input type="text" id="state" name="state" placeholder="NY" required >
+              <div class="row">
+                <div class="col-md-6 form-group mb-5">
+                  <label for="state" class="col-form-label">State *</label>
+                  <input type="text" class="form-control" name="state" id="state"  placeholder="Your State" required>
+                </div>
+                <div class="col-md-6 form-group mb-5">
+                  <label for="zip" class="col-form-label">Zip *</label>
+                  <input type="text" class="form-control" pattern="[0-9]+" id="zip" name="zip"  placeholder="Your zip code" required>
+                </div>
               </div>
-              <div class="col-50">
-                <label for="zip">Zip</label>
-                <input type="text" pattern="[0-9]+" id="zip" name="zip" placeholder="10001" required>
+
+              <div class="row">
+                <div class="col-md-12 form-group mb-5">
+                  <label for="date" class="col-form-label">Delivery Date *</label>
+                  <input class="form-control" type="date" name="fromDate" id="datefield" min="" required></input>
+                </div>
               </div>
+
+              <div class="row">
+                <div class="col-md-12 form-group mb-5">
+                  <label for="timeslotfrom" class="col-form-label">Delivery Time *</label>
+                  <select class="form-control" name="time" id="time" placeholder="Select Time Slot" required>
+                      <option value="" disabled selected>Select Time Slot</option>
+                      <option value="9AM">9AM</option>
+                      <option value="10AM">10AM</option>
+                      <option value="11AM">11AM</option>
+                      <option value="12PM">12PM</option>
+                      <option value="1PM">1PM</option>
+                      <option value="2PM">2PM</option>
+                      <option value="3PM">3PM</option>
+                      <option value="4PM">4PM</option>
+                      <option value="5PM">5PM</option>
+                      <option value="6PM">6PM</option>
+                      <option value="7PM">7PM</option>
+                      <option value="8PM">8PM</option>
+                  </select>
+                </div>
+              </div>
+
+
+              <div class="row">
+                <div class="col-md-12 form-group">
+                  <input type="submit" value="Checkout" class="btn btn-primary rounded-0 py-2 px-4">
+                  <span class="submitting"></span>
+                </div>
+              </div>
+            </form>
+
+            <div id="form-message-warning mt-4"></div> 
+            <div id="form-message-success">
+              Your message was sent, thank you!
             </div>
+
           </div>
-
-          {{!-- <div class="col-50">
-            <h3>Payment</h3>
-            <label for="fname">Accepted Cards</label>
-            <div class="icon-container">
-              
-            <img alt="Credit Card Logos" src="https://www.shift4shop.com/images/credit-card-logos/cc-sm-4.png"  /></a>
-
-            </div>
-            <label for="cname">Name on Card</label>
-            <input type="text" id="cname" name="cardname" placeholder="Name" >
-            <label for="ccnum">Credit card number</label>
-            <input type="text" id="ccnum" name="cardnumber" placeholder="1111-2222-3333-4444" >
-            <label for="expmonth">Exp Month</label>
-            <input type="text" id="expmonth" name="expmonth" placeholder="September" >
-
-            <div class="row">
-              <div class="col-50">
-                <label for="expyear">Exp Year</label>
-                <input type="text" id="expyear" name="expyear" placeholder="20XX" >
-              </div>
-              <div class="col-50">
-                <label for="cvv">CVV</label>
-                <input type="text" id="cvv" name="cvv" placeholder="XXX" >
-              </div>
-            </div>
-          </div> --}}
-
         </div>
-        <label>
-          <input type="checkbox" checked="checked" name="sameadr"> Shipping address same as billing
-        </label>
-        <input type="submit" value="Continue to checkout" id="checkout-button" class="btn">
-      </form>
+        <div class="col-md-4">
+          <div class="contact-info h-100">
+            <h3>Delivery Information</h3>
+            <p class="mb-5">Delivery Fee in SGMart will be free of charge!</p>
+            <ul class="list-unstyled">
+              <li class="d-flex">
+                <span class="wrap-icon fas fa-map-marker-alt mr-3"></span>
+                <span class="text">180 Ang Mo Kio Ave 8, Singapore 569830</span>
+              </li>
+              <li class="d-flex">
+                <span class="wrap-icon fas fa-phone mr-3"></span>
+                <span class="text">6451 5115</span>
+              </li>
+              <li class="d-flex">
+                <span class="wrap-icon fas fa-envelope mr-3"></span>
+                <span class="text">contactNYP@nyp.edu.sg</span>
+              </li>
+            </ul>
+          </div>
+        </div>
     </div>
+
   </div>
 </div>
-
+    
 <style>
-    .row {
-    display: -ms-flexbox; /* IE10 */
-    display: flex;
-    -ms-flex-wrap: wrap; /* IE10 */
-    flex-wrap: wrap;
-    margin: 0 -16px;
-  }
-  
-  .col-25 {
-    -ms-flex: 25%; /* IE10 */
-    flex: 25%;
-  }
-  
-  .col-50 {
-    -ms-flex: 50%; /* IE10 */
-    flex: 50%;
-  }
-  
-  .col-75 {
-    -ms-flex: 75%; /* IE10 */
-    flex: 75%;
-  }
-  
-  .col-25,
-  .col-50,
-  .col-75 {
-    padding: 0 16px;
-  }
-  
-  .container {
-    background-color: #f2f2f2;
-    padding: 5px 20px 15px 20px;
-    border: 1px solid lightgrey;
-    border-radius: 3px;
-  }
-  
-  input[type=text] {
-    width: 100%;
-    margin-bottom: 20px;
-    padding: 12px;
-    border: 1px solid #ccc;
-    border-radius: 3px;
-  }
+@import url("https://fonts.googleapis.com/css?family=Oswald:400,500,600");
 
-  input[type=date] {
-    width: 100%;
-    margin-bottom: 20px;
-    padding: 12px;
-    border: 1px solid #ccc;
-    border-radius: 3px;
-  }
+body {
+  font-family: "Roboto", sans-serif;
+  background-color: #fff;
+  line-height: 1.9;
+  color: #8c8c8c;
+  position: relative; }
+  body:before {
+    z-index: -1;
+    position: absolute;
+    height: 50vh;
+    content: "";
+    top: 0;
+    left: 0;
+    right: 0;}
 
-  select{
-    width: 100%;
-    margin-bottom: 20px;
-    padding: 12px;
-    border: 1px solid #ccc;
-    border-radius: 3px;
-  }
-  
-  label {
-    margin-bottom: 10px;
-    display: block;
-  }
-  
-  .icon-container {
-    margin-bottom: 20px;
-    padding: 7px 0;
-    font-size: 24px;
-  }
-  
-  .btn {
-    background-color: #04AA6D;
-    color: white;
-    padding: 12px;
-    margin: 10px 0;
-    border: none;
-    width: 100%;
-    border-radius: 3px;
-    cursor: pointer;
-    font-size: 17px;
-  }
-  
+h1, h2, h3, h4, h5, h6,
+.h1, .h2, .h3, .h4, .h5, .h6 {
+  font-family: "Oswald", sans-serif;
+  color: #000; }
+
+a {
+  -webkit-transition: .3s all ease;
+  -o-transition: .3s all ease;
+  transition: .3s all ease; }
+  a, a:hover {
+    text-decoration: none !important; }
+
+.text-black {
+  color: #000; }
+
+.content {
+  padding: 5rem 0; }
+
+.heading {
+  font-size: 2.5rem;
+  font-weight: 900; }
+
+.form-control {
+  border: none;
+  border-bottom: 1px solid #ccc;
+  padding-left: 0;
+  padding-right: 0;
+  border-radius: 0;
+  background: none; }
+  .form-control:active, .form-control:focus {
+    outline: none;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+    border-color: #000; }
+
+.col-form-label {
+  color: #000;
+  font-size: 13px; }
+
+.btn, .form-control, .custom-select {
+  height: 45px; }
+
+.custom-select:active, .custom-select:focus {
+  outline: none;
+  -webkit-box-shadow: none;
+  box-shadow: none;
+  border-color: #000; }
+
+.btn {
+  border: none;
+  border-radius: 0;
+  font-size: 12px;
+  letter-spacing: .2rem;
+  text-transform: uppercase; }
+  .btn.btn-primary {
+    background: #27ae60;
+    color: #fff;
+    padding: 15px 20px; }
   .btn:hover {
-    background-color: #45a049;
-  }
-  
-  span.price {
-    float: right;
-    color: grey;
-  }
-  
-  /* Responsive layout - when the screen is less than 800px wide, make the two columns stack on top of each other instead of next to each other (and change the direction - make the "cart" column go on top) */
-  @media (max-width: 800px) {
-    .row {
-      flex-direction: column-reverse;
-    }
-    .col-25 {
-      margin-bottom: 20px;
-    }
-  }
+    color: #fff; }
+  .btn:active, .btn:focus {
+    outline: none;
+    -webkit-box-shadow: none;
+    box-shadow: none; }
+
+.contact-wrap {
+  -webkit-box-shadow: 0 0px 20px 0 rgba(0, 0, 0, 0.2);
+  box-shadow: 0 0px 20px 0 rgba(0, 0, 0, 0.2); }
+  .contact-wrap .col-form-label {
+    font-size: 14px;
+    color: #b3b3b3;
+    margin: 0 0 10px 0;
+    display: inline-block;
+    padding: 0; }
+  .contact-wrap .form, .contact-wrap .contact-info {
+    padding: 40px; }
+  .contact-wrap .contact-info {
+    color: rgba(255, 255, 255, 0.5); }
+    .contact-wrap .contact-info ul li {
+      margin-bottom: 15px;
+      color: rgba(255, 255, 255, 0.5); }
+      .contact-wrap .contact-info ul li .wrap-icon {
+        font-size: 20px;
+        color: #fff;
+        margin-top: 5px;
+        padding-right: 25px; }
+  .contact-wrap .form {
+    background: #fff; }
+    .contact-wrap .form h3 {
+      color: #27ae60;
+      font-size: 20px;
+      margin-bottom: 30px; }
+  .contact-wrap .contact-info {
+    background: #27ae60; }
+    .contact-wrap .contact-info h3 {
+      color: #fff;
+      font-size: 20px;
+      margin-bottom: 30px; }
+
+label.error {
+  font-size: 12px;
+  color: red; }
+
+#message {
+  resize: vertical; }
+
+#form-message-warning, #form-message-success {
+  display: none; }
+
+#form-message-warning {
+  color: #B90B0B; }
+
+#form-message-success {
+  color: #55A44E;
+  font-size: 18px;
+  font-weight: bold; }
+
+.submitting {
+  float: left;
+  width: 100%;
+  padding: 10px 0;
+  display: none;
+  font-weight: bold;
+  font-size: 12px;
+  color: #000; }
+
 </style>
-
-<script>
-    //n = new Date()
-    //y = n.getFullYear()
-    //m = n.getMonth()+1
-    //d = n.getDate()
-    //todaydate = y + "-" + m + "-" + d
-    //document.getElementById("fromdate").innerHTML = y + "-" + m + "-" + d
-
-    //datePickerId.min = new Date().toISOString().split("T")[0];
-
-    var today = new Date();
-    var dd = today.getDate();
-    var mm = today.getMonth() + 1; //January is 0!
-    var yyyy = today.getFullYear();
-
-    if (dd < 10) {
-    dd = '0' + dd;
-    }
-
-    if (mm < 10) {
-    mm = '0' + mm;
-    } 
-        
-    today = yyyy + '-' + mm + '-' + dd;
-    document.getElementById("datefield").setAttribute("min", today);
-
-    // Stripe
-    const button = document.querySelector("submit")
-    if (button){
-      button.addEventListener("click", () => {
-        fetch('/create-checkout-session', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            items: [
-              {id:1, quantity:3},
-              {id:2, quantity:1}
-            ]
-          })
-        }).then(res => {
-          if (res.ok) return res.json()
-          return res.json().then(json => Promise.reject(json))
-          console.log('bruh')
-        }).then(({url}) => {
-          console.log(url)
-          window.location = url
-        }).catch(e => {
-          console.error(e.error)
-        })
-      })
-    }
-</script>
-<script src="https://js.stripe.com/v3/"></script>
-<script src="card.js"></script>
