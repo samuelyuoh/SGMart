@@ -752,7 +752,7 @@ router.get('/couponstats', (req, res) => {
 	});
 
 router.get('/addCategory', (req, res) => {
-	res.render('addCategory', {layout: 'admin'})
+	res.render('admin/addCategory', {layout: 'admin'})
 })
 
 router.post('/addCategory', (req, res) => {
@@ -789,8 +789,8 @@ router.post('/deleteBrand/:id', (req, res) => {
 	res.redirect('/admin/inventory')
 })
 
-router.get('addBrand', (req, res) => {
-	res.render('addBrand', {layout: 'admin'})
+router.get('/addBrand', (req, res) => {
+	res.render('admin/addBrand', {layout: 'admin'})
 })
 
 router.post('/AddBrand', (req, res) => {
@@ -798,4 +798,6 @@ router.post('/AddBrand', (req, res) => {
 	Brand.create(brand_name)
 	res.redirect('/admin/inventory')
 })
+
+
 module.exports = router;
