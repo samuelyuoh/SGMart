@@ -51,9 +51,19 @@ const isMAdmin = function(userType) {
 	return (userType == 'madmin')
 };
 
+router.get('*', async(req, res) => {
+	if(req.isAuthenticated()){
+		if(!isStaff(req.user.userType)){
+			res.render('401')
+		}
+	}else{
+		res.render('401')
+	}
+})
+
 router.get('/', ensureAuthenticated, async (req, res) => {
 	if (!isStaff(req.user.userType)) {
-		res.redirect('/');
+		res.render('401');
 	} else {
 		const metadata = {
 			layout: 'admin',
@@ -747,4 +757,52 @@ router.get('/couponstats', (req, res) => {
 	
 	res.render('admin/couponstats', metadata)
 	});
+
+router.get('/addCategory', (req, res) => {
+	res.render('addCategory', {layout: 'admin'})
+})
+
+router.post('/addCategory', (req, res) => {
+	category_name = req.body.category
+	Category.create(category_name)
+	res.redirect('/admin/inventory')
+})
+
+router.post('/updateCategory/:id', (req, res) => {
+	category_name = req.body.category
+	Category.update({where: {id: req.params.id},category_name: category_name})
+	res.redirect('/admin/inventory')
+
+})
+router.post('/deleteCategory/:id', (req, res) => {
+	Category.destroy({where: {id: req.params.id}})
+	res.redirect('/admin/inventory')
+})
+router.get('/updateCategory/:id', (req, res) => {
+	res.render('updateCategory', {layout: 'admin'})
+})
+
+router.get('/updateBrand/:id', (req, res) => {
+	res.render('updateBrand', {layout: 'admin'})
+})
+
+router.post('/updateBrand/:id', (req, res) => {
+	brand_name = req.body.brand
+	Brand.update({where: {id: req.params.id},brand_name: brand_name})
+	res.redirect('/admin/inventory')
+})
+router.post('/deleteBrand/:id', (req, res) => {
+	Brand.destroy({where: {id: req.params.id}})
+	res.redirect('/admin/inventory')
+})
+
+router.get('addBrand', (req, res) => {
+	res.render('addBrand', {layout: 'admin'})
+})
+
+router.post('/AddBrand', (req, res) => {
+	brand_name = req.body.brand
+	Brand.create(brand_name)
+	res.redirect('/admin/inventory')
+})
 module.exports = router;
