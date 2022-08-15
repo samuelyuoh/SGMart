@@ -176,12 +176,12 @@ router.post('/login', async (req, res, next) => {
             remoteip: req.connection.remoteAddress
         })
         const verifyUrl = `https://google.com/recaptcha/api/siteverify?${query}`
-        const body = await fetch(verifyUrl).then(res => res.json())
+        // const body = await fetch(verifyUrl).then(res => res.json())
 
-        if (body.success !== undefined && !body.success) {
-                flashMessage(res, 'error', 'Recaptcha verification failed. Please try again');
-                res.redirect('/user/login');
-        } else {  
+        // if (body.success !== undefined && !body.success) {
+        //         flashMessage(res, 'error', 'Recaptcha verification failed. Please try again');
+        //         res.redirect('/user/login');
+        // } else {  
             user = await User.findOne({where :{email: email}});
             valid = user.tfa ? user.tfa : false; 
             valid1 = user.gtfa ? user.gtfa : false;
@@ -249,7 +249,7 @@ router.post('/login', async (req, res, next) => {
                     failureFlash: true
                 })(req, res, next);
             }
-        }
+        // }
     }
 });
 
