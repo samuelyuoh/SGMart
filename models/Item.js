@@ -3,6 +3,7 @@ const db = require('../config/DBConfig');
 
 const Item = db.define('item',
     {
+        // id: {type: Sequelize.INTEGER, autoIncrement: false, primaryKey: true},
         quantity:{type: Sequelize.INTEGER},
         product_name: { type: Sequelize.STRING },
         product_price: { type: Sequelize.DECIMAL(5,2) },

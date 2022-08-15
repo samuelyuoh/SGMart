@@ -70,6 +70,7 @@
                         </div>
                     </div>
                     <div class="text-uppercase">My recent orders</div>
+                    {{#if orders}}
                     {{#each orders}}
                     <div class="order my-3 bg-light">
                         <div class="row">
@@ -112,6 +113,9 @@
                         </div>
                     </div>
                     {{/each}}
+                    {{else}}
+                    <h1>Hi</h1>
+                    {{/if}}
                 </div>
             </div>
         </div>
