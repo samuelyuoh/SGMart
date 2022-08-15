@@ -115,12 +115,6 @@ router.post('/register', async function (req, res) {
                 });
         }
 
-        let result = await User.update(
-            { verified: 1 },
-            { where: { id: user.id } });
-        console.log(result[0] + ' user updated');
-        flashMessage(res, 'success', user.email + ' verified. Please login');
-        res.redirect('/user/login');
     }
     catch (err) {
         console.log(err);
@@ -163,6 +157,90 @@ router.get('/verify/:userId/:token', async function (req, res) {
         console.log(err);
     }
 });
+
+router.post('/swalLogin', async (req, res, next) => {
+    let {email, password, recaptcha} = req.body;
+    const captcha = req.body['g-recaptcha-response'] || recaptcha
+    if (captcha === undefined || captcha === '' || captcha === null) {
+        // return res.json({"success" : false, "msg": "Please select recaptcha"});
+        flashMessage(res, 'error', 'Please select recaptcha');
+        res.redirect('/user/login');
+    } else {
+        const query = stringify({
+            secret: process.env.RECAPTCHA_SECRETKEY,
+            response: req.body['g-recaptcha-response'],
+            remoteip: req.connection.remoteAddress
+        })
+            user = await User.findOne({where :{email: email}});
+            valid = user.tfa ? user.tfa : false; 
+            valid1 = user.gtfa ? user.gtfa : false;
+            if (valid) {
+                otp = otpGenerator.generate(8, { upperCaseAlphabets: false, specialChars: false });
+                let token = jwt.sign({payload: {otp, id: user.id}}, process.env.APP_SECRET, {expiresIn: 5 * 60});
+                a = `/user/${user.id}/2fa/verifyotp/${token}`;
+                id = user.id;
+                await User.update({otptoken: token}, 
+                    {where: {id: id}})
+                    .then((user) => {
+                        console.log('otp saved')
+                    })
+                    .catch (err => console.log(err));
+                
+                console.log(jwt.decode(token));
+                const message = {
+                    to: user.email,
+                    from: `SGMart <${process.env.SENDGRID_SENDER_EMAIL}>`,
+                    subject: 'SGMart Login OTP',
+                    html: `<br><br> Please use this OTP for logging in.<br><strong>Please Note: This OTP will only last 5 minutes.</strong>
+                            <br><br>OTP: <strong>${otp}</strong>`
+                };
+                sendEmail(message)
+                    .then(response => {
+                        flashMessage(res, 'success','OTP successfully sent to ' +  user.email);
+                    })
+                    .catch(err => {
+                        console.log(err);
+                        flashMessage(res, 'error', 'Error sending OTP to ' + user.email);
+                        res.redirect('/');
+                    });
+                passport.authenticate('local', {
+                    // Success redirect URL
+                    successRedirect: a,
+                    // Failure redirect URL 
+                    failureRedirect: '/user/login',
+                    /* Setting the failureFlash option to true instructs Passport to flash 
+                    an error message using the message given by the strategy's verify callback.
+                    When a failure occur passport passes the message object as error */
+                    failureFlash: true
+                })(req, res, next);
+            } else if (valid1) {
+                a = `/user/login/${user.id}/gotp/verify`;
+                passport.authenticate('local', {
+                    // Success redirect URL
+                    successRedirect: a,
+                    // Failure redirect URL 
+                    failureRedirect: '/user/login',
+                    /* Setting the failureFlash option to true instructs Passport to flash 
+                    an error message using the message given by the strategy's verify callback.
+                    When a failure occur passport passes the message object as error */
+                    failureFlash: true
+                })(req, res, next);
+            }
+            else {
+                passport.authenticate('local', {
+                    // Success redirect URL
+                    successRedirect: '/',
+                    // Failure redirect URL 
+                    failureRedirect: '/user/login',
+                    /* Setting the failureFlash option to true instructs Passport to flash 
+                    an error message using the message given by the strategy's verify callback.
+                    When a failure occur passport passes the message object as error */
+                    failureFlash: true
+                })(req, res, next);
+            }
+    }
+})
+
 router.post('/login', async (req, res, next) => {
     let {email, password, recaptcha} = req.body;
     const captcha = req.body['g-recaptcha-response'] || recaptcha
@@ -186,7 +264,12 @@ router.post('/login', async (req, res, next) => {
             user = await User.findOne({where :{email: email}});
             valid = user.tfa ? user.tfa : false; 
             valid1 = user.gtfa ? user.gtfa : false;
-            if (valid) {
+            console.log(user.status)
+            if (user.status == 1 || user.status == 2) {
+                flashMessage(res, 'error', 'Account has been deactivated/banned')
+                res.redirect('/')
+            }
+            else if (valid) {
                 otp = otpGenerator.generate(8, { upperCaseAlphabets: false, specialChars: false });
                 let token = jwt.sign({payload: {otp, id: user.id}}, process.env.APP_SECRET, {expiresIn: 5 * 60});
                 a = `/user/${user.id}/2fa/verifyotp/${token}`;
@@ -642,8 +725,16 @@ router.get('/login/google',
 router.get('/login/google/callback', 
   passport.authenticate('google', { failureRedirect: '/' }),
   function(req, res) {
+    if (!req.user.dataValues.status) {
+        console.log('hi')
+        flashMessage(res, 'success', 'successfully logged in')
+    } else {
+        console.log('a')
+        flashMessage(res, 'error', 'Account has been deactivated/banned')
+        res.redirect('/user/logout')
+    }
     // Successful authentication, redirect success.
-    res.redirect('/');
+    
   });
 // router.get('/check_delivery', (req, res) => {
 //     res.render('user/check_delivery');

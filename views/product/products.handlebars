@@ -228,9 +228,8 @@ function fireLogin(element){
                     email: result.value.login,
                     password: result.value.password,
                     recaptcha: 'true',
-                    shortcut: 'true'
                 },
-                url: '/user/login',
+                url: '/user/swallogin',
             }).then((result) => {checkStatus(result, element)})
         })
     }
