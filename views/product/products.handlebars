@@ -204,8 +204,8 @@ function fireLogin(element){
     Swal.fire({
         title: 'Login Form',
         html: `<input type="text" id="login" class="swal2-input" placeholder="Username">
-        <input type="password" id="password" class="swal2-input" placeholder="Password">
-        <div id="grecaptcha" ></div>`,
+        <input type="password" id="password" class="swal2-input" style="margin-bottom:10px;" placeholder="Password">
+        <div id="grecaptcha" class="g-recaptcha" style="margin:auto; max-width:305px;"></div>`,
         didOpen: () => {
             grecaptcha.render('grecaptcha', {
               'sitekey': '6Lewq24hAAAAACTG1H4_1IpHf0xOD0WiLpgl3GOI'
@@ -230,7 +230,8 @@ function fireLogin(element){
                 data:{
                     email: result.value.login,
                     password: result.value.password,
-                    recaptcha: 'true'
+                    recaptcha: 'true',
+                    shortcut: 'true'
                 },
                 url: '/user/login',
             }).then((result) => {checkStatus(result, element)})
