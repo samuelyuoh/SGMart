@@ -113,14 +113,19 @@ router.post('/createStaffAcc', ensureAuthenticated, async (req, res) => {
 				flashMessage(res, 'error', 'Error when sending email to ' + email);
 			});
 	} else {
-		User.update(
-			{userType: 'staff'},
-			{where: {email: email}}
-		).then((result) => {
-			createlogs("Updated to  staff account", req.user.id)
-			flashMessage(res, 'success', 'Account updated to staff account');
-			res.redirect('/admin/stafflist')
-		})
+		if (user.userType == 'staff' || user.userType == 'admin' || user.userType == 'madmin') {
+			flashMessage(res, 'error', 'Account is already staff account')
+			res.redirect("/admin/stafflist")
+		} else {
+			await User.update(
+				{userType: 'staff'},
+				{where: {email: email}}
+			).then((result) => {
+				createlogs(`Updated user ${user.id} to  staff account`, req.user.id)
+				flashMessage(res, 'success', 'Account updated to staff account');
+				res.redirect('/admin/stafflist')
+			})
+		}
 	}
 	
 });
@@ -144,10 +149,12 @@ router.get('/staffRegister/:email/:token', async function (req, res) {
 			}
 			res.redirect('/admin');
 		} else {
-			const metadata = {
-				staffEmail: email,
-			}
-			res.render('user/staffRegister', metadata);
+			flashMessage(res, 'error', 'No account found with email')
+			res.redirect('/admin');
+			// const metadata = {
+			// 	staffEmail: email,
+			// }
+			// res.render('user/staffRegister', metadata);
 		}
 
     }
@@ -173,8 +180,8 @@ router.get('/userList', async (req, res) => {
 	}
 
 	await User.findAndCountAll({
-		limit:1,
-		offset: page*1,
+		limit:8,
+		offset: page*8,
 		where: {
 			userType: {
 			  [Op.or]: ['customer','admin', 'staff', 'madmin']
@@ -184,7 +191,7 @@ router.get('/userList', async (req, res) => {
 		raw: true
 	})
 		.then((users) => {
-			metadata.totalPages = Math.ceil(users.count/1)
+			metadata.totalPages = Math.ceil(users.count/8)
 			metadata.currentPage = page
 			metadata.users = users.rows;
 			res.render('admin/userList', metadata);
@@ -210,8 +217,8 @@ router.get('/getPage/user/:user', async (req, res) => {
 		res.redirect('/admin')
 	}
 	await User.findAndCountAll({
-		limit:1,
-		offset: page*1,
+		limit:8,
+		offset: page*8,
 		where: {
 			userType: {
 			  [Op.or]: query1
@@ -221,7 +228,7 @@ router.get('/getPage/user/:user', async (req, res) => {
 		raw: true
 	})
 		.then((users) => {
-			metadata.totalPages = Math.ceil(users.count/1)
+			metadata.totalPages = Math.ceil(users.count/8)
 			metadata.currentPage = page
 			metadata.users = users.rows;
 			res.send(metadata)
@@ -248,8 +255,8 @@ router.get('/staffList', async (req, res) => {
 	}
 
 	await User.findAndCountAll({
-		limit:1,
-		offset: page*1,
+		limit:8,
+		offset: page*8,
 		where: {
 			userType: {
 			  [Op.or]: ['admin', 'staff', 'madmin']
@@ -258,7 +265,7 @@ router.get('/staffList', async (req, res) => {
 		raw: true
 	})
 		.then((users) => {
-			metadata.totalPages = Math.ceil(users.count/1)
+			metadata.totalPages = Math.ceil(users.count/8)
 			metadata.currentPage = page
 			metadata.users = users.rows;
 			res.render('admin/userList', metadata);

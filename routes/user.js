@@ -82,7 +82,7 @@ router.post('/register', async function (req, res) {
         let user = await User.findOne({ where: { email: email } });
         if (user) {
             // If user is found, that means email has already been registered
-            flashMessage(res, 'error', email + ' alreay registered');
+            flashMessage(res, 'error', email + ' already registered');
             res.render('user/register', {
                 name, email
             });
