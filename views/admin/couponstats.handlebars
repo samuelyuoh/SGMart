@@ -1,17 +1,4 @@
-<div class="main-content">
-    <header>
-    <div class="search-wrapper">
-        <span class="las la-search"></span>
-        <input type="search" placeholder="Search">
-    </div>
-    <div class="social-icons">
-        <span class="las la-bell"></span>
-        <span class="las la-comment"></span>
-        <div></div>
-    </div>
-    </header>
-
-    <main>
+<main>
         <section>
             <h3 class="section-head">Overview</h3>
             <div class="analytics">
@@ -20,7 +7,7 @@
                         <span class="las la-calculator"></span>
                     </div>
                     <div class="analytic-info">
-                        <h4>Total Coupons Redeemed</h4>
+                        <h4 style="">Total Coupons Redeemed</h4>
                         <h3>{{total}} <small class="text-danger"></small></h3>
                     </div>
                 </div>
@@ -33,12 +20,7 @@
                 <div class="graph-content">
                     <div class="graph-head">
                         <div class="icons-wrapper">
-                            <div class="icon">
-                                <span class="las la-calculator text-main"></span>
-                            </div>
-                            <div class="icon">
-                                <span class="las la-clock text-success"></span>
-                            </div>
+                            <h3>Coupons Redeemed</h3>
                         </div>
                     </div>
                     <div class="graph-board">
@@ -49,48 +31,54 @@
         </div>
     </section>
     </main>
-</div>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.bundle.js"></script>
 <script>
     Chart.defaults.global.defaultFontFamily = "Poppins";
-    let ctx = document.querySelector("#revenueChart");
+        let ctx = document.querySelector("#revenueChart");
 
-    var date = new Date();
-    today = date.toISOString().slice(0,10) //Today's date
+            var date = new Date();
+            today = date.toISOString().slice(0,10) //Today's date
 
-    date.setDate(date.getDate() - 1); 
-    yesterday = date.toISOString().slice(0,10) //Yesterday's date
+            date.setDate(date.getDate() - 1); 
+            yesterday = date.toISOString().slice(0,10) //Yesterday's date
 
-    date.setDate(date.getDate() - 1);
-    twodaysback = date.toISOString().slice(0,10) // 2 days back date
+            date.setDate(date.getDate() - 1);
+            twodaysback = date.toISOString().slice(0,10) // 2 days back date
 
-    date.setDate(date.getDate() - 1);
-    threedaysback = date.toISOString().slice(0,10) // 3 days back date
+            date.setDate(date.getDate() - 1);
+            threedaysback = date.toISOString().slice(0,10) // 3 days back date
 
-    date.setDate(date.getDate() - 1);
-    fourdaysback = date.toISOString().slice(0,10) // 4 days back date
+            date.setDate(date.getDate() - 1);
+            fourdaysback = date.toISOString().slice(0,10) // 4 days back date
 
-    let revChart=new Chart(ctx, {
-        type:"line",
-        data:{
-            labels:[fourdaysback, threedaysback, twodaysback, yesterday, today],
-            datasets:[
-                {
-                    label:"No. of Coupons Redeemed",
-                    borderColor:"#2ec3a3",
-                    borderWidth:"3",
-                    backgroundColor:"rgba(235,247,245,0.7)",
-                    //data:[0, 3 , 4, 5, 5]
-                    data:[{{fourdaysbackcount}},{{threedaysbackcount}}, {{twodaysbackcount}}, {{yesterdaycount}}, {{todaycount  }}]
+        let revChart=new Chart(ctx, {
+            type:"line",
+            data:{
+                labels:[fourdaysback, threedaysback, twodaysback, yesterday, today],
+                datasets:[
+                    {
+                        label:"No. of Coupons Redeemed",
+                        borderColor:"#396aff",
+                        borderWidth:"3",
+                        backgroundColor:"rgba(233,238,253,0.7)",
+                        data:[{{fourdaysbackcount}},{{threedaysbackcount}}, {{twodaysbackcount}}, {{yesterdaycount}}, {{todaycount}}]
+                    }
+                ]
+            },
+            options:{
+                responsive: true,
+                tooltips: {
+                    intersect: false,
+                    node: "index"
                 }
-            ]
-        },
-        options:{
-            responsive: true,
-            tooltips: {
-                intersect: false,
-                node: "index"
             }
-        }
-    });
+        });
+
+    
 </script>
+
+<style>
+    header {
+        background-color: white;
+    }
+</style>
