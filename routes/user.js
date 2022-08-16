@@ -26,7 +26,9 @@ const googlelogin = require('../helpers/googlelogin');
 const Rating = require('../models/Rating');
 const speakeasy = require('speakeasy');
 const { stringify } = require('querystring');
-const fetch = require('isomorphic-fetch')
+const fetch = require('isomorphic-fetch');
+const nodemailer = require('nodemailer');
+
 
 const isStaff = function(userType) {
 	return (userType == 'staff' || userType == 'admin' || userType == 'madmin')
@@ -1185,8 +1187,12 @@ router.get('/orders/:id', ensureAuthenticated, async  (req, res) => {
     var items = await Item.findAndCountAll({
         where: {cartId: cart[0]['id']}
     })
-            // var invoice = Invoice.findAll({where: {orderId: orders[0]['id']}})
-    res.render('user/orders', {orders:orders.rows, order_count:orders.count, cart: items.count})
+    var wishlists = await Wishlist.findAndCountAll({
+        raw: true,
+        where:{userId: req.user.id},
+    })
+    res.render('user/orders', {orders:orders.rows, order_count:orders.count, cart: items.count, wishlist_count:wishlists.count})
+
     
 });
 
@@ -1215,16 +1221,80 @@ router.get('/contact', (req, res) => {
 
 router.post('/contact', (req, res) => {
     const output = `
-      <p>You have a new contact request</p>
-      <h3>Contact Details</h3>
-      <ul>  
-        <li>Name: ${req.body.name}</li>
-        <li>Email: ${req.body.email}</li>
-        <li>Phone: ${req.body.phone}</li>
-        <li>Subject: ${req.body.subject}</li>
-      </ul>
-      <h3>Message</h3>
-      <p>${req.body.message}</p>
+    <body style="margin:0;padding:0;">
+    <table role="presentation" style="width:100%;border-collapse:collapse;border:0;border-spacing:0;background:#ffffff;">
+      <tr>
+        <td align="center" style="padding:0;">
+          <table role="presentation" style="width:602px;border-collapse:collapse;border:1px solid #cccccc;border-spacing:0;text-align:left;">
+            <tr>
+              <td align="center" style="padding:40px 0 30px 0;background:#70bbd9;">
+                <img src="https://assets.codepen.io/210284/h1.png" alt="" width="300" style="height:auto;display:block;" />
+              </td>
+            </tr>
+            <tr>
+              <td style="padding:36px 30px 42px 30px;">
+                <table role="presentation" style="width:100%;border-collapse:collapse;border:0;border-spacing:0;">
+                  <tr>
+                    <td style="padding:0 0 36px 0;color:#153643;">
+                      <h1 style="font-size:24px;margin:0 0 20px 0;font-family:Arial,sans-serif;">Contact Request</h1>
+                      <ul>
+                        <li>Name: ${req.body.name}</li>
+                        <li>Email: ${req.body.email}</li>
+                        <li>Phone: ${req.body.phone}</li>
+                        <li>Subject: ${req.body.subject}</li>
+                      </ul>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td style="padding:0 0 36px 0;color:#153643;">
+                      <h1 style="font-size:24px;margin:0 0 20px 0;font-family:Arial,sans-serif;">Message</h1>
+                      <h3>${req.body.message}</h3>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td style="padding:0;">
+                      <table role="presentation" style="width:100%;border-collapse:collapse;border:0;border-spacing:0;">
+                        <tr>
+                          <td style="width:260px;padding:0;vertical-align:top;color:#153643;">
+                            <p style="margin:0 0 25px 0;font-size:16px;line-height:24px;font-family:Arial,sans-serif;"><img src="https://assets.codepen.io/210284/left.gif" alt="" width="260" style="height:auto;display:block;" /></p>
+                            <p style="margin:0 0 12px 0;font-size:16px;line-height:24px;font-family:Arial,sans-serif;">With the vision of being a leader in everything food, our purpose as a social retailer is to make life better for all.</p>
+                          </td>
+                          <td style="width:20px;padding:0;font-size:0;line-height:0;">&nbsp;</td>
+                          <td style="width:260px;padding:0;vertical-align:top;color:#153643;">
+                            <p style="margin:0 0 25px 0;font-size:16px;line-height:24px;font-family:Arial,sans-serif;"><img src="https://assets.codepen.io/210284/right.gif" alt="" width="260" style="height:auto;display:block;" /></p>
+                            <p style="margin:0 0 12px 0;font-size:16px;line-height:24px;font-family:Arial,sans-serif;">Founded by the labour movement in 2022, NYP SGMart's social mission is to moderate the cost of living in Singapore.</p>
+                          </td>
+                        </tr>
+                      </table>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding:30px;background:#ee4c50;">
+                <table role="presentation" style="width:100%;border-collapse:collapse;border:0;border-spacing:0;font-size:9px;font-family:Arial,sans-serif;">
+                  <tr>
+                    <td style="padding:0;width:50%;" align="right">
+                      <table role="presentation" style="border-collapse:collapse;border:0;border-spacing:0;">
+                        <tr>
+                          <td style="padding:0 0 0 10px;width:38px;">
+                            <a href="http://www.twitter.com/" style="color:#ffffff;"><img src="https://assets.codepen.io/210284/tw_1.png" alt="Twitter" width="38" style="height:auto;display:block;border:0;" /></a>
+                          </td>
+                          <td style="padding:0 0 0 10px;width:38px;">
+                            <a href="http://www.facebook.com/" style="color:#ffffff;"><img src="https://assets.codepen.io/210284/fb_1.png" alt="Facebook" width="38" style="height:auto;display:block;border:0;" /></a>
+                          </td>
+                        </tr>
+                      </table>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
     `;
       // create reusable transporter object using the default SMTP transport
   let transporter = nodemailer.createTransport({
@@ -1251,6 +1321,7 @@ router.post('/contact', (req, res) => {
       console.log(error);
     } else {
       console.log('Email sent: ' + info.response);
+      flashMessage(res, 'success', 'Message sent');
     }
     res.render('user/contact', {msg: 'Email has been sent'})
   });
