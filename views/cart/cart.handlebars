@@ -26,7 +26,7 @@
         <div class="price"> {{"product.product_price"}}</div>
         
         <div class="quantity">
-          <input type="number" value="1" class="quantity-field" name="quantity" id ='quantity' min="1" max="{{"product.stock"}}">
+          <input type="number" value="{{quantity}}" class="quantity-field" name="quantity" id ='quantity' min="1" max="{{"product.stock"}}">
 
         </div>
         <div class="subtotal">{{"product.product_price"}}</div>
@@ -54,7 +54,7 @@
         </div>
         <div class="summary-total">
           <div class="total-title">Total</div>
-          <div class="total-value final-value" id="basket-total">1.20</div>
+          <div class="total-value final-value" id="basket-total">$1.2</div>
         </div>
         <div class="summary-checkout">
             <button type="submit" class="checkout-cta"  onclick="location.href = '/delivery'" >Go to Secure Checkout</button>

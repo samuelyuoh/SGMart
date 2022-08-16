@@ -19,36 +19,40 @@ router.post('/add/:id', ensureAuthenticated ,async function(req, res, next) {
     if(req.isAuthenticated()){
         await Cart.findOrCreate({where: {userId: req.user.id}})
         var id = await Cart.findAll({where: {userId: req.user.id}})
-        Invoice.create({
-            productId: productid,
-            quantity: quantity, 
-            product_name: product.product_name,
-            product_price: product.product_price,
-            totalCost: quantity * product.product_price,
-            discount: product.discount,
-            stock: product.stock,
-            desc: product.desc,
-            image: product.image,
-            cartId: id[0]['id']
-        })
-        await Item.findOrCreate({where:{
-            productId: productid,
-            quantity: quantity, 
-            product_name: product.product_name,
-            product_price: product.product_price,
-            totalCost: quantity * product.product_price,
-            discount: product.discount,
-            stock: product.stock,
-            desc: product.desc,
-            image: product.image,
-            cartId: id[0]['id']
-        }
-        })
-        .then((cart) => {
+        var check = await Item.findAll({where: {cartId: id[0]['id'], productId: productid}})
+        console.log(check[0])
+        if (check[0] == undefined){
+            console.log(check)
+            Invoice.create({
+                productId: productid,
+                quantity: quantity, 
+                product_name: product.product_name,
+                product_price: product.product_price,
+                totalCost: quantity * product.product_price,
+                discount: product.discount,
+                stock: product.stock,
+                desc: product.desc,
+                image: product.image,
+                cartId: id[0]['id']
+            })
+            await Item.findOrCreate({where:{
+                productId: productid,
+                quantity: quantity, 
+                product_name: product.product_name,
+                product_price: product.product_price,
+                totalCost: quantity * product.product_price,
+                discount: product.discount,
+                stock: product.stock,
+                desc: product.desc,
+                image: product.image,
+                cartId: id[0]['id']
+            }
+            })
+            .catch(err => console.log(err))
             flashMessage(res, 'success', 'Product added successfully.');
+        }
+        
             res.redirect('/product/products');
-        })
-        .catch(err => console.log(err))
     }
     // let cart_item = await Cart.create({
     //     productId: productid,
