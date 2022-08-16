@@ -264,9 +264,15 @@ router.post('/login', async (req, res, next) => {
                 res.redirect('/user/login');
         } else {  
             user = await User.findOne({where :{email: email}});
-            valid = user.tfa ? user.tfa : false; 
-            valid1 = user.gtfa ? user.gtfa : false;
-            if (valid) {
+            if (user == null || user == undefined) {
+                flashMessage(res, 'error', 'No account found. Please register')
+                res.redirect('/')
+            } 
+            else if (user.status) {
+                flashMessage(res, 'error', 'Account has been deactivated/banned')
+                res.redirect('/')
+            }
+            else if (user.tfa) {
                 otp = otpGenerator.generate(8, { upperCaseAlphabets: false, specialChars: false });
                 let token = jwt.sign({payload: {otp, id: user.id}}, process.env.APP_SECRET, {expiresIn: 5 * 60});
                 a = `/user/${user.id}/2fa/verifyotp/${token}`;
@@ -305,7 +311,7 @@ router.post('/login', async (req, res, next) => {
                     When a failure occur passport passes the message object as error */
                     failureFlash: true
                 })(req, res, next);
-            } else if (valid1) {
+            } else if (user.gtfa) {
                 a = `/user/login/${user.id}/gotp/verify`;
                 passport.authenticate('local', {
                     // Success redirect URL
@@ -373,48 +379,73 @@ router.post('/checkStatus', (req, res) => {
     }
 })
 
-router.post('/editprofile/:id', ensureAuthenticated, (req, res) => {
+router.post('/editprofile/:id', ensureAuthenticated, async (req, res) => {
     let name = req.body.name;
     let email = req.body.email;
     let phoneNumber = req.body.phoneNumber ? req.body.phoneNumber : null;
     let address = req.body.address ? req.body.address : null;
     let address2 = req.body.address2 ? req.body.address2 : null;
     let postalCode = req.body.postalCode ? req.body.postalCode : null;
-    User.update(
-        {   'name' : name,
-            'email' : email,
-            'phoneNumber' : phoneNumber,
-            'address' : address,
-            'address2' : address2,
-            'postalCode' : postalCode}, 
-        { where: { id: req.params.id } }
-    )
-        .catch(err => console.log(err));
-    User.findByPk(req.params.id)
-        .then ((user) => {
-            flashMessage(res, 'success', 'Information updated');
+    user = await User.findByPk(req.params.id)
+    if (phoneNumber != null || postalCode != null) {
+        if (!(String(phoneNumber).startsWith("9") || String(phoneNumber).startsWith("8") || String(phoneNumber).startsWith("6") || String(phoneNumber).length == 8)) {
+            flashMessage(res, 'error', 'Invalid phone number')
             res.redirect(`/user/profile/${user.id}`);
-        })
-        .catch(err => console.log(err));
+        } else if (!(String(phoneNumber).length == 6)) {
+            flashMessage(res, 'error', 'Invalid postal code')
+            res.redirect(`/user/profile/${user.id}`);
+        }
+        else {
+            await User.update(
+                {   'name' : name,
+                    'email' : email,
+                    'phoneNumber' : phoneNumber,
+                    'address' : address,
+                    'address2' : address2,
+                    'postalCode' : postalCode}, 
+                { where: { id: req.params.id } }
+            )
+                .catch(err => console.log(err));
+            await User.findByPk(req.params.id)
+                .then ((user) => {
+                    flashMessage(res, 'success', 'Information updated');
+                    res.redirect(`/user/profile/${user.id}`);
+                })
+                .catch(err => console.log(err));
+        }
+    } else {
+        await User.update(
+            {   'name' : name,
+                'email' : email,
+                'phoneNumber' : phoneNumber,
+                'address' : address,
+                'address2' : address2,
+                'postalCode' : postalCode}, 
+            { where: { id: req.params.id } }
+        )
+            .catch(err => console.log(err));
+        await User.findByPk(req.params.id)
+            .then ((user) => {
+                flashMessage(res, 'success', 'Information updated');
+                res.redirect(`/user/profile/${user.id}`);
+            })
+            .catch(err => console.log(err));
+    }
+    
 });
 
-router.get('/editprofile/:id', ensureAuthenticated, (req, res) => {
-    User.findByPk(req.params.id)
-        .then((user) => {
-            if (!user) {
-                flashMessage(res, 'error', 'User not found');
-                res.redirect('/user/login');
-                return;
-            }
-            if (req.user.id != req.params.id) {
-                flashMessage(res, 'error', 'Unauthorised access');
-                res.redirect('/');
-                return;
-            }
-            res.render('user/editprofile', { user });
-            
-        })
-        .catch(err => console.log(err));
+router.get('/editprofile/:id', ensureAuthenticated, async (req, res) => {
+    user = await User.findByPk(req.params.id)
+    console.log(!user)
+    if (!user) {
+        flashMessage(res, 'error', 'User not found');
+        res.redirect(`/`);
+    } else if (req.user.id != req.params.id) {
+        flashMessage(res, 'error', 'Unauthorised access');
+        res.redirect('/');
+    }else {
+        res.render('user/editprofile', { user });
+    }
 });
 
 router.get('/viewrewards/:id', ensureAuthenticated, (req, res) => {
@@ -754,6 +785,10 @@ router.get('/login/google/callback',
   async function(req, res) {
     if (!req.user.dataValues.status) {
         if (req.user.dataValues.tfa) {
+            flashMessage(res, 'error', 'Email not verified')
+            res.redirect('/user/logout')
+        }
+        else if (req.user.dataValues.tfa) {
             otp = otpGenerator.generate(8, { upperCaseAlphabets: false, specialChars: false });
             let token = jwt.sign({payload: {otp, id: req.user.dataValues.id}}, process.env.APP_SECRET, {expiresIn: 5 * 60});
             a = `/user/${req.user.dataValues.id}/2fa/verifyotp/${token}`;
@@ -1016,21 +1051,26 @@ router.post('/changepassword/:id', async (req,res) => {
     }
     else {
         user = await User.findByPk(req.params.id);
+        if (user.password == null) {
+            flashMessage(res, 'error', 'Please change your password using google')
+            res.redirect(`/user/profile/${id}`);
+        }else {
 
-        const validPassword = await bcrypt.compare(password1, user.password);
-        if (!validPassword) {
-            flashMessage(res, 'error', 'Incorrect Password. Please try again.')
-            res.redirect('/user/changepassword/' + id)
-        } else {
-            var salt = bcrypt.genSaltSync(10);
-            var hash = bcrypt.hashSync(password2, salt);
-            await User.update(
-                {password: hash},
-                {where :{id: id}}
-            ).then((user) => {
-                flashMessage(res, 'success', 'Password has been changed');
-                res.redirect(`/user/profile/${id}`);
-            }).catch(err =>  console.log(err));
+            const validPassword = await bcrypt.compare(password1, user.password);
+            if (!validPassword) {
+                flashMessage(res, 'error', 'Incorrect Password. Please try again.')
+                res.redirect('/user/changepassword/' + id)
+            } else {
+                var salt = bcrypt.genSaltSync(10);
+                var hash = bcrypt.hashSync(password2, salt);
+                await User.update(
+                    {password: hash},
+                    {where :{id: id}}
+                ).then((user) => {
+                    flashMessage(res, 'success', 'Password has been changed');
+                    res.redirect(`/user/profile/${id}`);
+                }).catch(err =>  console.log(err));
+            }
         }
     }
 });

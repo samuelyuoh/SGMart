@@ -98,7 +98,7 @@
                                             </div>
                                             <div class="col-md-12">
                                                 <label class="labels">Mobile Number</label>
-                                                <input name="phoneNumber" type="number" class="form-control" placeholder="phone number" value="{{user.phoneNumber}}">
+                                                <input name="phoneNumber" type="number" class="form-control" placeholder="phone number" value="{{user.phoneNumber}}" minlength="8" maxlength="8">
                                             </div>
                                             <div class="col-md-12">
                                                 <label class="labels">Address Line 1</label>
@@ -150,6 +150,9 @@
       };
 </script>
 <style>
+    label {
+        padding-top: 5px;
+    }
 .modal-body>.body-desc,.footer-title {
     font-size: 14px !important;
     font-weight: normal !important;
