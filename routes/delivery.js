@@ -19,6 +19,14 @@ router.get('/', async (req, res) => {
     let item = await Item.findAll({
         raw: true,
     })
+    let cart = await Cart.findAll({
+        raw: true
+    })
+    let product = await Product.findAll({
+        raw: true
+    })
+
+    
     Cart.findAll({
         raw: true,
     })
@@ -28,6 +36,8 @@ router.get('/', async (req, res) => {
         })
 
         .catch(err => console.log(err));
+
+    
 });
 
 router.get('/cancel', (req,res) => {
@@ -37,31 +47,29 @@ router.get('/cancel', (req,res) => {
 
 // Stripe
 
-const items = [
-	{id:1, quantity:3},
-    {id:2, quantity:1}
-];
+router.get("/success", (req,res) => {
+	res.render('delivery/success')
+})
 
-const storeItems = new Map([
-	[1, {priceInCents: 10000, name: "10 Dolla"}],
-	[2, {priceInCents: 20000, name: "20 Dolla"}],
-])
+router.get('/cancel', (req,res) => {
+	res.render('delivery/cancel')
+})
 
-router.post("/create-checkout-session", async (req, res) => {
+router.post('/',ensureAuthenticated, async function (req, res) {
+    var products = await Item.findAll()
     console.log('start checkout')
 	try {
 		const session = await stripe.checkout.sessions.create({
 			payment_method_types: ['card'],
 			mode: 'payment',
-			line_items:items.map(item => {
-				const storeItem = storeItems.get(item.id)
+			line_items:products.map(item => {
 				return {
 					price_data: {
 						currency: 'sgd',
 						product_data: {
-							name: storeItem.name
+							name: item.product_name
 						},
-						unit_amount: storeItem.priceInCents
+						unit_amount: item.product_price*100
 					},
 					quantity: item.quantity
 				}
