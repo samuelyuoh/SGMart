@@ -12,15 +12,15 @@ router.post('/add/:id', ensureAuthenticated ,async function(req, res, next) {
     let productid = req.params.id;
     let quantity = req.body.quantity
     // let totalCost = req.body.totalCost
-    console.log(quantity)
-    console.log(productid)
+    // console.log(quantity)
+    // console.log(productid)
     // console.log(productid)
     var product = await Product.findByPk(productid)
     if(req.isAuthenticated()){
         await Cart.findOrCreate({where: {userId: req.user.id}})
         var id = await Cart.findAll({where: {userId: req.user.id}})
         var check = await Item.findAll({where: {cartId: id[0]['id'], productId: productid}})
-        console.log(id[0]['id'])
+        // console.log(check[0])
         if (check[0] == undefined){
             Invoice.create({
                 productId: productid,
@@ -52,7 +52,7 @@ router.post('/add/:id', ensureAuthenticated ,async function(req, res, next) {
             flashMessage(res, 'success', 'Product added successfully.');
         }
         else{
-            console.log('hi')
+            // console.log('hi')
             await Item.increment({quantity:1}, {where: {cartId: id[0]['id']}})
             .catch(err => console.log(err))
             flashMessage(res, 'success', 'Product added successfully.');

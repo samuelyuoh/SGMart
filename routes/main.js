@@ -101,6 +101,8 @@ router.post('/usercoupongenerate/:id', ensureAuthenticated, async (req, res) => 
 		{ where: { id: cid } }
 	)
 
+
+
     User.findByPk(req.params.id)
         .then ((user) => {
             flashMessage(res, 'success', 'Coupon has been claimed');

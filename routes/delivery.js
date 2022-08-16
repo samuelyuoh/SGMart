@@ -12,6 +12,7 @@ const Order = require('../models/order');
 const Item = require('../models/item');
 const Invoice = require('../models/Invoice');
 const ensureAuthenticated = require('../helpers/auth');
+const User = require('../models/User');
 const stripe = require("stripe")(process.env.STRIPE_PRIVATE_KEY);
 require('../app.js')
 
@@ -86,7 +87,8 @@ router.post('/',ensureAuthenticated, async function (req, res) {
     let delivery_city = req.body.city;
     let delivery_state = req.body.state;
     let delivery_zip = req.body.zip;
-    let userId = req.user.id
+    let userId = req.user.id;
+	let user = req.user.id;
     var id = await Cart.findAll({where: {userId: req.user.id}})
     // console.log(req.body)
     Order.create({name, email, address, phone, delivery_date, delivery_time, userId})
@@ -105,6 +107,15 @@ router.post('/',ensureAuthenticated, async function (req, res) {
             res.render('delivery/delivery_completed');
         })
         .catch(err => console.log(err))
+
+	points = user.Points
+	points += 50
+	
+	User.update({Points: points }, 
+		{ where: { id: userId } })
+
+	console.log(Points)
+
 });
 
 router.get("/success", async (req,res) => {
