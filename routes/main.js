@@ -9,11 +9,21 @@ const CouponRedemption = require('../models/CouponRedemption');
 const { DATEONLY } = require('sequelize');
 const UserCouponInfo = require('../models/UserCouponInfo');
 const Brand = require('../models/Brand');
+const Product = require('../models/Product');
 
 router.get('/', async (req, res) => {
 	var brands = await Brand.findAll()
-	// renders views/index.handlebars, passing title as an object
-	res.render('index', { brands })
+	Product.findAll({
+		limit:8,
+		raw: true,
+	})
+		.then((products) => {
+			res.render('index', { products, brands});
+
+		})
+
+		.catch(err => console.log(err));
+
 });
 
 router.post('/flash', (req, res) => {

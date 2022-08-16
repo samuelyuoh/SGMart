@@ -16,37 +16,10 @@
 
         <nav class="navbar">
             <a href="/">Home</a>
-
             <a href="/product/products">Products</a>
-            
-            <div class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" href="#" type="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">Brands</a>
-                <div class="dropdown-menu">
-                  {{!-- {% for brand in brands %} --}}
-                  {{#each brands}}
-                  <a class="dropdown-item" href="" >{{brand_name}}</a>
-                  {{/each}}
-                  {{!-- {% endfor %} --}}
-                </div>
-            </div>
-
-            <div class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" href="#" type="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">Categories</a>
-                <div class="dropdown-menu">
-                  {{!-- {% for category in categories %} --}}
-                  <a class="dropdown-item" href="" >category name</a>
-                  {{!-- {% endfor %} --}}
-                </div>
-            </div>
-
-            
             <a href="/blog/viewBlogs">Blogs</a>
             <a href="/user/contact">Contact</a>
-            <a href="/user/about">About</a>
-
-
-            
-            
+            <a href="/user/about">About</a>            
         </nav>
         
         <div class="icons">
@@ -54,7 +27,7 @@
           {{#if user}}
             <div class="dropdown-menu">
                   <a class="dropdown-item" href="/user/profile/{{user.id}}">Account</a>
-                  <a href="/usercoupongenerate/{{user.id}}">Redeem Coupons</a>
+                  <a class="dropdown-item" href="/usercoupongenerate/{{user.id}}">Redeem Coupons</a>
                   <a class="dropdown-item" href="/user/orders/{{user.id}}">My Orders</a>
                   {{#if (isStaff user.userType)}}
                   <a class="dropdown-item" href="/admin">Admin</a>

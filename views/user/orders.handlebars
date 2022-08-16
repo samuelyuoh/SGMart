@@ -1,5 +1,4 @@
 <link rel="stylesheet" href="/css/profile.css">
-
     <div class="container mt-4">
         <div class="row">
             <div class="col-lg-3 my-lg-0 my-md-1">
@@ -65,19 +64,19 @@
                                 alt="">
                             <div class="d-flex align-items-center mt-2">
                                 <div class="tag">Wishlist</div>
-                                <div class="ms-auto number">NIL</div>
+                                <div class="ms-auto number">{{wishlist_count}}</div>
                             </div>
                         </div>
                     </div>
-                    <div class="text-uppercase">My recent orders</div>
                     {{#if orders}}
+                    <div class="text-uppercase">My recent orders</div>
                     {{#each orders}}
                     <div class="order my-3 bg-light">
                         <div class="row">
                             <div class="col-lg-4">
                                 <div class="d-flex flex-column justify-content-between order-summary">
                                     <div class="d-flex align-items-center">
-                                        <div class="text-uppercase">Order #00000{{id}}</div>
+                                        <div class="text-uppercase">Order #00000{{orders.id}}</div>
                                         <div class="blue-label ms-auto text-uppercase">paid</div>
                                     </div>
                                     <div class="fs-8">{{getDateOnly createdAt}}</div>
@@ -86,7 +85,7 @@
                             </div>
                             <div class="col-lg-8">
                                 <div class="d-sm-flex align-items-sm-start justify-content-sm-between">
-                                    <div class="status">Status : Delivered</div>
+                                    <div class="status">Status : Accepted </div>
                                     <a class="btn btn-primary text-uppercase" href="/user/orderDetail/{{id}}">order info</a>
                                 </div>
                                 <div class="progressbar-track">
@@ -97,13 +96,13 @@
                                         <li id="step-2" class="text-muted green">
                                             <span class="fas fa-check"></span>
                                         </li>
-                                        <li id="step-3" class="text-muted green">
+                                        <li id="step-3" class="text-muted ">
                                             <span class="fas fa-box"></span>
                                         </li>
-                                        <li id="step-4" class="text-muted green">
+                                        <li id="step-4" class="text-muted ">
                                             <span class="fas fa-truck"></span>
                                         </li>
-                                        <li id="step-5" class="text-muted green">
+                                        <li id="step-5" class="text-muted ">
                                             <span class="fas fa-box-open"></span>
                                         </li>
                                     </ul>
@@ -114,7 +113,6 @@
                     </div>
                     {{/each}}
                     {{else}}
-                    <h1>Hi</h1>
                     {{/if}}
                 </div>
             </div>
@@ -242,13 +240,13 @@
     font-weight: 600;
 }
 
-.order .btn.btn-primary {
+.order .btn.btn-primary:hover {
     background-color: #fff;
     color: #27ae60;
     border: 1px solid #27ae60;
 }
 
-.order .btn.btn-primary:hover {
+.order .btn.btn-primary {
     background-color: #27ae60;
     color: #fff;
 }

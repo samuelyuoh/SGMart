@@ -1,0 +1,154 @@
+            <div class="graph-card">
+                <h3 class="section-head">Graph</h3>
+                <div class="graph-content">
+                    <div class="graph-head">
+                        <div class="icons-wrapper">
+                            <h3>Orders</h3>
+                        </div>
+                        <div class="graph-select">
+                            <select name="" id="time">
+                                <option value="m">Last 30 Days</option>
+                                <option value="w">Last 7 Days</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="graph-board">
+                        <canvas id="revenueChart" width="100%" height="51px"></canvas>
+                    </div>
+                </div>
+            </div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.bundle.js"></script>
+
+<script>
+    Chart.defaults.global.defaultFontFamily = "Poppins";
+        let ctx = document.querySelector("#revenueChart");
+
+        let revChart=new Chart(ctx, {
+            type:"line",
+            data:{
+                labels:[],
+                datasets:[
+                    {
+                        label:"Orders",
+                        borderColor:"#396aff",
+                        borderWidth:"3",
+                        backgroundColor:"rgba(233,238,253,0.7)",
+                        data:[]
+                    }
+                ]
+            },
+            options:{
+                responsive: true,
+                tooltips: {
+                    intersect: false,
+                    node: "index"
+                }
+            }
+        });
+
+    const time = document.getElementById('time')
+    time.addEventListener('change', changedata)
+
+    function changedata() {
+        if (time.value == "w") {
+            d = new Date();
+            temp2 = []
+            for (var i = 0; i < 7; i++) {
+                ts = `${d.getDate()}/${d.getMonth()+1}`
+                d.setDate(d.getDate()-1)
+                temp2.push(ts)
+            }
+            temp = [90, 70, 85, 40, 20, 55, 60]
+            revChart.data.labels = temp2.reverse();
+            revChart.data.datasets[0].data = a;
+            revChart.update()
+        } else {
+            d = new Date();
+            temp2 = []
+            for (var i = 0; i < 10; i++) {
+                ts = `${d.getDate()}/${d.getMonth()+ 1}`
+                d.setDate(d.getDate()-3)
+                temp2.push(ts)
+            }
+            revChart.data.labels = temp2.reverse();
+            temp = []
+            revChart.data.datasets[0].data = b;
+            revChart.update()
+        }
+    }
+    function addData(chart, label, data) {
+        chart.data.labels.push(label);
+        chart.data.datasets.forEach((dataset) => {
+            dataset.data.push(data);
+        });
+        chart.update();
+    }
+    a = []
+    b = []
+    $( document ).ready(function() {
+      setTimeout(() => {
+        $.getJSON('/admin/orderinfo', function (data) {
+          $('#users').text(data.users.all.toString())
+          temp = ((data.users.l30-data.users.l60)/data.users.l60*100)
+          if (Math.abs(temp) !== Infinity) {
+            if (temp < 0) {
+                $('#users').append(' <small class="text-danger" id="usersstat"></small>');
+                temp = temp * (-1)
+            } else {
+                $('#users').append(' <small class="text-success" id="usersstat"></small>');
+            }
+            $('#usersstat').text((temp).toString() + '%');
+          }
+          
+          $('#usersstat').text(Math.round(temp,0).toString() + '%');
+
+          $('#order').text(data.orders.all.toString())
+          temp = ((data.orders.l30-data.users.l60)/data.orders.l60*100)
+          if (temp < 0) {
+            $('#order').append(' <small class="text-danger" id="orderstat"></small>');
+            temp = temp * (-1)
+          } else {
+            $('#order').append(' <small class="text-success" id="orderstat"></small>');
+          }
+          $('#orderstat').text(Math.round(temp,0).toString() + '%');
+
+          $('#rev').text('$' + data.revenue.all.toString())
+          temp = ((data.revenue.l30-data.revenue.l60)/data.revenue.l60*100)
+          if (temp < 0) {
+            $('#rev').append(' <small class="text-danger" id="revstat"></small>');
+            temp = temp * (-1)
+          } else {
+            $('#rev').append(' <small class="text-success" id="revstat"></small>');
+          }
+          $('#revstat').text(Math.round(temp,0).toString() + '%');
+
+          $('#expense').text('$' + data.expense.all.toString())
+          temp = ((data.expense.l30-data.expense.l60)/data.expense.l60*100)
+          if (temp < 0) {
+            $('#expense').append(' <small class="text-danger" id="expstat"></small>');
+            temp = temp * (-1)
+          } else {
+            $('#expense').append(' <small class="text-success" id="expstat"></small>');
+          }
+          $('#expstat').text(Math.round(temp,0).toString() + '%');
+
+          a = data.ginfo.l7
+          b = data.ginfo.l30
+        })
+      },500),
+      setTimeout(()=> {
+        changedata()
+        },1000)
+    });
+    
+</script>
+
+<style>
+    header {
+        background-color: white;
+    }
+    .graph-card{
+        padding-top: 90px;
+    }
+</style>

@@ -1,26 +1,43 @@
+<link rel="stylesheet" href="/css/profile.css">
 <div class="test" style="left:300px;">
     <div class="container mt-4">
         <div class="row">
-            <div class="">
+            <div class="col-lg-9 my-lg-0 my-1">
                 <div id="main-content" class="bg-white border">
-                    <div class="text-uppercase">Orders Placed By Customers</div>
+                    <div class="d-flex flex-column">
+                        <div class="h5">Hello {{user.name}},</div>
+                        <div>Logged in as: {{user.email}}</div>
+                    </div>
+                    <div class="d-flex my-4 flex-wrap">
+                        <div class="box me-4 my-1 bg-light">
+                            <img src="https://www.freepnglogos.com/uploads/box-png/cardboard-box-brown-vector-graphic-pixabay-2.png"
+                                alt="">
+                            <div class="d-flex align-items-center mt-2">
+                                <div class="tag">Total No. Of Orders</div>
+                                <div class="ms-auto number">{{order_count}}</div>
+                            </div>
+                        </div>
+                    </div>
+                    {{#if orders}}
+                    <div class="text-uppercase">Recent orders from customers</div>
                     {{#each orders}}
                     <div class="order my-3 bg-light">
                         <div class="row">
                             <div class="col-lg-4">
-                                <div class="d-flex flex-column justify-content-rsrsrbetween order-summary">
+                                <div class="d-flex flex-column justify-content-between order-summary">
                                     <div class="d-flex align-items-center">
-                                        <div class="text-uppercase">Order #{{id}}</div>
+                                        <div class="text-uppercase">Order #00000{{id}}</div>
                                         <div class="blue-label ms-auto text-uppercase">paid</div>
                                     </div>
-                                          <div class="fs-8">{{getDateOnly createdAt}}</div>
+                                    <div class="fs-8">{{getDateOnly createdAt}}</div>
 
                                 </div>
                             </div>
                             <div class="col-lg-8">
                                 <div class="d-sm-flex align-items-sm-start justify-content-sm-between">
-                                    <div class="status">Status : Delivered</div>
+                                    <div class="status">Status : Accepted </div>
                                     <a class="btn btn-primary text-uppercase" href="/user/orderDetail/{{id}}">order info</a>
+                                    {{!-- <a class="btn btn-warning text-uppercase" href="/admin/editorder/{{id}}">Edit Status</a> --}}
                                 </div>
                                 <div class="progressbar-track">
                                     <ul class="progressbar">
@@ -30,13 +47,13 @@
                                         <li id="step-2" class="text-muted green">
                                             <span class="fas fa-check"></span>
                                         </li>
-                                        <li id="step-3" class="text-muted green">
+                                        <li id="step-3" class="text-muted ">
                                             <span class="fas fa-box"></span>
                                         </li>
-                                        <li id="step-4" class="text-muted green">
+                                        <li id="step-4" class="text-muted">
                                             <span class="fas fa-truck"></span>
                                         </li>
-                                        <li id="step-5" class="text-muted green">
+                                        <li id="step-5" class="text-muted ">
                                             <span class="fas fa-box-open"></span>
                                         </li>
                                     </ul>
@@ -46,6 +63,8 @@
                         </div>
                     </div>
                     {{/each}}
+                    {{else}}
+                    {{/if}}
                 </div>
             </div>
         </div>
@@ -54,15 +73,14 @@
 </div>
 
 <style>
-
 #main-content {
     padding: 30px;
     border-radius: 15px;
-	width: auto;
+    width: 140%;
 }
-
 .container{
     padding-left: 40px;
+    padding-top: 40px;
 }
 
 #main-content .h5,
@@ -78,7 +96,7 @@
 #main-content .box {
     padding: 10px;
     border-radius: 6px;
-    width: 170px;
+    width: 200px;
     height: 90px;
 }
 
@@ -131,13 +149,13 @@
     font-weight: 600;
 }
 
-.order .btn.btn-primary {
+.order .btn.btn-primary:hover {
     background-color: #fff;
     color: #27ae60;
     border: 1px solid #27ae60;
 }
 
-.order .btn.btn-primary:hover {
+.order .btn.btn-primary {
     background-color: #27ae60;
     color: #fff;
 }

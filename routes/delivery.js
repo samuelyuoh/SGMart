@@ -4,6 +4,9 @@ const flashMessage = require('../helpers/messenger');
 const Delivery = require('../models/Delivery')
 const moment = require('moment');
 const Product = require('../models/Product');
+const Brand = require('../models/Brand');
+const Category = require('../models/Category');
+
 const Cart = require('../models/cart');
 const Order = require('../models/order');
 const Item = require('../models/item');
@@ -76,8 +79,18 @@ router.post("/create-checkout-session", async (req, res) => {
 })
 
 router.get("/success", (req,res) => {
-	res.render('delivery/success')
-})
+    Product.findAll({
+		limit:4,
+        raw: true,
+    })
+        .then((products) => {
+            res.render('delivery/success', { products});
+
+        })
+
+        .catch(err => console.log(err));
+});
+
 
 router.get('/cancel', (req,res) => {
 	res.render('delivery/cancel')
@@ -135,9 +148,6 @@ router.post('/',ensureAuthenticated, async function (req, res) {
                 {where: {cartId: id[0]['id']}}
             );
             Item.destroy({where: {cartId: id[0]['id']}});
-            // console.log(orderId)
-            flashMessage(res,'success', 'Successfully Purchased Items')
-            res.render('delivery/delivery_completed');
         })
         .catch(err => console.log(err))
 });

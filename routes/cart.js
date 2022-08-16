@@ -22,7 +22,6 @@ router.post('/add/:id', ensureAuthenticated ,async function(req, res, next) {
         var check = await Item.findAll({where: {cartId: id[0]['id'], productId: productid}})
         console.log(check[0])
         if (check[0] == undefined){
-            console.log(check)
             Invoice.create({
                 productId: productid,
                 quantity: quantity, 
@@ -48,6 +47,12 @@ router.post('/add/:id', ensureAuthenticated ,async function(req, res, next) {
                 cartId: id[0]['id']
             }
             })
+            .catch(err => console.log(err))
+            flashMessage(res, 'success', 'Product added successfully.');
+        }
+        else{
+            console.log('hi')
+            await Item.increment({quantity:1}, {where: {cartId: id[0]['id']}})
             .catch(err => console.log(err))
             flashMessage(res, 'success', 'Product added successfully.');
         }

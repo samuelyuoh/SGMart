@@ -1,106 +1,136 @@
-<div class="container-fluid">
+<div class="container-fluid my-5  d-flex  justify-content-center">
+  <div class="card card-1" style="padding: 10px; !important">
+    <div class="card-header bg-white">
+      <div class="media flex-sm-row flex-column-reverse justify-content-between  ">
+        <div class="col my-auto text-center  my-auto pl-0 pt-sm-4 ">
+          <h2 style="padding: 30px;">Thanks for shopping with us,<span class="change-color"> {{user.name}}</span> !</h2>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="row justify-content-between mb-3">
+        {{#orders}}
+          <div class="col-auto" style="padding: 20px;">
+            <h4 class="color-1 mb-0 change-color" style="font-weight: 600; padding-bottom: 10px;"> Order Number : #00000{{id}}</h4>          
+            <h4 style="font-weight: 600; padding-top: 10px;">Order Date: {{getDateOnly createdAt}}</h4>
+          </div>
+        {{/orders}}
+      </div>
+      <div class="row mt-4" style="padding-left: 20px; padding-right:20px; padding-bottom:20px;">
+        <div class="col">
+          <div class="card card-2" style="margin-bottom: 20px;">
+            <div class="card-body">
 
-<div class="container">
-  <!-- Title -->
-  <div class="d-flex justify-content-between align-items-center py-3">
-    {{#orders}}
-      <h2 class="h5 mb-0"><a href="#" class="text-muted"></a> Order #{{id}}</h2>
-    {{/orders}}
-  </div>
+              <div class="row">
 
-  <!-- Main content -->
-  <div class="row">
-    <div class="col-lg-8">
-      <!-- Details -->
-      <div class="card mb-4">
-        <div class="card-body">
-          <div class="mb-3 d-flex justify-content-between">
-            <div>
-      {{#orders}}
-              <span class="me-3">{{getDateOnly createdAt}}</span>
-    {{/orders}}
-              <span class="badge rounded-pill bg-info">DELIVERING</span>
-            </div>
-            <div class="d-flex">
-              <button class="btn btn-link p-0 me-3 d-none d-lg-block btn-icon-text"><i class="bi bi-download"></i> <span class="text">Invoice</span></button>
-              <div class="dropdown">
-                <button class="btn btn-link p-0 text-muted" type="button" data-bs-toggle="dropdown">
-                  <i class="bi bi-three-dots-vertical"></i>
-                </button>
-                <ul class="dropdown-menu dropdown-menu-end">
-                  <li><a class="dropdown-item" href="#"><i class="bi bi-pencil"></i> Edit</a></li>
-                  <li><a class="dropdown-item" href="#"><i class="bi bi-printer"></i> Print</a></li>
-                </ul>
+                <div class="col mt-auto">
+
+                  <div class="row  my-auto flex-column flex-md-row">
+                    <div class="col my-auto">
+                      <h5 class="mb-0">Image</h5>
+                    </div>
+                    <div class="col my-auto">
+                      <h5 class="mb-0">Product ID</h5>
+                    </div>
+                    <div class="col my-auto">
+                      <h5 class="mb-0">Name</h5>
+                    </div>
+                    <div class="col my-auto">
+                      <h5>Price</h5>
+                    </div>
+                    <div class="col my-auto">
+                      <h5>Qty</h5>
+                    </div>
+                    <div class="col my-auto">
+                      <h5 class="mb-0">Total Cost</h5>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
-          <table class="table table-borderless">
-            <tbody>
-                  {{#each item}}
-              <tr>
-                <td>
-                  <div class="d-flex mb-2">
-                    <div class="flex-shrink-0">
-                      <img src="/images/{{image}}" alt="" width="35" class="img-fluid">
-                    </div>
-                    <div class="flex-lg-grow-1 ms-3">
-                      <h6 class="small mb-0"><a href="#" class="text-reset">{{product_name}}</a></h6>
+          {{#each item}}
+            <div class="card card-2" style="margin-bottom: 20px; border-radius: 1rem;">
+              <div class="card-body">
+
+                <div class="row">
+
+                  <div class="col mt-auto">
+
+                    <div class="row  my-auto flex-column flex-md-row">
+
+                      <div class="col my-auto" style="justify-content: left;"> <img class="img-fluid  my-auto align-self-leftt mr-2 mr-md-4 pl-0 p-0 m-0" src="/images/{{image}}" width="135" height="135"> </div>
+                      <div class="col my-auto">
+                        <h5 class="mb-0">{{productId}}</h5>
+                      </div>
+                      <div class="col my-auto">
+                        <h5 class="mb-0">{{product_name}}</h5>
+                      </div>
+                      <div class="col my-auto">
+                        <h5>$ {{product_price}}</h5>
+                      </div>
+                      <div class="col my-auto">
+                        <h5>{{quantity}}</h5>
+                      </div>
+                      <div class="col my-auto">
+                        <h5 class="mb-0">$ {{totalCost}}</h5>
+                      </div>
                     </div>
                   </div>
-                </td>
-                <td>{{quantity}}</td>
-                <td class="text-end">${{totalCost}}</td>
-              </tr>
-                  {{/each}}
-            </tbody>
-            <tfoot>
-              <tr>
-                <td colspan="2">Subtotal</td>
-                <td class="text-end">${{totalAmount}}</td>
-              </tr>
-              <tr>
-                <td colspan="2">Delivery</td>
-                <td class="text-end">$0.00</td>
-              </tr>
-              <tr class="fw-bold">
-                <td colspan="2">TOTAL</td>
-                <td class="text-end">${{totalAmount}}</td>
-              </tr>
-            </tfoot>
-          </table>
+                </div>
+              </div>
+            </div>
+          {{/each}}
         </div>
       </div>
-      <!-- Payment -->
-      <div class="card mb-4">
-        <div class="card-body">
-          <div class="row">
-            <div class="col-lg-6">
-              <h3 class="h6">Payment Method</h3>
-              Total: ${{totalAmount}} <span class="badge bg-success rounded-pill">PAID</span></p>
+      <div class="row mt-4" style="padding-bottom: 20px;">
+        <div class="col">
+          <div class="row justify-content-between">
+            <div class="flex-sm-col text-right col">
+              <h4 class="mb-1"><b>Sub Total</b></h4>
             </div>
-            <div class="col-lg-6">
-              <h3 class="h6">Billing address</h3>
-              {{#orders}}
-                <strong>{{name}}</strong><br>
-                {{address}}
-                <address>
-                  <abbr title="Phone">P:</abbr> {{phone}}
-                </address>
-              {{/orders}}
+            <div class="flex-sm-col col-auto">
+              <h4 class="mb-1">${{totalAmount}}</h4>
+            </div>
+          </div>
+          <div class="row justify-content-between">
+            <div class="flex-sm-col text-right col">
+              <h4 class="mb-1"><b>Delivery Charges</b></h4>
+            </div>
+            <div class="flex-sm-col col-auto">
+              <h4 class="mb-1">Free</h4>
             </div>
           </div>
         </div>
       </div>
+    </div>
+    <div class="card-footer">
+      <div class="jumbotron-fluid">
+        <div class="row justify-content-between ">
+          <div class="col-auto my-auto ">
+            <h3 class="mb-0 font-weight-bold">GRAND TOTAL</h3>
+          </div>
+          <div class="col-auto my-auto ml-auto">
+            <h3 class="display-3 ">$ {{totalAmount}}</h3>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-header bg-white">
+      <div class="media flex-sm-row flex-column-reverse justify-content-between">
+        <div class="col my-auto text-center  my-auto pl-0 pt-sm-4">
+        </div>
+      </div>
+    </div>
 
-        <div class="card mb-4">
+    <div style="padding: 30px;">
+<div style="padding: 30px;">
+              <div class="card mb-4">
+                    {{#each item}}
         <div class="card-body">
             <h3 style="padding:30px;">Product Review</h3>
-              <div class="container">
-                {{#each item}}
                 <div class="feedback">
-                  <div class="emoji-wrapper">
                       <h5>Leave us a review for the {{product_name}} you have purchased </h5>
-                  </div>
                   <div class="rating">
                   <button onclick="changeToActive(this)" value ='{{id}}' class="fa fa-star" id="{{id}}-1"></button>
                   <button onclick="changeToActive(this)" value ='{{id}}' class="fa fa-star " id="{{id}}-2"></button>
@@ -109,23 +139,211 @@
                   <button onclick="changeToActive(this)" value ='{{id}}' class="fa fa-star " id="{{id}}-5"></button>
                   <button onclick="submit(this)" id="{{id}}" disabled>submit</button>
                   </div>
-                </div>
-                <div class="mb-4"></div>
                 {{/each}}
             </div>
-          
-
-        {{!-- {{/if}} --}}
-      </div>
-
-
-    </div>
   </div>
 </div>
+    </div>
+
   </div>
+</div>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
+
+  }
+  body {
+    min-height: 100vh;
+    background-size: cover;
+    font-family: 'Poppins', sans-serif;
+    background: #fff;
+  }
+
+  .container-fluid {
+    margin-top: 200px;
+  }
+
+  p {
+    font-size: 14px;
+    margin-bottom: 7px;
+  }
+
+  .small {
+    letter-spacing: 0.5px !important;
+  }
+
+  .card-1 {
+    border-radius: 30px;
+    width: 200%;
+  }
+
+  hr {
+    background-color: #bbb;
+  }
+
+  .bold {
+    font-weight: 500;
+  }
+
+  .card-2 {
+    box-shadow: 1px 1px 3px 0px rgb(112, 115, 139);
+  }
+
+  .fa-circle.active {
+    font-size: 8px;
+    color: #27ae60;
+  }
+
+  .fa-circle {
+    font-size: 8px;
+    color: #aaa;
+    justify-items: center;
+  }
+
+  .rounded {
+    border-radius: 2.25rem !important;
+  }
+
+  .progress-bar {
+    background-color: #27ae60 !important;
+  }
+
+  .progress {
+    height: 5px !important;
+    margin-bottom: 0;
+  }
+
+  .invoice {
+    position: relative;
+    top: -70px;
+  }
+
+  .Glasses {
+    position: relative;
+    top: -12px !important;
+  }
+
+  .card-footer {
+    background-color: #27ae60;
+    color: #fff;
+  }
+
+  h2 {
+    color: rgb(78, 0, 92);
+    letter-spacing: 2px !important;
+  }
+
+  .display-3 {
+    font-weight: 500 !important;
+  }
+
+  @media (max-width: 479px) {
+    .invoice {
+      position: relative;
+      top: 7px;
+    }
+
+    .border-line {
+      border-right: 0px solid rgb(226, 206, 226) !important;
+    }
+  }
+
+  @media (max-width: 700px) {
+    h2 {
+      color: rgb(78, 0, 92);
+      font-size: 17px;
+    }
+
+    .display-3 {
+      font-size: 28px;
+      font-weight: 500 !important;
+    }
+  }
+
+  .card-footer small {
+    letter-spacing: 7px !important;
+    font-size: 12px;
+  }
+
+  .border-line {
+    border-right: 1px solid rgb(226, 206, 226)
+  }
+
+  .progressbar-track {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    position: relative;
+  }
+
+  .progressbar-track .progressbar {
+    list-style: none;
+    display: flex;
+    justify-content: end;
+    justify-content: space-between;
+    padding-left: 0rem;
+  }
+
+  .progressbar-track .progressbar li {
+    font-size: 1.5rem;
+    border: 1px solid #333;
+    padding: 5px 10px;
+    border-radius: 50%;
+    background-color: #dddddd;
+    z-index: 100;
+    position: relative;
+  }
+
+  .progressbar-track .progressbar li.green {
+    border: 1px solid #007965;
+    background-color: #d5e6e2;
+  }
+
+  .progressbar-track .progressbar li::after {
+    position: absolute;
+    font-size: 0.9rem;
+    top: 50px;
+    left: 0px;
+  }
+
+  #tracker {
+    position: absolute;
+    border-top: 1px solid #bbb;
+    width: 100%;
+    top: 25px;
+  }
+
+  .green {
+    color: #007965 !important;
+  }
+
+  #step-1::after {
+    content: 'Placed';
+  }
+
+  #step-2::after {
+    content: 'Accepted';
+    left: -10px;
+  }
+
+  #step-3::after {
+    content: 'Packed';
+  }
+
+  #step-4::after {
+    content: 'Shipped';
+  }
+
+  #step-5::after {
+    content: 'Delivered';
+    left: -10px;
+  }
+  .checked {
+  color: orange;
+}
+</style>
+
 <script>
 window.addEventListener("load", checking)
-
 function checking(){
   $.ajax({
     url: '/user/rating',
@@ -141,7 +359,6 @@ function checking(){
     }
   })
 }
-
 function submit(element){
   id = element.id
   value = 0
@@ -167,7 +384,6 @@ function submit(element){
     }
   })
 }
-
 function changeToActive(element){
   document.getElementById(element.value).removeAttribute('disabled')
   if(element.id == element.value+'-1'){
@@ -231,36 +447,3 @@ function changeToActive(element){
   }
 }
 </script>
-<style>
-body{
-    background:#eee;
-}
-.card {
-    box-shadow: 0 20px 27px 0 rgb(0 0 0 / 5%);
-}
-.card {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    min-width: 0;
-    word-wrap: break-word;
-    background-color: #fff;
-    background-clip: border-box;
-    border: 0 solid rgba(0,0,0,.125);
-    border-radius: 1rem;
-}
-.text-reset {
-    --bs-text-opacity: 1;
-    color: inherit!important;
-}
-a {
-    color: #5465ff;
-    text-decoration: none;
-}
-* { box-sizing: border-box; }
-
-
-.checked {
-  color: orange;
-}
-</style>

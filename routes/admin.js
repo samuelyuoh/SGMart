@@ -21,6 +21,7 @@ const createlogs = require('../helpers/logs');
 const {convertJsonToExcel, getUsers, getStaff, getLogs} = require('../helpers/excel');
 const fs = require('fs');
 const upload = require('../helpers/productUpload');
+const CouponRedemption = require('../models/CouponRedemption') 
 
 const Logs = require('../models/Logs');
 const { STATUS_CODES } = require('http');
@@ -814,7 +815,7 @@ router.get('/listorders', async(req, res) => {
 	}
 
 	let totalAmount = 0
-    var orders = await Order.findAll({
+    var orders = await Order.findAndCountAll({
 		order: [['id', 'desc']],
 		raw: true
 	})
@@ -829,10 +830,78 @@ router.get('/listorders', async(req, res) => {
     for(var a in cost_of_each_item){
         totalAmount += parseFloat(cost_of_each_item[a]['totalCost'])
     }
-    res.render('admin/listorders', {orders: orders, item: items, totalAmount: totalAmount, layout: 'admin'})
+    res.render('admin/listorders', {orders:orders.rows, order_count:orders.count, item: items, totalAmount: totalAmount, layout: 'admin'})
+});
+
+router.get('/orderstats', async(req, res) => {
+	const metadata = {
+		layout: 'admin',
+		nav: {
+			sidebarActive: 'coupon'
+		}
+	}
+	const thirtyDaysAgo = new Date(new Date().setDate(new Date().getDate() - 7));
+	// a = new Date().add(-30).days();
+	b = moment().subtract(7, 'days');
+	curdate = moment.now()
+	users = await User.findAll();
+	a = []
+	for (var i = 0;i < users.length;i++) {
+		if ((curdate - moment(users[i].createdAt))< 604800 ) { //num of seconds in 30 days
+			a.push(users[i])
+		}
+	}
+	metadata.l30 = a.length;
+
+    res.render('admin/orderstats', metadata)
 })
 
+router.get('/orderinfo', async (req, res) => {
+	curdate = moment.now()
+	users = await User.findAll();
+	a = []
+	b = []
+	for (var i = 0;i < users.length;i++) {
+		if ((curdate - moment(users[i].createdAt))< 604800 ) { //num of seconds in 30 days
+			a.push(users[i])
+			b.push(users[i])
+			
+		} else if ((curdate - moment(users[i].createdAt))< 604800*2) {
+			b.push(users[i])
+		}
+	}
+	c = []
+	d = []
+	orders = await Order.findAll()
+	for (var i = 0;i < (orders).length;i++) {
+		if ((curdate - moment(orders[i].dataValues.createdAt))< 604800 ) { //num of seconds in 30 days
+			c.push(orders[i])
+			d.push(orders[i])
+			
+		} else if ((curdate - moment(orders[i].dataValues.createdAt))< 604800*2) {
+			d.push(orders[i])
+		}
+	}
+	var ginfol7 = [0,0,0,0,0,0,0]
 
+	const ResponseObject = {
+		users: {
+			all: users.length,
+			l30: a.length,
+			l60: b.length,
+		},
+		orders: {
+			all: orders.length,
+		},
+		ginfo: {
+			l7: ginfol7.reverse(),
+		},
+		
+	}
+	return res.json(ResponseObject)
+});
+
+	
 router.get('/couponstats', async (req, res) => {
 	const metadata = {
 		layout: 'admin',

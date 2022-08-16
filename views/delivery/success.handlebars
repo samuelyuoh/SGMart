@@ -1,72 +1,82 @@
+<link rel="stylesheet" href="/css/product.css">
+
+
 <div class="container-fluid">
     <div class="container text-center" style="padding: 50px;">
-        <h1>Thank you.</h1>
-        <p class="lead w-lg-50 mx-auto">Your order has been placed successfully.</p>
-        <p class="w-lg-50 mx-auto">We will immediately process your and it will be delivered in 2 - 5 business days.</p>
+        <div style="border-radius:200px; height:200px; width:200px; background: #eee; margin:0 auto;">
+        <i class="checkmark">✓</i>
+        </div>
+        <h1>Success</h1>
+        <p class="w-lg-50 mx-auto">We will immediately process your order and it will be delivered in 2 - 5 business days.</p>
     </div>
     <div class="container">
         <h2 class="h5 mb-5 text-center">You may also like these products</h2>
         <div class="row">
+            {{#if products}}
+            {{#each products}}
             <div class="col-lg-3">
                 <div class="card text-center mb-3">
                     <div class="py-5 px-4">
-                        <img src="https://via.placeholder.com/280x280/6495ED/000000" alt="" class="img-fluid mb-4" />
-                        <h3 class="fs-6 text-truncate"><a href="#" class="stretched-link text-reset">Oranges</a></h3>
-                        <span class="text-success">$7.90</span> <del class="text-muted">$10.30</del>
+                        <img src = "/images/{{image}}" alt="{{product_name}}" alt = "product image" class="img-fluid mb-4" />
+                        <h3 class="fs-6 text-truncate"><a data-bs-toggle="modal" data-bs-target="#details_{{id}}" class="stretched-link text-reset">Name: {{product_name}}</a></h3>
+                        <span class="text-success">Price: ${{product_price}}</span>
                     </div>
                     <div class="bg-danger text-white small position-absolute end-0 top-0 px-2 py-2 lh-1 text-center">
-                        <span class="d-block">10%</span>
+                        <span class="d-block">{{discount}}%</span>
                         <span class="d-block">OFF</span>
                     </div>
                 </div>
             </div>
-            <div class="col-lg-3">
-                <div class="card text-center position-relative mb-3">
-                    <div class="py-5 px-4">
-                        <img src="https://via.placeholder.com/280x280/FFB6C1/000000" alt="" class="img-fluid mb-4" />
-                        <h3 class="fs-6 text-truncate"><a href="#" class="stretched-link text-reset">Apples</a></h3>
-                        <span class="text-success">$4.10</span> <del class="text-muted">$6.80</del>
+            {{!-- modal --}}
+                    <div class="modal" tabindex="-1" id="details_{{id}}" data-backdrop="static" data-bs-focus="false" >
+                      <div class="modal-dialog modal-lg modal-dialog-centered">
+                        <div class="modal-content">
+                          <div class="product-card" style="text-decoration: none;">
+                            <div class="image-container" style="text-decoration: none;">
+                              <div class="cover-image product-image">
+                                <img src="/images/{{image}}" alt="{{product_name}}">
+                              </div>
+                            </div>
+                            <div class="product-info">
+                              <p class="free-shipping" style="text-decoration: none;">Free Delivery</p>
+                              <h3 class="product-name">{{product_name}}</h3>
+                              <p class="regular-price">{{discount}} % OFF </p>
+                              <p class="discount-price">${{product_price}}</p>
+                              <p class="offer-info">{{desc}}</p>
+                              <form action="/cart/add/{{id}}" method="post">
+                              <input type="hidden" name="" value="">
+                              <button type = "submit" class="add-to-cart" style="text-decoration: none;">
+                                <ion-icon name="add-outline"></ion-icon> Add to cart
+                              </button>
+                              <div class="stock">
+                                <div class="remove-status"></div>
+                                <p class="stock-info">Stock: {{stock}}</p>
+                              </div>
+                              <div class="buttons">
+                                  <button type = "submit" class = "button" value="{{id}}"> 
+                                      <ion-icon name="bag-add-outline"></ion-icon> Add to cart
+                                  </button>
+                                  <input type="hidden" name="quantity" value="1">
+                                <a href="#" class="button" style="text-decoration: none;">
+                                  <ion-icon name="heart-outline"></ion-icon> Add to wishlist
+                                </a>
+                              </form>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
                     </div>
-                    <div class="bg-danger text-white small position-absolute end-0 top-0 px-2 py-2 lh-1 text-center">
-                        <span class="d-block">25%</span>
-                        <span class="d-block">OFF</span>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-3">
-                <div class="card text-center mb-3">
-                    <div class="py-5 px-4">
-                        <img src="https://via.placeholder.com/280x280/008B8B/000000" alt="" class="img-fluid mb-4" />
-                        <h3 class="fs-6 text-truncate"><a href="#" class="stretched-link text-reset">Pears</a></h3>
-                        <span class="text-success">$2.50</span> <del class="text-muted">$3.10</del>
-                    </div>
-                    <div class="bg-danger text-white small position-absolute end-0 top-0 px-2 py-2 lh-1 text-center">
-                        <span class="d-block">50%</span>
-                        <span class="d-block">OFF</span>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-3">
-                <div class="card text-center mb-3">
-                    <div class="py-5 px-4">
-                        <img src="https://via.placeholder.com/280x280/00CED1/000000" alt="" class="img-fluid mb-4" />
-                        <h3 class="fs-6 text-truncate"><a href="#" class="stretched-link text-reset">Bananas</a></h3>
-                        <span class="text-success">$3.40</span> <del class="text-muted">$5.20</del>
-                    </div>
-                    <div class="bg-danger text-white small position-absolute end-0 top-0 px-2 py-2 lh-1 text-center">
-                        <span class="d-block">25%</span>
-                        <span class="d-block">OFF</span>
-                    </div>
-                </div>
-            </div>
+                {{!-- end of modal --}}
+            {{/each}}
+            {{else}}
+            <h1>hi</h1>
+            {{/if}}
         </div>
     </div>
 </div>
 
 <style>
-body {
-    margin-top: 20px;
-}
 .text-center {
     text-align: center !important;
 }
@@ -97,7 +107,7 @@ body {
     flex-direction: column;
     min-width: 0;
     word-wrap: break-word;
-    background-color: #fff;
+    background-color: #eee;
     background-clip: border-box;
     border: 0 solid rgba(0, 0, 0, 0.125);
     border-radius: 1rem;
@@ -108,4 +118,26 @@ body {
     flex: 1 1 auto;
     padding: 1.5rem 1.5rem;
 }
+.checkmark{
+    color: #27ae60;
+    font-size: 100px;
+    line-height: 200px;
+    margin-left:-15px;
+}
+h1{
+    color: #27ae60;
+    font-weight: 900;
+    font-size: 40px;
+    margin-bottom: 30px;
+    padding-top: 30px;
+}
+p{
+    color: #404F5E;
+    font-size:20px;
+    margin: 0;
+}
 </style>
+
+
+<script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
