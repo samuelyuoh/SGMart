@@ -23,6 +23,7 @@ const Product = require('../models/Product');
 const fs = require('fs');
 const upload = require('../helpers/imageUpload');
 const googlelogin = require('../helpers/googlelogin');
+const Rating = require('../models/Rating');
 const speakeasy = require('speakeasy');
 const { stringify } = require('querystring');
 const fetch = require('isomorphic-fetch')
@@ -1230,6 +1231,22 @@ router.get('/viewWishlist', async(req, res) => {
     }
     )
     res.render('user/viewWishlist', {wishlist})
+})
+
+router.post('/rating', async(req, res) => {
+    let{ rating, productId} = req.body
+    console.log(rating)
+    Rating.create({
+        rating: rating,
+        productId: productId,
+        userId: req.user.id
+    }).then(()=>{
+        console.log("added")
+    })
+})
+router.get('/rating', async(req, res) => {
+    var rating = await Rating.findAll({where:{userId: req.user.id}})
+    res.send(rating)
 })
 
 module.exports = router;

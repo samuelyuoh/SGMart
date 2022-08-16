@@ -545,8 +545,8 @@ router.get('/inventory', async (req, res) => {
 		page = pageAsNumber;
 	}
 	Product.findAndCountAll({
-		limit:1,
-		offset: page*1,
+		limit:20,
+		offset: page*20,
 		include: [{
 			model: Brand,
 		},
@@ -559,7 +559,7 @@ router.get('/inventory', async (req, res) => {
 		.then((product) => {
 			res.render('admin/inventory', {
 				product: product.rows,
-				totalPages: Math.ceil(product.count/1),
+				totalPages: Math.ceil(product.count/20),
 				currentPage: page,
 				layout: 'admin', 
 				nav: { sidebarActive: 'product' }

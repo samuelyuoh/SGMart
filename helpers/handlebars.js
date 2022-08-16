@@ -116,7 +116,7 @@ const breaklines = function(text){
 const increment = function(page, totalPages){
     list_of_pages = []
     if(page < totalPages){
-        while(page < 5){
+        while(page < totalPages){
             list_of_pages.push(page)
             page += 1
         }

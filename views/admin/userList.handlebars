@@ -146,6 +146,7 @@
 					<a href="/admin/generateexcel/users"><button type="btn" class="btn btn-primary">Download User List</button></a>
 				{{/if}}
 			</div>
+			{{currentPage}}
 			<ul class="pagination pull-right">
 				{{#if (havePrevious currentPage totalPages)}}
 					<li><button href="{{previous currentPage}}" onclick="getPage(this)"><i class="fa fa-chevron-left"></i></button></li>
@@ -166,25 +167,6 @@
 </div>
 </div>
 <script>
-	const next = function(currentPage) {
-		return parseInt(parseInt(currentPage) + 1)
-	}
-	const previous = function(currentPage) {
-		return parseInt(parseInt(currentPage) - 1)
-	}
-	const havePrevious = function(currentPage){
-		if (currentPage == 0){
-			return false
-		}else{
-			return true
-		}
-	}
-
-	const haveNext = function(currentPage, totalPages){
-		if(currentPage+1 == totalPages){
-			return false
-		}else{return true}
-	}
 	$(document).ready( function () {
 		$('#myTable').DataTable();
 	} );

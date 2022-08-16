@@ -10,6 +10,7 @@ const flashMessage = require('../helpers/messenger');
 const User = require('../models/User');
 const paginate = require('express-paginate');
 const sequelize = require('sequelize')
+const Rating = require('../models/Rating');
 const op = sequelize.Op
 
 router.get('/products', async (req, res) => {
@@ -32,8 +33,8 @@ router.get('/products', async (req, res) => {
 			})
 		
 		var product = await Product.findAndCountAll({
-			limit:2,
-			offset: page*2,
+			limit:9,
+			offset: page*9,
 			include: [{
 				model: Brand,
 				required: true,
@@ -47,7 +48,7 @@ router.get('/products', async (req, res) => {
 			})
 			res.render('product/products', {
 				product: product.rows,
-				totalPages: Math.ceil(product.count/2),
+				totalPages: Math.ceil(product.count/9),
 				currentPage: page,
 				brands: brands, 
 				wishlist: wishlist,
@@ -56,8 +57,8 @@ router.get('/products', async (req, res) => {
 			});
 		}else{
 			Product.findAndCountAll({
-				limit:2,
-				offset: page*2,
+				limit:9,
+				offset: page*9,
 				include: [{
 					model: Brand,
 					required: true,
@@ -79,7 +80,7 @@ router.get('/products', async (req, res) => {
 			res.render('product/products', 
 			{
 				product: product.rows,
-				totalPages: Math.ceil(product.count/2),
+				totalPages: Math.ceil(product.count/9),
 				currentPage: page,
 				brands: brands,
 				category: category, 
@@ -117,6 +118,11 @@ router.post('/removewishlist', async (req, res) => {
 	res.send({status: "deleted"})
 })
 
+router.get('/getRatings/:id', async (req, res) => {
+	var rating = await Rating.findAll({where:{productId: req.params.id}})
+    res.send(rating)
+})
+
 router.get('/nextpage', async (req, res) => {
 	var brands = await Brand.findAll({raw:true});
 	var category = await Category.findAll({raw:true});
@@ -126,14 +132,14 @@ router.get('/nextpage', async (req, res) => {
 	let categoryAsFilter = req.query.category
 	let brandAsFilter = req.query.brand
 	var search = req.query.search
-	// var min = parseInt(req.query.min)
-	// var max = parseInt(req.query.max)
-	// if(min == "" || min == undefined || min == "null" || Number.isNaN(min)){
-	// 	min = 0
-	// }
-	// if(max == "" || max == undefined || max == "null" || Number.isNaN(max)){
-	// 	max = parseInt(productMax['max'])
-	// }
+	var min = parseInt(req.query.min)
+	var max = parseInt(req.query.max)
+	if(min == "" || min == undefined || min == "null" || Number.isNaN(min)){
+		min = 0
+	}
+	if(max == "" || max == undefined || max == "null" || Number.isNaN(max)){
+		max = parseInt(productMax['max'])
+	}
 	if(categoryAsFilter == ""){
 		categoryAsFilter = ""
 	}else if(categoryAsFilter == undefined || categoryAsFilter == "null"){
@@ -175,8 +181,8 @@ router.get('/nextpage', async (req, res) => {
 			raw: true
 			})
 			var product = await Product.findAndCountAll({
-			limit:2,
-			offset: page*2,
+			limit:9,
+			offset: page*9,
 			include: [{
 				model: Brand,
 				required: true,
@@ -191,13 +197,13 @@ router.get('/nextpage', async (req, res) => {
 					[op.like]: '%'+	search +'%'
 				},
 				[op.or]: tmp,
-				// product_price: {[op.between]: [min, max]}
+				product_price: {[op.between]: [min, max]}
 			},
 				raw: true
 			})
 			res.send({
 				product: product.rows,
-				totalPages: Math.ceil(product.count/2),
+				totalPages: Math.ceil(product.count/9),
 				currentPage: page,
 				brands: brands,
 				category: category, 
@@ -205,8 +211,8 @@ router.get('/nextpage', async (req, res) => {
 			});
 		}else{
 			Product.findAndCountAll({
-			limit:2,
-			offset: page*2,
+			limit:9,
+			offset: page*9,
 			include: [{
 				model: Brand,
 				required: true,
@@ -221,6 +227,8 @@ router.get('/nextpage', async (req, res) => {
 				[op.like]: '%'+	search +'%'
 			},
 			[op.or]: tmp,
+			product_price: {[op.between]: [min, max]}
+
 		},
 			raw: true
 		})
@@ -228,7 +236,7 @@ router.get('/nextpage', async (req, res) => {
 			res.send( 
 			{
 				product: product.rows,
-				totalPages: Math.ceil(product.count/2),
+				totalPages: Math.ceil(product.count/9),
 				currentPage: page,
 				category: category,
 				brands: brands

@@ -28,8 +28,13 @@
      <div class="box border-bottom">
         <div class="form-group text-center">
           <div class="btn-group" data-toggle="buttons"> 
-            <label class="btn btn-success form-check-label"> <input class="form-check-input" type="radio"> Reset </label> 
-            <label class="btn btn-success form-check-label active"> <input class="form-check-input" type="radio" checked onclick="submitFilter(this)" id="apply"> Apply </label> 
+            <label class="btn btn-success form-check-label"> 
+              <input class="form-check-input" type="radio" onclick="reset(this)"> 
+              <a href='/product/products' style="text-decoration: none; color:black;">Reset</a> 
+              </label> 
+            <label class="btn btn-success form-check-label active"> 
+              <input class="form-check-input" type="radio" checked onclick="submitFilter(this)" id="apply"> Apply 
+              </label> 
           </div>
         </div>
       </div>
@@ -37,9 +42,8 @@
         <div class="box-label text-uppercase d-flex align-items-center">Categories <button class="btn ms-auto" type="button" data-bs-toggle="collapse" data-bs-target="#inner-box" aria-expanded="false" aria-controls="inner-box" id="out"> <span class="fas fa-plus"></span> </button> </div>
         <div id="inner-box" class="collapse mt-2 me-1">
           {{#each category}}
-          <div class="my-1"> <label class="tick">{{category_name}}<input type="checkbox" id="category" value="{{category_name}}" class="category-active" name="{{category_name}}"onclick="settingFilter(this)" checked> <span class="check"></span> </label> </div>
+          <div class="my-1"> <label class="tick">{{category_name}}<input type="checkbox" id="category" value="{{category_name}}" class="category category-active" name="{{category_name}}"onclick="settingFilter(this)" checked> <span class="check"></span> </label> </div>
           {{/each}}
-          <div class="my-1"> <label class="tick">Select All Categories<input type="checkbox" id="category" value="{{category_name}}" class="category-active" name="{{category_name}}"onclick="settingFilter(this)" checked> <span class="check"></span> </label> </div>
         </div>
       </div>
 
@@ -47,9 +51,8 @@
         <div class="box-label text-uppercase d-flex align-items-center">Brands <button class="btn ms-auto" type="button" data-bs-toggle="collapse" data-bs-target="#inner-box2" aria-expanded="false" aria-controls="inner-box2"><span class="fas fa-plus"></span></button> </div>
         <div id="inner-box2" class="collapse mt-2 me-1">
           {{#each brands}}
-          <div class="my-1"> <label class="tick">{{brand_name}}<input type="checkbox" id="brand" value="{{brand_name}}" class="brand-active" name="{{brand_name}}" onclick="settingFilter(this)" checked> <span class="check"></span> </label> </div>
+          <div class="my-1"> <label class="tick">{{brand_name}}<input type="checkbox" id="brand" value="{{brand_name}}" class="brand brand-active" name="{{brand_name}}" onclick="settingFilter(this)" checked> <span class="check"></span> </label> </div>
           {{/each}}
-          <div class="my-1"> <label class="tick">Select All Brands<input type="checkbox" id="brand" value="{{brand_name}}" class="brand-active" name="{{brand_name}}" onclick="settingFilter(this)" checked> <span class="check"></span> </label> </div>
         </div>
       </div>
 
@@ -60,12 +63,12 @@
               <div class="price-input">
                 <div class="field">
                   <span>Min</span>
-                  <input type="number" class="input-min" value="2500">
+                  <input type="number" class="input-min"id='min' value="0">
                 </div>
                 <div class="separator">-</div>
                 <div class="field">
                   <span>Max</span>
-                  <input type="number" class="input-max" value="7500">
+                  <input type="number" class="input-max" id='max'value="{{max}}">
                 </div>
               </div>
           </div>
@@ -112,6 +115,8 @@ function changeHTML(){
 }
 
 function changeToActive(){
+  $("#min").val(min)
+  $("#max").val(max)
   categories = category.split('|')
     $('.category-active').each(function(){
       $(this).click()
@@ -122,8 +127,6 @@ function changeToActive(){
     }else{
       document.getElementsByName(categories[a])[0].click()
     }
-    document.getElementById('amount-left').innerHTML = min
-    document.getElementById('amount-right').innerHTML = max
   }
   brands = brand.split('|')
     $('.brand-active').each(function(){
@@ -161,8 +164,8 @@ function changeToActive(){
       $(".brand-active").each(function(){
         query_brand+=$(this).val() + '|';
       })
-      min = document.getElementById('input-left').value
-      max = document.getElementById('input-right').value
+      min = $('#min').val()
+      max = $('#max').val()
 
         loadProducts()
         location.replace("/product/products?category="+query_category+"&brand="+query_brand+"&min="+min+"&max="+max)
@@ -269,82 +272,6 @@ function getParameterByName(name, url = window.location.href) {
     return decodeURIComponent(results[2].replace(/\+/g, ' '));
 }
 
-document.addEventListener("DOMContentLoaded", function () {
-  var inputLeft = document.getElementById("input-left");
-  var inputRight = document.getElementById("input-right");
-
-  var thumbLeft = document.querySelector(".slider > .thumb.left");
-  var thumbRight = document.querySelector(".slider > .thumb.right");
-  var range = document.querySelector(".slider > .range");
-
-  var amountLeft = document.getElementById("amount-left");
-  var amountRight = document.getElementById("amount-right");
-
-  function setLeftValue() {
-    var _this = inputLeft,
-      min = parseInt(_this.min),
-      max = parseInt(_this.max);
-
-    _this.value = Math.min(
-      parseInt(_this.value),
-      parseInt(inputRight.value) - 1
-    );
-
-    var percent = ((_this.value - min) / (max - min)) * 100;
-
-    thumbLeft.style.left = percent + "%";
-    range.style.left = percent + "%";
-    amountLeft.innerText = parseInt(percent * 1);
-  }
-  setLeftValue();
-
-  function setRightValue() {
-    var _this = inputRight,
-      min = parseInt(_this.min),
-      max = parseInt(_this.max);
-
-    _this.value = Math.max(
-      parseInt(_this.value),
-      parseInt(inputLeft.value) + 1
-    );
-
-    var percent = ((_this.value - min) / (max - min)) * 100;
-
-    amountRight.innerText = parseInt(max * (percent/100));
-    thumbRight.style.right = 100 - percent + "%";
-    range.style.right = 100 - percent + "%";
-  }
-  setRightValue();
-
-  inputLeft.addEventListener("input", setLeftValue);
-  inputRight.addEventListener("input", setRightValue);
-
-  inputLeft.addEventListener("mouseover", function () {
-    thumbLeft.classList.add("hover");
-  });
-  inputLeft.addEventListener("mouseout", function () {
-    thumbLeft.classList.remove("hover");
-  });
-  inputLeft.addEventListener("mousedown", function () {
-    thumbLeft.classList.add("active");
-  });
-  inputLeft.addEventListener("mouseup", function () {
-    thumbLeft.classList.remove("active");
-  });
-
-  inputRight.addEventListener("mouseover", function () {
-    thumbRight.classList.add("hover");
-  });
-  inputRight.addEventListener("mouseout", function () {
-    thumbRight.classList.remove("hover");
-  });
-  inputRight.addEventListener("mousedown", function () {
-    thumbRight.classList.add("active");
-  });
-  inputRight.addEventListener("mouseup", function () {
-    thumbRight.classList.remove("active");
-  });
-});
 checkWishlist = function(id, wishlist){
     if(id == wishlist){
         return true;
@@ -355,10 +282,26 @@ checkWishlist = function(id, wishlist){
 
 window.addEventListener("load", loadProducts);
 window.addEventListener("scroll",loadProducts);
+var final_rating = null;
+function getRating(id){
+  $.ajax({
+        type:'GET',
+        url:'/product/getRatings/'+id,
+        async:false,
+        success: function(rating){
+          tmp = 5
+            for(i=0; i<rating.length; i++){
+              tmp += parseInt(rating[i]['rating'])
+            }
+          tmp /= (rating.length+1)
+          final_rating = tmp
+        }
+      })
+}
+
 function loadProducts() {
     if(working == false){
         working = true;
-
         $.ajax({
             type: "GET",
             url: "/product/nextpage?search="+search+"&page="+page+"&category="+category+"&brand="+brand+"&min="+min+"&max="+max,
@@ -434,6 +377,14 @@ function loadProducts() {
                                   <button type="submit" disabled class="btn btn-sm btn-danger">Out of Stock</button>
                                   </div>`
                     }
+                    getRating(id)
+                    star = `<span><i class= "fas fa-star"></i></span>`
+                    star = star.repeat(Math.ceil(final_rating))
+                    empty=``
+                    if(final_rating < 5){
+                      empty = `<span><i class= "fas fa-star cleared"></i></span>`
+                      empty = empty.repeat(5-Math.ceil(final_rating))
+                    }
                     modal_id = "#details_" + id
                     image = `<img src="/images/`+ data['product'][a]['image'] + `">`
                     btns = `
@@ -451,11 +402,7 @@ function loadProducts() {
                                         <div class="product-info-top">
                                             <h2 class = "sm-title">`+data['product'][a]["brand.brand_name"]+`</h2>
                                             <div class="rating" style="">
-                                                <span><i class= "fas fa-star"></i></span>
-                                                <span><i class= "fas fa-star"></i></span>
-                                                <span><i class= "fas fa-star"></i></span>
-                                                <span><i class= "fas fa-star"></i></span>
-                                                <span><i class= "fas fa-star"></i></span>
+                                                `+star+empty+`
                                             </div>
                                         </div>
                                         <a data-bs-toggle="modal" data-bs-target="`+modal_id+`" class="product-name">`+data['product'][a]['product_name']+`</a>
@@ -500,6 +447,7 @@ function loadProducts() {
                 }, 500)
             }
             })
+
     }
 }
 </script>
@@ -508,6 +456,10 @@ function loadProducts() {
 
 
 <style>
+.cleared{
+  color: grey
+}
+
 .price-input{
   width: 100%;
   display: flex;

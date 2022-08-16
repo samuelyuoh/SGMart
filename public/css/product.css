@@ -156,11 +156,11 @@ label {
 }
 #inner-box,
 #inner-box2 {
-  height: 150px;
+  height: 200px;
   overflow-y: scroll;
 }
 #inner-box2 {
-  height: 132px;
+  height: 200px;
 }
 #inner-box::-webkit-scrollbar,
 #inner-box2::-webkit-scrollbar {

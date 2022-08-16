@@ -31,7 +31,7 @@ router.post('/add/:id', ensureAuthenticated ,async function(req, res, next) {
             image: product.image,
             cartId: id[0]['id']
         })
-        await Item.create({
+        await Item.findOrCreate({where:{
             productId: productid,
             quantity: quantity, 
             product_name: product.product_name,
@@ -42,9 +42,9 @@ router.post('/add/:id', ensureAuthenticated ,async function(req, res, next) {
             desc: product.desc,
             image: product.image,
             cartId: id[0]['id']
+        }
         })
         .then((cart) => {
-            console.log(cart.toJSON());
             flashMessage(res, 'success', 'Product added successfully.');
             res.redirect('/product/products');
         })

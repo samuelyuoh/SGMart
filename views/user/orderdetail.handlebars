@@ -99,19 +99,15 @@
                 {{#each item}}
                 <div class="feedback">
                   <div class="emoji-wrapper">
-                      <h5>Leave us a review for the {{product_name}} you have pruchased </h5>
+                      <h5>Leave us a review for the {{product_name}} you have purchased </h5>
                   </div>
                   <div class="rating">
-                    <input type="radio" name="rating" id="rating-5" class="{{id}}">
-                    <label for="rating-5"></label>
-                    <input type="radio" name="rating" id="rating-4" class="{{id}}">
-                    <label for="rating-4"></label>
-                    <input type="radio" name="rating" id="rating-3" class="{{id}}">
-                    <label for="rating-3"></label>
-                    <input type="radio" name="rating" id="rating-2" class="{{id}}">
-                    <label for="rating-2"></label>
-                    <input type="radio" name="rating" id="rating-1" class="{{id}}">
-                    <label for="rating-1"></label>
+                  <button onclick="changeToActive(this)" value ='{{id}}' class="fa fa-star" id="{{id}}-1"></button>
+                  <button onclick="changeToActive(this)" value ='{{id}}' class="fa fa-star " id="{{id}}-2"></button>
+                  <button onclick="changeToActive(this)" value ='{{id}}' class="fa fa-star " id="{{id}}-3"></button>
+                  <button onclick="changeToActive(this)" value ='{{id}}' class="fa fa-star " id="{{id}}-4"></button>
+                  <button onclick="changeToActive(this)" value ='{{id}}' class="fa fa-star " id="{{id}}-5"></button>
+                  <button onclick="submit(this)" id="{{id}}" disabled>submit</button>
                   </div>
                 </div>
                 <div class="mb-4"></div>
@@ -127,7 +123,114 @@
   </div>
 </div>
   </div>
+<script>
+window.addEventListener("load", checking)
 
+function checking(){
+  $.ajax({
+    url: '/user/rating',
+    type: 'GET',
+    success(data){
+      for(var a in data){
+        document.getElementById(data[a]['productId']).innerHTML = "Thanks for your review" 
+        for(i=1; i<= data[a]['rating']; i++){
+          document.getElementById(data[a]['productId']+'-'+i).classList.add('checked')
+          document.getElementById(data[a]['productId']+'-'+i).disabled = true
+        }
+      }
+    }
+  })
+}
+
+function submit(element){
+  id = element.id
+  value = 0
+  if(document.getElementById(id+'-5').classList.contains('checked')){
+    value = 5
+  }else if(document.getElementById(id+'-4').classList.contains('checked')){
+    value = 4
+  }else if(document.getElementById(id+'-3').classList.contains('checked')){
+    value = 3
+  }
+  else if(document.getElementById(id+'-2').classList.contains('checked')){
+    value = 2
+  }
+  else if(document.getElementById(id+'-1').classList.contains('checked')){
+    value = 1
+  }
+  $.ajax({
+    type: "POST",
+    url: '/user/rating',
+    data: {
+      rating: value,
+      productId : id
+    }
+  })
+}
+
+function changeToActive(element){
+  document.getElementById(element.value).removeAttribute('disabled')
+  if(element.id == element.value+'-1'){
+    for(i=1; i<2; i++){
+      a = element.value + "-"+ i
+        if(document.getElementById(element.value+'-'+i).classList.contains('checked')){//check if id='i' have been checked
+        console.log(a)
+          if(document.getElementById(element.value+'-'+(i+1)).classList.contains('checked')){
+            for(r=2;r<6;r++){
+              document.getElementById(element.value+'-'+r).classList.remove('checked')
+            }
+          }
+        }else{
+          document.getElementById(element.value+'-'+i).classList.add('checked')
+        }
+    }
+  }else if(element.id == element.value+'-2'){
+    for(i=1; i<3; i++){
+        if(document.getElementById(element.value+'-'+i).classList.contains('checked')){//check if id='i' have been checked
+          if(document.getElementById(element.value+'-'+(i+1)).classList.contains('checked')){
+            for(r=3;r<6;r++){
+              document.getElementById(element.value+'-'+r).classList.remove('checked')
+            }
+          }
+        }else{
+          document.getElementById(element.value+'-'+i).classList.add('checked')
+        }
+    }
+  }else if(element.id == element.value+'-3'){
+    for(i=1; i<4; i++){
+        if(document.getElementById(element.value+'-'+i).classList.contains('checked')){//check if id='i' have been checked
+          if(document.getElementById(element.value+'-'+(i+1)).classList.contains('checked')){
+            for(r=4;r<6;r++){
+              document.getElementById(element.value+'-'+r).classList.remove('checked')
+            }
+          }
+        }else{
+          document.getElementById(element.value+'-'+i).classList.add('checked')
+        }
+    }
+  }else if(element.id == element.value+'-4'){
+    for(i=1; i<5; i++){
+        if(document.getElementById(element.value+'-'+i).classList.contains('checked')){//check if id='i' have been checked
+          if(document.getElementById(element.value+'-'+(i+1)).classList.contains('checked')){
+            for(r=4;r<6;r++){
+              document.getElementById(element.value+'-'+r).classList.remove('checked')
+            }
+          }
+        }else{
+          document.getElementById(element.value+'-'+i).classList.add('checked')
+        }
+    }
+  }else if(element.id == element.value+'-5'){
+    for(i=1; i<6; i++){
+        if(document.getElementById(element.value+'-'+i).classList.contains('checked')){//check if id='i' have been checked
+            continue
+        }else{
+          document.getElementById(element.value+'-'+i).classList.add('checked')
+        }
+    }
+  }
+}
+</script>
 <style>
 body{
     background:#eee;
@@ -157,66 +260,7 @@ a {
 * { box-sizing: border-box; }
 
 
-.rating {
-  display: flex;
-  width: 100%;
-  justify-content: center;
-  overflow: hidden;
-  flex-direction: row-reverse;
-  height: auto;
-  position: relative;
+.checked {
+  color: orange;
 }
-
-.rating-0 {
-  filter: grayscale(100%);
-}
-
-.rating > input {
-  display: none;
-}
-
-.rating > label {
-  cursor: pointer;
-  width: 40px;
-  height: 40px;
-  margin-top: auto;
-  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='126.729' height='126.73'%3e%3cpath fill='%23e3e3e3' d='M121.215 44.212l-34.899-3.3c-2.2-.2-4.101-1.6-5-3.7l-12.5-30.3c-2-5-9.101-5-11.101 0l-12.4 30.3c-.8 2.1-2.8 3.5-5 3.7l-34.9 3.3c-5.2.5-7.3 7-3.4 10.5l26.3 23.1c1.7 1.5 2.4 3.7 1.9 5.9l-7.9 32.399c-1.2 5.101 4.3 9.3 8.9 6.601l29.1-17.101c1.9-1.1 4.2-1.1 6.1 0l29.101 17.101c4.6 2.699 10.1-1.4 8.899-6.601l-7.8-32.399c-.5-2.2.2-4.4 1.9-5.9l26.3-23.1c3.8-3.5 1.6-10-3.6-10.5z'/%3e%3c/svg%3e");
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: 76%;
-  transition: .3s;
-}
-
-.rating > input:checked ~ label,
-.rating > input:checked ~ label ~ label {
-  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='126.729' height='126.73'%3e%3cpath fill='%23fcd93a' d='M121.215 44.212l-34.899-3.3c-2.2-.2-4.101-1.6-5-3.7l-12.5-30.3c-2-5-9.101-5-11.101 0l-12.4 30.3c-.8 2.1-2.8 3.5-5 3.7l-34.9 3.3c-5.2.5-7.3 7-3.4 10.5l26.3 23.1c1.7 1.5 2.4 3.7 1.9 5.9l-7.9 32.399c-1.2 5.101 4.3 9.3 8.9 6.601l29.1-17.101c1.9-1.1 4.2-1.1 6.1 0l29.101 17.101c4.6 2.699 10.1-1.4 8.899-6.601l-7.8-32.399c-.5-2.2.2-4.4 1.9-5.9l26.3-23.1c3.8-3.5 1.6-10-3.6-10.5z'/%3e%3c/svg%3e");
-}
-
-
-.rating > input:not(:checked) ~ label:hover,
-.rating > input:not(:checked) ~ label:hover ~ label {
-  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='126.729' height='126.73'%3e%3cpath fill='%23d8b11e' d='M121.215 44.212l-34.899-3.3c-2.2-.2-4.101-1.6-5-3.7l-12.5-30.3c-2-5-9.101-5-11.101 0l-12.4 30.3c-.8 2.1-2.8 3.5-5 3.7l-34.9 3.3c-5.2.5-7.3 7-3.4 10.5l26.3 23.1c1.7 1.5 2.4 3.7 1.9 5.9l-7.9 32.399c-1.2 5.101 4.3 9.3 8.9 6.601l29.1-17.101c1.9-1.1 4.2-1.1 6.1 0l29.101 17.101c4.6 2.699 10.1-1.4 8.899-6.601l-7.8-32.399c-.5-2.2.2-4.4 1.9-5.9l26.3-23.1c3.8-3.5 1.6-10-3.6-10.5z'/%3e%3c/svg%3e");
-}
-
-.emoji-wrapper {
-  width: 100%;
-  text-align: center;
-  height: 100px;
-  top: 0;
-  left: 0;
-}
-
-.feedback {
-  background-color: #fff;
-  width: 100%;
-  padding: 30px;
-  border-radius: 8px;
-  display: flex;
-  flex-direction: column;
-  flex-wrap: wrap;
-  align-items: center;
-  box-shadow: 0 4px 30px rgba(0,0,0,.05);
-}
-
-
 </style>
