@@ -70,6 +70,35 @@
           </table>
         </div>
       </div>
+
+      <!-- Deliveries -->
+      <div class="card mb-4">
+        <div class="card-body">
+          <div class="row">
+            <div class="col-lg-6">
+              <h3 class="h6">Delivery Info</h3>
+              {{#delivery}}
+              <p>Delivery Date: {{formatDate delivery_date 'YYYY-MM-DD'}}</p>
+              <p>Delivery Time: {{delivery_time}}</p>
+              <a type="button" href="/user/editDelivery/{{id}}" class="btn btn-primary" data-bs-toggle="" data-bs-target="">
+                Edit
+              </a>
+              {{/delivery}}
+              
+            </div>
+            <div class="col-lg-6">
+              {{#delivery}}
+              <h3 class="h6">Delivery Address</h3>
+                <p>Address: {{delivery_address}}</p>
+                <p>City: {{delivery_city}}</p>
+                <p>State: {{delivery_state}}</p>
+                <p>Zip: {{delivery_zip}}</p>
+              {{/delivery}}
+            </div>
+          </div>
+        </div>
+      </div>
+
       <!-- Payment -->
       <div class="card mb-4">
         <div class="card-body">

@@ -850,26 +850,27 @@ router.get('/deleteDelivery/:id', ensureAuthenticated, async function(req, res) 
 
 router.get('/editDelivery/:id', ensureAuthenticated, async function(req, res) {
     try {
-        let delivery = await Delivery.findByPk(req.params.id);
-        res.render('user/edit_delivery');
+        let orders = await Order.findAll({raw:true});
+        res.render('user/edit_delivery',orders);
     }
     catch (err) {
         console.log(err);
     }
 });
 
-router.post('/editDelivery/:id', ensureAuthenticated, (req, res) => {
+router.post('/editDelivery/:id', ensureAuthenticated, async(req, res) => {
     let delivery_time = req.body.time;
     let delivery_date = req.body.fromDate;
+    let userId = req.user.id;
     Delivery.update(
         { delivery_time, delivery_date }, 
         { where: { id: req.params.id } }
     )
         .catch(err => console.log(err));
-    Delivery.findByPk(req.params.id)
-        .then ((delivery) => {
+    User.findByPk(req.params.id)
+        .then ((orders) => {
             flashMessage(res, 'success', 'Information updated');
-            res.redirect(`/user/check_delivery`);
+            res.redirect(`/user/orders/${userId}`);
         })
         .catch(err => console.log(err));
 });
@@ -919,11 +920,12 @@ router.get('/orderDetail/:id', ensureAuthenticated, async(req, res) => {
         raw: true
     })
     var items = await Invoice.findAll({where: {orderId: orders['id']},raw:true})
+    var deliveries = await Delivery.findAll({where: {orderId: orders['id']},raw:true})
 
     for(var a in cost_of_each_item){
         totalAmount += parseFloat(cost_of_each_item[a]['totalCost'])
     }
-    res.render('user/orderdetail', {orders: orders, item: items, totalAmount: totalAmount})
+    res.render('user/orderdetail', {orders: orders, item: items, totalAmount: totalAmount, delivery:deliveries})
 })
 
 

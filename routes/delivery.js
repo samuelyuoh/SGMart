@@ -95,15 +95,16 @@ router.post('/',ensureAuthenticated, async function (req, res) {
     let userId = req.user.id
     var id = await Cart.findAll({where: {userId: req.user.id}})
     // console.log(req.body)
-    Delivery.create({delivery_date, delivery_time,delivery_address, delivery_city, delivery_state, delivery_zip, userId})
     Order.create({name, email, address, phone, delivery_date, delivery_time, userId})
-        .then((order)=> {
-            orderId = order.id
-            Invoice.update(
-                {orderId: orderId,
+    .then((order)=> {
+        orderId = order.id
+        Invoice.update(
+            {orderId: orderId,
                 cartId: null},
                 {where: {cartId: id[0]['id']}}
-            );
+                );
+                
+                Delivery.create({delivery_date, delivery_time,delivery_address, delivery_city, delivery_state, delivery_zip, userId, orderId})  
             Item.destroy({where: {cartId: id[0]['id']}});
             // console.log(orderId)
             flashMessage(res,'success', 'Successfully Purchased Items')

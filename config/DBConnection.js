@@ -53,7 +53,10 @@ const setUpDB = (drop) => {
             Order.hasMany(Invoice);
             Order.belongsTo(User);
             User.hasMany(Order);
-            Invoice.belongsTo(Product)
+            Invoice.belongsTo(Product);
+            // Order.hasMany(Delivery);
+            Delivery.belongsTo(Order);
+            Invoice.hasMany(Delivery)
             // Order.hasOne(Cart)
             // Cart.belongsTo(Order)
             mySQLDB.sync({
