@@ -11,7 +11,8 @@
       <div class="row justify-content-between mb-3">
         {{#orders}}
           <div class="col-auto" style="padding: 20px;">
-            <h4 class="color-1 mb-0 change-color" style="font-weight: 600; padding-bottom: 10px;"> Order Number : #00000{{id}}</h4>          
+            <h4 class="color-1 mb-0 change-color" style="font-weight: 600; padding-bottom: 10px;"> Order Number : #00000{{id}}</h4>
+            <input hidden id="orderid" value="{{id}}">          
             <h4 style="font-weight: 600; padding-top: 10px;">Order Date: {{getDateOnly createdAt}}</h4>
           </div>
         {{/orders}}
@@ -50,6 +51,7 @@
             </div>
           </div>
           {{#each item}}
+          <p>{{image}}</p>
             <div class="card card-2" style="margin-bottom: 20px; border-radius: 1rem;">
               <div class="card-body">
 
@@ -151,7 +153,6 @@
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
 
-  }
   body {
     min-height: 100vh;
     background-size: cover;
@@ -345,8 +346,9 @@
 <script>
 window.addEventListener("load", checking)
 function checking(){
+    orderid = document.getElementById('orderid').value
   $.ajax({
-    url: '/user/rating',
+    url: '/user/rating/'+orderid,
     type: 'GET',
     success(data){
       for(var a in data){
@@ -361,6 +363,7 @@ function checking(){
 }
 function submit(element){
   id = element.id
+  orderid = document.getElementById('orderid').value
   value = 0
   if(document.getElementById(id+'-5').classList.contains('checked')){
     value = 5
@@ -380,9 +383,12 @@ function submit(element){
     url: '/user/rating',
     data: {
       rating: value,
-      productId : id
+      productId : id,
+      orderId: orderid
     }
   })
+  window.location.reload()
+
 }
 function changeToActive(element){
   document.getElementById(element.value).removeAttribute('disabled')

@@ -40,16 +40,7 @@ router.get('/', async (req, res) => {
     
 });
 
-router.get('/cancel', (req,res) => {
-	res.render('delivery/cancel')
-})
-
-
 // Stripe
-
-router.get("/success", (req,res) => {
-	res.render('delivery/success')
-})
 
 router.get('/cancel', (req,res) => {
 	res.render('delivery/cancel')
@@ -84,55 +75,7 @@ router.post('/',ensureAuthenticated, async function (req, res) {
 		console.error('error')
 		res.status(500).json({ error:e.message })
 	}
-})
 
-router.get("/success", (req,res) => {
-    Product.findAll({
-		limit:4,
-        raw: true,
-    })
-        .then((products) => {
-            res.render('delivery/success', { products});
-
-        })
-
-        .catch(err => console.log(err));
-});
-
-
-router.get('/cancel', (req,res) => {
-	res.render('delivery/cancel')
-})
-
-router.post('/',ensureAuthenticated, async function (req, res) {
-    console.log('start checkout')
-	try {
-		const session = await stripe.checkout.sessions.create({
-			payment_method_types: ['card'],
-			mode: 'payment',
-			line_items:items.map(item => {
-				const storeItem = storeItems.get(item.id)
-				return {
-					price_data: {
-						currency: 'sgd',
-						product_data: {
-							name: storeItem.name
-						},
-						unit_amount: storeItem.priceInCents
-					},
-					quantity: item.quantity
-				}
-			}),
-			success_url: `${process.env.SERVER_URL}/delivery/success/`,
-			cancel_url: `${process.env.SERVER_URL}/delivery/cancel/`
-		})
-        // global.location = session.url
-        res.redirect(session.url)
-		console.log('redirect to stripe')
-	}catch (e) {
-		console.error('error')
-		res.status(500).json({ error:e.message })
-	}
     let name = req.body.name;
     let email = req.body.email;
     let address = req.body.address;
@@ -146,19 +89,35 @@ router.post('/',ensureAuthenticated, async function (req, res) {
     let userId = req.user.id
     var id = await Cart.findAll({where: {userId: req.user.id}})
     // console.log(req.body)
-    Delivery.create({delivery_date, delivery_time,delivery_address, delivery_city, delivery_state, delivery_zip, userId})
     Order.create({name, email, address, phone, delivery_date, delivery_time, userId})
-        .then((order)=> {
-            orderId = order.id
-            Invoice.update(
-                {orderId: orderId,
+    .then((order)=> {
+        orderId = order.id
+        Invoice.update(
+            {orderId: orderId,
                 cartId: null},
                 {where: {cartId: id[0]['id']}}
-            );
+                );
+                
+                Delivery.create({delivery_date, delivery_time,delivery_address, delivery_city, delivery_state, delivery_zip, userId, orderId})  
             Item.destroy({where: {cartId: id[0]['id']}});
+            // console.log(orderId)
+            flashMessage(res,'success', 'Successfully Purchased Items')
+            res.render('delivery/delivery_completed');
         })
         .catch(err => console.log(err))
 });
 
+router.get("/success", async (req,res) => {
+    var products = await Product.findAll({
+        limit:4,
+        raw: true,
+    })
+    // console.log(req.body)
+                
+        // console.log(orderId)
+    flashMessage(res,'success', 'Successfully Purchased Items')
+    res.render('delivery/success', { products});
+
+});
 
 module.exports = router

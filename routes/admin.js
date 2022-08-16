@@ -365,9 +365,7 @@ router.get('/generateexcel/:list', async (req, res) => {
 				console.error(err)
 				}
 		}, 3000)
-	} else if (list == 'logs') {
-		
-	}
+	} 
 });
 
 router.get('/dashboardinfo', async (req, res) => {

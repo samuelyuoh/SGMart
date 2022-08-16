@@ -20,7 +20,7 @@ router.post('/add/:id', ensureAuthenticated ,async function(req, res, next) {
         await Cart.findOrCreate({where: {userId: req.user.id}})
         var id = await Cart.findAll({where: {userId: req.user.id}})
         var check = await Item.findAll({where: {cartId: id[0]['id'], productId: productid}})
-        console.log(check[0])
+        console.log(id[0]['id'])
         if (check[0] == undefined){
             Invoice.create({
                 productId: productid,
@@ -32,7 +32,8 @@ router.post('/add/:id', ensureAuthenticated ,async function(req, res, next) {
                 stock: product.stock,
                 desc: product.desc,
                 image: product.image,
-                cartId: id[0]['id']
+                cartId: id[0]['id'],
+                userId: req.user.id
             })
             await Item.findOrCreate({where:{
                 productId: productid,
@@ -76,9 +77,20 @@ router.post('/add/:id', ensureAuthenticated ,async function(req, res, next) {
 
 router.get('/cart', ensureAuthenticated, async function(req, res, next) {
     var id = await Cart.findOrCreate({where: {userId: req.user.id}})
+    var totalAmount = 0
     if (req.user.id == undefined){
         flashMessage(res, 'error', 'Please Login First');
     }
+    var cost_of_each_item = await Item.findAll({
+        where: {cartId: id[0]['id']},
+        attributes: [
+            'totalCost',
+        ],
+        raw: true
+    })
+    for(var a in cost_of_each_item){
+            totalAmount += parseFloat(cost_of_each_item[a]['totalCost'])
+        }
         Item.findAll({
             raw: true,
             include:{
@@ -88,7 +100,7 @@ router.get('/cart', ensureAuthenticated, async function(req, res, next) {
             where: { cartId: id[0]['id']}
         })
             .then((carts) => {
-                res.render('cart/cart', { carts });
+                res.render('cart/cart', { carts, totalAmount });
             })
             .catch(err => console.log(err));
 });

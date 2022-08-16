@@ -1318,18 +1318,19 @@ router.get('/viewWishlist', async(req, res) => {
 })
 
 router.post('/rating', async(req, res) => {
-    let{ rating, productId} = req.body
-    console.log(rating)
+    let{ rating, productId, orderId} = req.body
+    console.log(orderId)
     Rating.create({
         rating: rating,
         productId: productId,
-        userId: req.user.id
+        userId: req.user.id,
+        orderId: orderId
     }).then(()=>{
         console.log("added")
     })
 })
-router.get('/rating', async(req, res) => {
-    var rating = await Rating.findAll({where:{userId: req.user.id}})
+router.get('/rating/:id', async(req, res) => {
+    var rating = await Rating.findAll({where:{userId: req.user.id, orderId: req.params.id}})
     res.send(rating)
 })
 

@@ -16,6 +16,14 @@ const Delivery = db.define('delivery',
                 model: 'users',
                 key: 'id'
             }
-        }   
+        },
+        orderId: {
+            allowNull: true,
+            type: Sequelize.INTEGER,
+            references: {
+                model: 'orders',
+                key: 'id'
+            }
+        },   
     });
 module.exports = Delivery;

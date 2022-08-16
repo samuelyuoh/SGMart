@@ -27,7 +27,6 @@
         
         <div class="quantity">
           <input type="number" value="{{quantity}}" class="quantity-field" name="quantity" id ='quantity' min="1" max="{{"product.stock"}}">
-
         </div>
         <div class="subtotal">{{"product.product_price"}}</div>
         <div class="remove">
@@ -41,7 +40,7 @@
         <div class="summary-total-items"><span class="total-items"></span> Items in your Bag</div>
         <div class="summary-subtotal">
           <div class="subtotal-title">Subtotal</div>
-          <div class="subtotal-value final-value" id="basket-subtotal"></div>
+          <div class="subtotal-value final-value" id="basket-subtotal">{{totalAmount}}</div>
           <div class="summary-promo hide">
             <div class="promo-title">Promotion</div>
             <div class="promo-value final-value" id="basket-promo"></div>
@@ -54,7 +53,7 @@
         </div>
         <div class="summary-total">
           <div class="total-title">Total</div>
-          <div class="total-value final-value" id="basket-total">$1.2</div>
+          <div class="total-value final-value" id="basket-total">${{totalAmount}}</div>
         </div>
         <div class="summary-checkout">
             <button type="submit" class="checkout-cta"  onclick="location.href = '/delivery'" >Go to Secure Checkout</button>
@@ -85,7 +84,14 @@ var fadeTime = 300;
 
 /* Assign actions */
 $('.quantity input').change(function() {
+  var value = document.getElementById('quantity').value
+  var max = document.getElementById('quantity').getAttribute('max')
+  if(value > document.getElementById('quantity').getAttribute('max')){
+    //alert("There is only "+document.getElementById('quantity').getAttribute('max')+'in stock')
+    continue
+  }else{
   updateQuantity(this);
+  }
 });
 
 
