@@ -74,7 +74,6 @@
                         </div>
                         <div class="graph-select">
                             <select name="" id="time">
-                                <option value="m">Last 30 Days</option>
                                 <option value="w">Last 7 Days</option>
                             </select>
                         </div>
@@ -202,7 +201,7 @@
           $('#expstat').text(Math.round(temp,0).toString() + '%');
 
           a = data.ginfo.l7
-          b = data.ginfo.l30
+          {{!-- b = data.ginfo.l30 --}}
         })
       },500),
       setTimeout(()=> {
