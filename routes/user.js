@@ -550,7 +550,7 @@ router.get('/resetpassword/:id/:token', async (req, res) => {
                         flashMessage(res, 'error', 'Reset password has expired');//expired token
                         res.redirect('/user/resetpassword');
                     } else {
-                        res.render('user/newpwd');
+                        res.render('user/newpwd', {layout: 'otp'});
                     }
                 } else {
                     flashMessage(res, 'error', 'Error. Access denied')
@@ -995,7 +995,7 @@ router.get('/login/:id/gotp/verify', (req, res) => {
             res.redirect(`/user/logout1`);
     }
     else if (req.params.id == req.user.id) {
-        res.render('user/gotp');
+        res.render('user/gotp', {layout: 'otp'});
     } else {
         flashMessage(res, 'error', 'Access denied.')
         res.redirect('/')

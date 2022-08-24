@@ -423,23 +423,23 @@ router.get('/dashboardinfo', async (req, res) => {
 		}
 	}
 
-	var ginfol30 = [0,0,0,0,0,0,0,0,0,0]
+	var ginfol30 = [0,0,0,0,0,0,0,0,0,0,0]
 	var ginfol7 = [0,0,0,0,0,0,0]
 	for (var i = 0;i < 7;i++) {
 		for (var p = 0;p < invoices.length;p++) {
 			if (formatDate(invoices[p].dataValues.createdAt, 'DD MMM YYYY') == formatDate(moment().subtract(i, 'days').toDate(), 'DD MMM YYYY')) {
-				const temprev = parseFloat(invoices[p].dataValues.totalCost)
-				const tempexp = parseFloat(invoices[p].dataValues.quantity) * invoices[p].dataValues.product.dataValues.cost
-				ginfol7[i] += temprev - tempexp
+				const temprev1 = parseFloat(invoices[p].dataValues.totalCost)
+				const tempexp1 = parseFloat(invoices[p].dataValues.quantity) * invoices[p].dataValues.product.dataValues.cost
+				ginfol7[i] += temprev1 - tempexp1
 			}
 		}
 	}
-	for (var i = 0;i < 7;i++) {
+	for (var i = 0;i < 11;i++) {
 		for (var p = 0;p < invoices.length;p++) {
 			if (formatDate(invoices[p].dataValues.createdAt, 'DD MMM YYYY') == formatDate(moment().subtract(i*3, 'days').toDate(), 'DD MMM YYYY')) {
-				const temprev = parseFloat(invoices[p].dataValues.totalCost)
-				const tempexp = parseFloat(invoices[p].dataValues.quantity) * invoices[p].dataValues.product.dataValues.cost
-				ginfol7[i] += temprev - tempexp
+				const temprev2 = parseFloat(invoices[p].dataValues.totalCost)
+				const tempexp2 = parseFloat(invoices[p].dataValues.quantity) * invoices[p].dataValues.product.dataValues.cost
+				ginfol30[i] += temprev2 - tempexp2
 			}
 		}
 	}

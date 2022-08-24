@@ -75,6 +75,7 @@
                         <div class="graph-select">
                             <select name="" id="time">
                                 <option value="w">Last 7 Days</option>
+                                <option value="m">Last 30 Days</option>
                             </select>
                         </div>
                     </div>
@@ -133,7 +134,7 @@
         } else {
             d = new Date();
             temp2 = []
-            for (var i = 0; i < 10; i++) {
+            for (var i = 0; i < 11; i++) {
                 ts = `${d.getDate()}/${d.getMonth()+ 1}`
                 d.setDate(d.getDate()-3)
                 temp2.push(ts)
@@ -201,7 +202,7 @@
           $('#expstat').text(Math.round(temp,0).toString() + '%');
 
           a = data.ginfo.l7
-          {{!-- b = data.ginfo.l30 --}}
+          b = data.ginfo.l30
         })
       },500),
       setTimeout(()=> {
